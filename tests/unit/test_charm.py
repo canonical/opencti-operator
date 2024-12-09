@@ -37,6 +37,7 @@ def test_pebble_plan():
                     "APP__PORT": "8080",
                     "APP__TELEMETRY__METRICS__ENABLED": "true",
                     "ELASTICSEARCH__PASSWORD": "opensearch-password",
+                    "ELASTICSEARCH__INDEX_PREFIX": "opencti",
                     "ELASTICSEARCH__SSL__CA": "/opt/opencti/config/opensearch.pem",
                     "ELASTICSEARCH__URL": json.dumps(
                         [

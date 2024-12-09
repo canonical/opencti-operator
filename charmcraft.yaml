@@ -26,8 +26,13 @@ config:
     admin-user:
       type: string
       description: |
-        OpenCTI admin user email and password.
-        The content of this configuration should be a 
+        OpenCTI admin user email and password.  
+        The content of this configuration should be a Juju user secret ID.  
+        The Juju user secret should contain two fields, `email` and `password`, 
+        where `email` is the admin user email, and `password` is the admin user password.  
+        Use the following commands to create a Juju user secret for this configuration:  
+        `juju add-secret opencti-admin-user email=admin@example.com password#file=/path/to/password.txt`  
+        `juju grant-secret opencti-admin-user opencti`
 
 requires:
   opensearch-client:

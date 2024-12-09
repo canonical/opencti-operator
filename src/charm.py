@@ -81,12 +81,16 @@ class OpenCTICharm(ops.CharmBase):
         """
         super().__init__(*args)
         self._container = self.unit.get_container("opencti")
+        if self.app.name == "x-opencti":
+            self.unit.status = ops.BlockedStatus("charm cannot be named 'x-opencti'")
+            return
         self._opensearch = OpenSearchRequires(
             self,
             relation_name="opensearch-client",
             # suppress the OpenSearch charm from creating the index
             # use the name x-opencti so OpenSearch will create an index named 'x-opencti'
-            # which shouldn't interfere with the OpenCTI platform
+            # which shouldn't interfere with the OpenCTI (index prefix is the charm app name)
+            # hope nobody names the charm app 'x-opencti'
             index="x-opencti",
             # the OpenSearch charm can't handle access control for index patterns
             extra_user_roles="admin",
@@ -386,6 +390,7 @@ class OpenCTICharm(ops.CharmBase):
         ]
         env = {
             "ELASTICSEARCH__URL": json.dumps(uris),
+            "ELASTICSEARCH__INDEX_PREFIX": self.app.name,
         }
         if ca := data.get("tls-ca"):
             self._container.make_dir("/opt/opencti/config/", make_parents=True)
