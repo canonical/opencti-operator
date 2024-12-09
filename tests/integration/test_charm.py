@@ -121,7 +121,7 @@ async def test_opencti_workers(get_unit_ips, ops_test):
     plan = yaml.safe_load(stdout)
     api_token = plan["services"]["platform"]["environment"]["APP__ADMIN__TOKEN"]
     resp = requests.post(
-        f"http://{(await get_unit_ips("opencti"))[0]}:8080/graphql",
+        f"http://{(await get_unit_ips('opencti'))[0]}:8080/graphql",
         json=query,
         headers={"Authorization": f"Bearer {api_token}"},
         timeout=5,
