@@ -11,3 +11,5 @@ def pytest_addoption(parser):
         parser: Pytest parser.
     """
     parser.addoption("--charm-file", action="store")
+    parser.addoption("--opencti-image", action="store")
+    parser.addoption("--machine-controller", action="store", default="localhost")

@@ -3,11 +3,93 @@
 # This file configures Charmcraft.
 # See https://juju.is/docs/sdk/charmcraft-config for guidance.
 
+name: opencti
+title: OpenCTI Charm
+summary: OpenCTI charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
+  open-source threat intelligence platform in your systems.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI across a 
+  range of environments, organize your cyber threat intelligence to enhance 
+  and disseminate actionable insights.
+
+config:
+  options:
+    admin-user:
+      type: string
+      description: |
+        OpenCTI admin user email and password.
+        The content of this configuration should be a 
+
+requires:
+  opensearch-client:
+    interface: opensearch_client
+    optional: false
+    limit: 1
+  redis:
+    interface: redis
+    optional: false
+    limit: 1
+  amqp:
+    interface: rabbitmq
+    optional: false
+    limit: 1
+  s3:
+    interface: s3
+    optional: false
+    limit: 1
+  ingress:
+    interface: ingress
+    optional: false
+    limit: 1
+  logging:
+    interface: loki_push_api
+    optional: true
+
+provides:
+  metrics-endpoint:
+    interface: prometheus_scrape
+    optional: true
+  grafana-dashboard:
+    interface: grafana_dashboard
+    optional: true
+
+peers:
+  opencti-peer:
+    interface: opencti_peer
+
 type: charm
-bases:
-  - build-on:
-    - name: ubuntu
-      channel: "22.04"
-    run-on:
-    - name: ubuntu
-      channel: "22.04"
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm:
+    build-snaps:
+      - rustup
+    override-build: |
+      rustup default stable
+      craftctl default
+    build-packages:
+      - libffi-dev
+      - libssl-dev
+      - pkg-config
+
+containers:
+  opencti:
+    resource: opencti-image
+resources:
+  opencti-image:
+    type: oci-image
+    description: OCI image for the OpenCTI platform/worker.
+
+assumes:
+  - juju >= 3.3
