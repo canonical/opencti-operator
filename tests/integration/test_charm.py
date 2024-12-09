@@ -63,7 +63,7 @@ async def test_deploy_charm(
     )
     await action.wait()
     opencti = await model.deploy(
-        f"./{pytestconfig.getoption("--charm-file")}",
+        f"./{pytestconfig.getoption('--charm-file')}",
         resources={
             "opencti-image": pytestconfig.getoption("--opencti-image"),
         },
