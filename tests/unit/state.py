@@ -10,7 +10,15 @@ import ops.testing
 
 
 class StateBuilder:
+    """ops.testing.State builder."""
+
     def __init__(self, leader=True, can_connect=True):
+        """Initialize the state builder.
+
+        Args:
+            leader: whether this charm has leadership.
+            can_connect: whether the pebble is ready.
+        """
         self._integrations = []
         self._config = {}
         self._secrets = []
@@ -18,6 +26,13 @@ class StateBuilder:
         self._can_connect = can_connect
 
     def add_opensearch_client_integration(self, insecure=False) -> typing.Self:
+        """Add opensearch-client integration.
+
+        Args:
+            insecure: whether the opensearch integration uses TLS and password authentication.
+
+        Returns: self.
+        """
         tls_secret = ops.testing.Secret(
             tracked_content={
                 "tls-ca": "-----BEGIN CERTIFICATE-----\nOPENSEARCH\n-----END CERTIFICATE-----",
@@ -66,6 +81,10 @@ class StateBuilder:
         return self
 
     def add_rabbitmq_integration(self) -> typing.Self:
+        """Add rabbitmq integration.
+
+        Returns: self
+        """
         self._integrations.append(
             ops.testing.Relation(
                 remote_app_name="rabbitmq-server",
@@ -81,6 +100,10 @@ class StateBuilder:
         return self
 
     def add_redis_integration(self) -> typing.Self:
+        """Add redis integration.
+
+        Returns: self
+        """
         self._integrations.append(
             ops.testing.Relation(
                 remote_app_name="redis-k8s",
@@ -98,6 +121,10 @@ class StateBuilder:
         return self
 
     def add_s3_integration(self) -> typing.Self:
+        """Add s3 integration.
+
+        Returns: self
+        """
         self._integrations.append(
             ops.testing.Relation(
                 remote_app_name="s3-integrator",
@@ -114,6 +141,10 @@ class StateBuilder:
         return self
 
     def add_ingress_integration(self) -> typing.Self:
+        """Add ingress integration.
+
+        Returns: self
+        """
         self._integrations.append(
             ops.testing.Relation(
                 remote_app_name="nginx-ingress-integrator",
@@ -124,6 +155,10 @@ class StateBuilder:
         return self
 
     def add_opencti_peer_integration(self) -> typing.Self:
+        """Add opencti-peer integration.
+
+        Returns: self
+        """
         secret = ops.testing.Secret(
             tracked_content={
                 "admin-token": "opencti-admin-token",
@@ -140,6 +175,13 @@ class StateBuilder:
         return self
 
     def add_required_integrations(self, excludes: list[str] | None = None) -> typing.Self:
+        """Add all required integrations.
+
+        Args:
+            excludes: list of integration names to exclude.
+
+        Returns: self
+        """
         excludes = excludes or []
         if "opensearch-client" not in excludes:
             self.add_opensearch_client_integration()
@@ -156,6 +198,13 @@ class StateBuilder:
         return self
 
     def add_required_configs(self, excludes: list[str] | None = None) -> typing.Self:
+        """Add all required configs.
+
+        Args:
+            excludes: list of config names to exclude.
+
+        Returns: self
+        """
         excludes = excludes or []
         if "admin-user" not in excludes:
             secret = ops.testing.Secret(
@@ -169,22 +218,48 @@ class StateBuilder:
         return self
 
     def add_integration(self, integration: ops.testing.RelationBase) -> typing.Self:
+        """Add integration.
+
+        Args:
+            integration: integration to add.
+
+        Returns: self
+        """
         self._integrations.append(integration)
         return self
 
     def add_secret(self, secret: ops.testing.Secret) -> typing.Self:
+        """Add secret.
+
+        Args:
+            secret: secret to add.
+
+        Returns: self
+        """
         self._secrets.append(secret)
         return self
 
     def set_config(self, name: str, value: str) -> typing.Self:
+        """Set charm config.
+
+        Args:
+            name: config name.
+            value: config value.
+
+        Returns: self
+        """
         self._config[name] = value
         return self
 
     def build(self) -> ops.testing.State:
+        """Build state.
+
+        Returns: ops.testing.State
+        """
         return ops.testing.State(
             leader=self._leader,
             containers=[
-                ops.testing.Container(
+                ops.testing.Container(  # type: ignore
                     name="opencti",
                     can_connect=self._can_connect,
                 )

@@ -8,6 +8,7 @@
 """Unit tests."""
 
 import json
+import typing
 
 import ops.testing
 import pytest
@@ -185,7 +186,8 @@ def test_amqp_request_admin_user(leader):
     state_in = ops.testing.State(leader=leader, relations=[relation])
     state_out = ctx.run(ctx.on.relation_joined(relation), state_in)
     if leader:
-        assert state_out.get_relation(relation.id).local_app_data["admin"] == "true"
+        data = typing.cast(dict, state_out.get_relation(relation.id).local_app_data)
+        assert data["admin"] == "true"
 
 
 def test_opencti_platform_start_failure(monkeypatch, patch_check_platform_health):
@@ -219,11 +221,14 @@ def test_opencti_peer_initiation(leader):
     ctx = ops.testing.Context(OpenCTICharm)
     relation = ops.testing.PeerRelation("opencti-peer")
     state_in = ops.testing.State(
-        leader=leader, relations=[relation], containers=[ops.testing.Container("opencti")]
+        leader=leader,
+        relations=[relation],
+        containers=[ops.testing.Container("opencti")],  # type: ignore
     )
     state_out = ctx.run(ctx.on.relation_created(relation), state_in)
     if leader:
-        assert state_out.get_relation(relation.id).local_app_data["secret"]
+        data = typing.cast(dict, state_out.get_relation(relation.id).local_app_data)
+        assert "secret" in data
 
 
 @pytest.mark.usefixtures("patch_check_platform_health")

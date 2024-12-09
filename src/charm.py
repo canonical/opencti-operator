@@ -3,15 +3,8 @@
 # Copyright 2024 Canonical Ltd.
 # See LICENSE file for licensing details.
 
-# Learn more at: https://juju.is/docs/sdk
+"""OpenCTI charm the service."""
 
-"""Charm the service.
-
-Refer to the following post for a quick-start guide that will help you
-develop a new k8s charm using the Operator Framework:
-
-https://discourse.charmhub.io/t/4208
-"""
 import json
 import logging
 import secrets
@@ -62,14 +55,21 @@ class PlatformNotReady(Exception):
     """OpenCTI platform service not ready."""
 
 
+# caused by charm libraries
+# pylint: disable=too-many-instance-attributes
 class OpenCTICharm(ops.CharmBase):
-    """OpenCTI charm the service."""
+    """OpenCTI charm the service.
+
+    Attrs:
+        on: RedisRelationCharmEvents.
+    """
 
     on = RedisRelationCharmEvents()
     _PEER_INTEGRATION_NAME = "opencti-peer"
-    _PEER_SECRET_FIELD = "secret"
-    _PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD = "admin-token"
-    _PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD = "health-access-key"
+    # bandit false alarm
+    _PEER_SECRET_FIELD = "secret"  # nosec
+    _PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD = "admin-token"  # nosec
+    _PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD = "health-access-key"  # nosec
     _HEALTH_CHECK_TIMEOUT = 200
     _HEALTH_CHECK_INTERVAL = 5
 
@@ -145,7 +145,7 @@ class OpenCTICharm(ops.CharmBase):
         if self.unit.is_leader():
             event.relation.data[self.app]["admin"] = "true"
 
-    def _reconcile(self, _) -> None:
+    def _reconcile(self, _: ops.EventBase) -> None:
         """Run charm reconcile function and catch all exceptions."""
         try:
             self._reconcile_raw()
@@ -163,7 +163,7 @@ class OpenCTICharm(ops.CharmBase):
         """
         self._init_peer_relation()
         self._check()
-        worker_service = {
+        worker_service: ops.pebble.ServiceDict = {
             "override": "replace",
             "command": "python3 worker.py",
             "working-dir": "/opt/opencti-worker",
@@ -181,11 +181,10 @@ class OpenCTICharm(ops.CharmBase):
         health_check_url = f"http://localhost:8080/health?health_access_key={health_check_token}"
         self._container.add_layer(
             "opencti",
-            layer={
-                "summary": "OpenCTI platform/worker",
-                "description": "OpenCTI platform/worker",
-                "override": "replace",
-                "services": {
+            layer=ops.pebble.LayerDict(
+                summary="OpenCTI platform/worker",
+                description="OpenCTI platform/worker",
+                services={
                     "platform": {
                         "override": "replace",
                         "command": "node build/back.js",
@@ -210,7 +209,7 @@ class OpenCTICharm(ops.CharmBase):
                     "worker-1": worker_service,
                     "worker-2": worker_service,
                 },
-                "checks": {
+                checks={
                     "platform": {
                         "override": "replace",
                         "level": "ready",
@@ -220,7 +219,7 @@ class OpenCTICharm(ops.CharmBase):
                         "threshold": 5,
                     }
                 },
-            },
+            ),
             combine=True,
         )
         self._container.replan()
@@ -255,8 +254,8 @@ class OpenCTICharm(ops.CharmBase):
         try:
             response = requests.get(health_check_url, timeout=5)
             response.raise_for_status()
-        except requests.exceptions.RequestException:
-            raise PlatformNotReady()
+        except requests.exceptions.RequestException as exc:
+            raise PlatformNotReady() from exc
 
     def _check(self) -> None:
         """Check the prerequisites for the OpenCTI charm."""
@@ -298,7 +297,7 @@ class OpenCTICharm(ops.CharmBase):
                 ),
             }
         )
-        peer_integration.data[self.app][self._PEER_SECRET_FIELD] = secret.id
+        peer_integration.data[self.app][self._PEER_SECRET_FIELD] = typing.cast(str, secret.id)
 
     def _gen_secret_env(self) -> dict[str, str]:
         """Generate the secret (token, user, etc.) environment variables for the OpenCTI charm.
@@ -309,20 +308,20 @@ class OpenCTICharm(ops.CharmBase):
         if not (admin_user := self.config.get("admin-user")):
             raise MissingConfig("missing charm config: admin-user")
         try:
-            admin_user_secret = self.model.get_secret(id=admin_user)
-        except ops.SecretNotFoundError:
-            raise InvalidConfig("admin-user config is not a secret")
-        except ops.ModelError:
+            admin_user_secret = self.model.get_secret(id=typing.cast(str, admin_user))
+        except ops.SecretNotFoundError as exc:
+            raise InvalidConfig("admin-user config is not a secret") from exc
+        except ops.ModelError as exc:
             raise InvalidConfig(
                 "charm doesn't have access to the admin-user secret, "
                 "run `juju grant` command to grant the secret to the charm"
-            )
+            ) from exc
         admin_user_secret_content = admin_user_secret.get_content(refresh=True)
         try:
             admin_email = admin_user_secret_content["email"]
             admin_password = admin_user_secret_content["password"]
-        except KeyError:
-            raise InvalidConfig("invalid secret content in admin-user config")
+        except KeyError as exc:
+            raise InvalidConfig("invalid secret content in admin-user config") from exc
         return {
             "APP__ADMIN__EMAIL": admin_email,
             "APP__ADMIN__PASSWORD": admin_password,
@@ -362,20 +361,22 @@ class OpenCTICharm(ops.CharmBase):
             IntegrationNotReady: OpenSearch integration not ready
             InvalidIntegration: invalid OpenSearch integration.
         """
-        integration = self.model.get_relation(self._opensearch.relation_name)
+        integration = typing.cast(
+            ops.Relation, self.model.get_relation(self._opensearch.relation_name)
+        )
         integration_id = integration.id
         try:
             data = self._opensearch.fetch_relation_data(
                 relation_ids=[integration_id],
                 fields=["endpoints", "username", "password", "tls", "tls-ca"],
             )[integration_id]
-        except ops.ModelError:
+        except ops.ModelError as exc:
             # secret in integration not accessible before the integration events?
             logger.error(
                 "invalid opensearch-client integration: %s",
                 self._dump_integration("opensearch-client"),
             )
-            raise InvalidIntegration("invalid opensearch integration")
+            raise InvalidIntegration("invalid opensearch integration") from exc
         if "endpoints" not in data:
             raise IntegrationNotReady("waiting for opensearch-client integration")
         uses_tls = data.get("tls-ca") or data.get("tls")
@@ -421,10 +422,10 @@ class OpenCTICharm(ops.CharmBase):
                 "REDIS__HOSTNAME": parsed_redis_url.hostname,
                 "REDIS__PORT": str(parsed_redis_url.port or "6379"),
             }
-        except ValueError:
+        except ValueError as exc:
             # same reason as above
             logger.error("invalid redis integration: %s", self._dump_integration("redis"))
-            raise InvalidIntegration("invalid redis integration")
+            raise InvalidIntegration("invalid redis integration") from exc
 
     def _gen_rabbitmq_env(self) -> dict[str, str]:
         """Generate the RabbitMQ-related environment variables for the OpenCTI platform.
@@ -435,7 +436,7 @@ class OpenCTICharm(ops.CharmBase):
         Raises:
             IntegrationNotReady: rabbitmq integration not ready.
         """
-        integration = self.model.get_relation("amqp")
+        integration = typing.cast(ops.Relation, self.model.get_relation("amqp"))
         unit = sorted(list(integration.units), key=lambda u: int(u.name.split("/")[-1]))[0]
         data = integration.data[unit]
         hostname = data.get("hostname")
@@ -503,7 +504,7 @@ class OpenCTICharm(ops.CharmBase):
         integration = self.model.get_relation(name)
         if not integration:
             return json.dumps(None)
-        dump = {}
+        dump: dict = {}
         app = integration.app
         if not app:
             dump["application-data"] = None

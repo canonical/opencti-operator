@@ -3,9 +3,10 @@
 # Copyright 2024 Canonical Ltd.
 # See LICENSE file for licensing details.
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments
+
 """Integration tests."""
 
-import logging
 import textwrap
 
 import boto3
@@ -13,39 +14,23 @@ import botocore.client
 import pytest
 import requests
 import yaml
-from juju.model import Controller, Model
-
-logger = logging.getLogger(__name__)
+from juju.model import Model
 
 
 @pytest.mark.abort_on_fail
-async def test_deploy_dependencies(
-    machine_model: Model,
-    machine_controller: Controller,
-):
-    """Deploy opencti charm's machine dependency charms."""
-    self_signed_certificates = await machine_model.deploy("self-signed-certificates")
-    opensearch = await machine_model.deploy("opensearch", channel="2/stable", num_units=3)
-    await machine_model.integrate(self_signed_certificates.name, opensearch.name)
-    await machine_model.create_offer(f"{opensearch.name}:opensearch-client", "opensearch-client")
-    rabbitmq_server = await machine_model.deploy("rabbitmq-server", channel="3.9/stable")
-    await machine_model.create_offer(f"{rabbitmq_server.name}:amqp", "amqp")
-    await machine_model.wait_for_idle(timeout=1800)
-
-
-@pytest.mark.abort_on_fail
+@pytest.mark.usefixtures("machine_charm_dependencies")
 async def test_deploy_charm(
     pytestconfig: pytest.Config,
     model: Model,
     machine_model: Model,
-    machine_controller: Controller,
     machine_controller_name: str,
     get_unit_ips,
 ):
-    charm = pytestconfig.getoption("--charm-file")
-    resources = {
-        "opencti-image": pytestconfig.getoption("--opencti-image"),
-    }
+    """
+    arrange: deploy dependencies of the OpenCTI charm
+    act: deploy the OpenCTI charm
+    assert: deployment is successful
+    """
     minio = await model.deploy(
         "minio",
         channel="ckf-1.9/stable",
@@ -77,7 +62,12 @@ async def test_deploy_charm(
         },
     )
     await action.wait()
-    opencti = await model.deploy(f"./{charm}", resources=resources)
+    opencti = await model.deploy(
+        f"./{pytestconfig.getoption("--charm-file")}",
+        resources={
+            "opencti-image": pytestconfig.getoption("--opencti-image"),
+        },
+    )
     redis_k8s = await model.deploy("redis-k8s", channel="latest/edge")
     nginx_ingress_integrator = await model.deploy(
         "nginx-ingress-integrator",
@@ -107,6 +97,11 @@ async def test_deploy_charm(
 
 
 async def test_opencti_workers(get_unit_ips, ops_test):
+    """
+    arrange: deploy the OpenCTI charm
+    act: get the number of OpenCTI workers
+    assert: the number of OpenCTI workers matches the expectation
+    """
     query = {
         "id": "WorkersStatusQuery",
         "query": textwrap.dedent(
@@ -129,6 +124,7 @@ async def test_opencti_workers(get_unit_ips, ops_test):
         f"http://{(await get_unit_ips("opencti"))[0]}:8080/graphql",
         json=query,
         headers={"Authorization": f"Bearer {api_token}"},
+        timeout=5,
     )
     worker_count = resp.json()["data"]["rabbitMQMetrics"]["consumers"]
     assert worker_count == str(3)
