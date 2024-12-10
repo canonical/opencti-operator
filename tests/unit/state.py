@@ -4,7 +4,6 @@
 """Generate fake data for unit tests."""
 
 import json
-import typing
 
 import ops.testing
 
@@ -25,7 +24,7 @@ class StateBuilder:
         self._leader = leader
         self._can_connect = can_connect
 
-    def add_opensearch_client_integration(self, insecure=False) -> typing.Self:
+    def add_opensearch_client_integration(self, insecure=False) -> "StateBuilder":
         """Add opensearch-client integration.
 
         Args:
@@ -80,7 +79,7 @@ class StateBuilder:
             self._secrets.append(user_secret)
         return self
 
-    def add_rabbitmq_integration(self) -> typing.Self:
+    def add_rabbitmq_integration(self) -> "StateBuilder":
         """Add rabbitmq integration.
 
         Returns: self
@@ -99,7 +98,7 @@ class StateBuilder:
         )
         return self
 
-    def add_redis_integration(self) -> typing.Self:
+    def add_redis_integration(self) -> "StateBuilder":
         """Add redis integration.
 
         Returns: self
@@ -120,7 +119,7 @@ class StateBuilder:
         )
         return self
 
-    def add_s3_integration(self) -> typing.Self:
+    def add_s3_integration(self) -> "StateBuilder":
         """Add s3 integration.
 
         Returns: self
@@ -140,7 +139,7 @@ class StateBuilder:
         )
         return self
 
-    def add_ingress_integration(self) -> typing.Self:
+    def add_ingress_integration(self) -> "StateBuilder":
         """Add ingress integration.
 
         Returns: self
@@ -154,7 +153,7 @@ class StateBuilder:
         )
         return self
 
-    def add_opencti_peer_integration(self) -> typing.Self:
+    def add_opencti_peer_integration(self) -> "StateBuilder":
         """Add opencti-peer integration.
 
         Returns: self
@@ -174,7 +173,7 @@ class StateBuilder:
         )
         return self
 
-    def add_required_integrations(self, excludes: list[str] | None = None) -> typing.Self:
+    def add_required_integrations(self, excludes: list[str] | None = None) -> "StateBuilder":
         """Add all required integrations.
 
         Args:
@@ -197,7 +196,7 @@ class StateBuilder:
             self.add_opencti_peer_integration()
         return self
 
-    def add_required_configs(self, excludes: list[str] | None = None) -> typing.Self:
+    def add_required_configs(self, excludes: list[str] | None = None) -> "StateBuilder":
         """Add all required configs.
 
         Args:
@@ -217,7 +216,7 @@ class StateBuilder:
             self._config["admin-user"] = secret.id
         return self
 
-    def add_integration(self, integration: ops.testing.RelationBase) -> typing.Self:
+    def add_integration(self, integration: ops.testing.RelationBase) -> "StateBuilder":
         """Add integration.
 
         Args:
@@ -228,7 +227,7 @@ class StateBuilder:
         self._integrations.append(integration)
         return self
 
-    def add_secret(self, secret: ops.testing.Secret) -> typing.Self:
+    def add_secret(self, secret: ops.testing.Secret) -> "StateBuilder":
         """Add secret.
 
         Args:
@@ -239,7 +238,7 @@ class StateBuilder:
         self._secrets.append(secret)
         return self
 
-    def set_config(self, name: str, value: str) -> typing.Self:
+    def set_config(self, name: str, value: str) -> "StateBuilder":
         """Set charm config.
 
         Args:
