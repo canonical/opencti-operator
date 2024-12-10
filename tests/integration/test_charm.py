@@ -93,7 +93,7 @@ async def test_deploy_charm(
     secret_id = secret_id.strip()
     await model.grant_secret("opencti-admin-user", opencti.name)
     await opencti.set_config({"admin-user": secret_id})
-    await model.wait_for_idle(timeout=3600, status="active")
+    await model.wait_for_idle(timeout=600, status="active")
 
 
 async def test_opencti_workers(get_unit_ips, ops_test):

@@ -174,7 +174,7 @@ class OpenCTICharm(ops.CharmBase):
         """Run charm reconcile function.
 
         Raises:
-            PlatformNotReady: failed to start the OpenCTI platform
+            PlatformNotReady: failed to start the OpenCTI platform at this moment
         """
         self._init_peer_relation()
         self._check()

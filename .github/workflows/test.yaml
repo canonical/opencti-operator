@@ -19,3 +19,4 @@ jobs:
       microk8s-addons: "dns ingress rbac storage"
       pre-run-script: tests/integration/prepare.sh
       self-hosted-runner: false
+      tmate-debug: true
