@@ -102,7 +102,7 @@ parts:
       - python3-dev
       - libmagic1
       - libffi-dev
-      - wget # remove me
+      - curl
     override-build: |
       craftctl default
       mkdir -p $CRAFT_PART_INSTALL/opt
