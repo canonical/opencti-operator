@@ -7,8 +7,9 @@
 
 import json
 import logging
+import pathlib
 import secrets
-import time
+import textwrap
 import typing
 import urllib.parse
 import uuid
@@ -70,8 +71,6 @@ class OpenCTICharm(ops.CharmBase):
     _PEER_SECRET_FIELD = "secret"  # nosec
     _PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD = "admin-token"  # nosec
     _PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD = "health-access-key"  # nosec
-    _HEALTH_CHECK_TIMEOUT = 200
-    _HEALTH_CHECK_INTERVAL = 5
 
     def __init__(self, *args: typing.Any):
         """Construct.
@@ -138,6 +137,9 @@ class OpenCTICharm(ops.CharmBase):
         self.framework.observe(self._s3.on.credentials_gone, self._reconcile)
         self.framework.observe(self._ingress.on.ready, self._reconcile)
         self.framework.observe(self._ingress.on.revoked, self._reconcile)
+        self.framework.observe(
+            self.on["opencti"].pebble_custom_notice, self._on_pebble_custom_notice
+        )
 
     def _amqp_relation_joined(self, event: ops.RelationJoinedEvent) -> None:
         """Handle amqp relation joined event.
@@ -148,6 +150,15 @@ class OpenCTICharm(ops.CharmBase):
         # rabbitmq charm library doesn't expose the admin user setting
         if self.unit.is_leader():
             event.relation.data[self.app]["admin"] = "true"
+
+    def _on_pebble_custom_notice(self, event: ops.PebbleCustomNoticeEvent) -> None:
+        """Handle pebble custom notice event.
+
+        Args:
+            event: Pebble custom notice event.
+        """
+        if event.notice.key.startswith("canonical.com/opencti/"):
+            self._reconcile(event)
 
     def _reconcile(self, _: ops.EventBase) -> None:
         """Run charm reconcile function and catch all exceptions."""
@@ -189,6 +200,10 @@ class OpenCTICharm(ops.CharmBase):
                 summary="OpenCTI platform/worker",
                 description="OpenCTI platform/worker",
                 services={
+                    "charm-callback": {
+                        "override": "replace",
+                        "command": f"bash {self._install_callback_script(health_check_url)}",
+                    },
                     "platform": {
                         "override": "replace",
                         "command": "node build/back.js",
@@ -213,6 +228,22 @@ class OpenCTICharm(ops.CharmBase):
                     "worker-1": worker_service,
                     "worker-2": worker_service,
                 },
+            ),
+            combine=True,
+        )
+        self._container.replan()
+        self._container.start("platform")
+        try:
+            self._check_platform_health(health_check_url)
+        except PlatformNotReady as exc:
+            self._container.start("charm-callback")
+            raise PlatformNotReady("waiting for opencti platform to start") from exc
+        self._container.stop("charm-callback")
+        self._container.add_layer(
+            label="opencti",
+            layer=ops.pebble.LayerDict(
+                summary="OpenCTI platform/worker",
+                description="OpenCTI platform/worker",
                 checks={
                     "platform": {
                         "override": "replace",
@@ -227,23 +258,35 @@ class OpenCTICharm(ops.CharmBase):
             combine=True,
         )
         self._container.replan()
-        self._container.start("platform")
-        start_time = time.time()
-        deadline = start_time + self._HEALTH_CHECK_TIMEOUT
-        while time.time() < deadline:
-            try:
-                self._check_platform_health(health_check_url)
-                self._container.start("worker-0")
-                self._container.start("worker-1")
-                self._container.start("worker-2")
-                return
-            except PlatformNotReady:
-                self.unit.status = ops.WaitingStatus(
-                    f"waiting for opencti platform to start ({int(time.time() - start_time)}s)"
-                )
-                time.sleep(self._HEALTH_CHECK_INTERVAL)
-                continue
-        raise PlatformNotReady("opencti platform start-up failed")
+        self._container.start("worker-0")
+        self._container.start("worker-1")
+        self._container.start("worker-2")
+
+    def _install_callback_script(self, health_check_url: str) -> pathlib.Path:
+        """Install platform startup callback script for noticing the charm on start.
+
+        Args:
+            health_check_url: opencti health check endpoint.
+
+        Returns:
+            callback script path inside the container.
+        """
+        script = textwrap.dedent(
+            f"""\
+            while :; do
+                if curl -sfo /dev/null "{health_check_url}"; then
+                    pebble notify canonical.com/opencti/platform-healthy
+                    break
+                else
+                    sleep 5
+                fi
+            done
+            """
+        )
+        path = pathlib.Path("/opt/opencti/charm-callback.sh")
+        self._container.make_dir(path.parent, make_parents=True)
+        self._container.push(path, script, encoding="utf-8")
+        return path
 
     @staticmethod
     def _check_platform_health(health_check_url: str) -> None:  # pragma: nocover

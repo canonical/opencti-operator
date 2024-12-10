@@ -25,6 +25,10 @@ def test_pebble_plan():
     container = state_out.get_container("opencti")
     assert container.plan.to_dict() == {
         "services": {
+            "charm-callback": {
+                "command": "bash /opt/opencti/charm-callback.sh",
+                "override": "replace",
+            },
             "platform": {
                 "command": "node build/back.js",
                 "environment": {
@@ -191,15 +195,13 @@ def test_amqp_request_admin_user(leader):
         assert data["admin"] == "true"
 
 
-def test_opencti_platform_start_failure(monkeypatch, patch_check_platform_health):
+def test_opencti_wait_platform_start(patch_check_platform_health):
     patch_check_platform_health.side_effect = PlatformNotReady()
-    monkeypatch.setattr(OpenCTICharm, "_HEALTH_CHECK_TIMEOUT", 0.1)
-    monkeypatch.setattr(OpenCTICharm, "_HEALTH_CHECK_INTERVAL", 0.1)
     ctx = ops.testing.Context(OpenCTICharm)
     state_in = StateBuilder().add_required_integrations().add_required_configs().build()
     state_out = ctx.run(ctx.on.config_changed(), state_in)
     assert state_out.unit_status.name == "waiting"
-    assert state_out.unit_status.message == "opencti platform start-up failed"
+    assert state_out.unit_status.message == "waiting for opencti platform to start"
 
 
 @pytest.mark.usefixtures("patch_check_platform_health")

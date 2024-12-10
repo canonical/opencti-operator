@@ -95,4 +95,4 @@ resources:
     description: OCI image for the OpenCTI platform/worker.
 
 assumes:
-  - juju >= 3.3
+  - juju >= 3.4
