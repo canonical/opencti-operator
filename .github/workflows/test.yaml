@@ -18,5 +18,4 @@ jobs:
       juju-channel: 3.6/stable
       microk8s-addons: "dns ingress rbac storage"
       pre-run-script: tests/integration/prepare.sh
-      self-hosted-runner: true
-      self-hosted-runner-label: two-xlarge
+      self-hosted-runner: false
