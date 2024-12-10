@@ -424,7 +424,7 @@ class OpenCTICharm(ops.CharmBase):
                 self._dump_integration("opensearch-client"),
             )
             raise InvalidIntegration("invalid opensearch integration") from exc
-        if "endpoints" not in data:
+        if "index" not in data:
             raise IntegrationNotReady("waiting for opensearch-client integration")
         uses_tls = data.get("tls-ca") or data.get("tls")
         uris = [

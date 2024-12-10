@@ -30,3 +30,11 @@ fs.file-max=1048576
 EOT
 
 sudo sysctl -p
+
+sudo rm -rf /usr/local/lib/node_modules/ \
+  /usr/local/.ghcup \
+  /usr/local/julia1.11.1 \
+  /usr/local/share/powershell \
+  /usr/local/share/chromium \
+  /usr/local/share/vcpkg \
+  /opt/hostedtoolcache
