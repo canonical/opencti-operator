@@ -1,7 +1,5 @@
 # Copyright 2024 Canonical Ltd.
 # See LICENSE file for licensing details.
-# This file configures Charmcraft.
-# See https://juju.is/docs/sdk/charmcraft-config for guidance.
 
 name: opencti
 title: OpenCTI Charm
