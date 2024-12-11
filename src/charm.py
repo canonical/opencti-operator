@@ -274,7 +274,7 @@ class OpenCTICharm(ops.CharmBase):
         script = textwrap.dedent(
             f"""\
             while :; do
-                if curl -sfo /dev/null "{health_check_url}"; then
+                if curl -m 3 -sfo /dev/null "{health_check_url}"; then
                     pebble notify canonical.com/opencti/platform-healthy
                     pebble stop charm-callback
                     break
