@@ -3,8 +3,6 @@
 
 # Learn more about testing at: https://juju.is/docs/sdk/testing
 
-# pylint: disable=duplicate-code,missing-function-docstring
-
 """Unit tests."""
 
 import json
@@ -214,7 +212,7 @@ def test_amqp_request_admin_user(leader):
     """
     arrange: none
     act: simulate an amqp-relation-joined event
-    assert: charm set the "admin" field in the relation application data to request admin privilege.
+    assert: charm set the "admin" field in the relation application data to request admin privilege
     """
     ctx = ops.testing.Context(OpenCTICharm)
     relation = ops.testing.Relation(endpoint="amqp")
