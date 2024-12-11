@@ -415,7 +415,7 @@ class OpenCTICharm(ops.CharmBase):
         try:
             data = self._opensearch.fetch_relation_data(
                 relation_ids=[integration_id],
-                fields=["endpoints", "username", "password", "tls", "tls-ca"],
+                fields=["endpoints", "username", "password", "tls", "tls-ca", "index"],
             )[integration_id]
         except ops.ModelError as exc:
             # secret in integration not accessible before the integration events?
