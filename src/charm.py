@@ -276,6 +276,7 @@ class OpenCTICharm(ops.CharmBase):
             while :; do
                 if curl -sfo /dev/null "{health_check_url}"; then
                     pebble notify canonical.com/opencti/platform-healthy
+                    pebble stop charm-callback
                     break
                 else
                     sleep 5
