@@ -19,6 +19,11 @@ from tests.unit.state import StateBuilder
 
 @pytest.mark.usefixtures("patch_check_platform_health")
 def test_pebble_plan():
+    """
+    arrange: provide the charm with the required integrations and configurations
+    act: simulate a config-changed event
+    assert: the installed Pebble plan matches the expectation
+    """
     ctx = ops.testing.Context(OpenCTICharm)
     state_in = StateBuilder().add_required_integrations().add_required_configs().build()
     state_out = ctx.run(ctx.on.config_changed(), state_in)
@@ -120,6 +125,11 @@ def test_pebble_plan():
 )
 @pytest.mark.usefixtures("patch_check_platform_health")
 def test_missing_integration(missing_integration):
+    """
+    arrange: set up the charm with a missing required integration
+    act: simulate a config-changed event
+    assert: charm produce the correct state message
+    """
     ctx = ops.testing.Context(OpenCTICharm)
     state_in = (
         StateBuilder()
@@ -139,6 +149,11 @@ def test_missing_integration(missing_integration):
 @pytest.mark.parametrize("missing_config", ["admin-user"])
 @pytest.mark.usefixtures("patch_check_platform_health")
 def test_missing_config(missing_config):
+    """
+    arrange: set up the charm with a missing required configuration
+    act: simulate a config-changed event
+    assert: charm produce the correct state message
+    """
     ctx = ops.testing.Context(OpenCTICharm)
     state_in = (
         StateBuilder()
@@ -153,6 +168,11 @@ def test_missing_config(missing_config):
 
 @pytest.mark.usefixtures("patch_check_platform_health")
 def test_invalid_admin_user_not_a_secret():
+    """
+    arrange: set up the charm with admin-user contains a value that's not a juju user secret id
+    act: simulate a config-changed event
+    assert: charm produce the correct state message
+    """
     ctx = ops.testing.Context(OpenCTICharm)
     state_in = (
         StateBuilder()
@@ -168,6 +188,11 @@ def test_invalid_admin_user_not_a_secret():
 
 @pytest.mark.usefixtures("patch_check_platform_health")
 def test_invalid_admin_user_invalid_content():
+    """
+    arrange: set up the charm with admin-user configuration with incorrect permission setting
+    act: simulate a config-changed event
+    assert: charm produce the correct state message
+    """
     ctx = ops.testing.Context(OpenCTICharm)
     secret = ops.testing.Secret(tracked_content={"foobar": "foobar"})
     state_in = (
@@ -186,6 +211,11 @@ def test_invalid_admin_user_invalid_content():
 @pytest.mark.parametrize("leader", [True, False])
 @pytest.mark.usefixtures("patch_check_platform_health")
 def test_amqp_request_admin_user(leader):
+    """
+    arrange: none
+    act: simulate an amqp-relation-joined event
+    assert: charm set the "admin" field in the relation application data to request admin privilege.
+    """
     ctx = ops.testing.Context(OpenCTICharm)
     relation = ops.testing.Relation(endpoint="amqp")
     state_in = ops.testing.State(leader=leader, relations=[relation])
@@ -196,6 +226,11 @@ def test_amqp_request_admin_user(leader):
 
 
 def test_opencti_wait_platform_start(patch_check_platform_health):
+    """
+    arrange: provide the charm with the required integrations and configurations
+    act: simulate a config-changed event
+    assert: charm set the correct status message during opencti platform start-up
+    """
     patch_check_platform_health.side_effect = PlatformNotReady()
     ctx = ops.testing.Context(OpenCTICharm)
     state_in = StateBuilder().add_required_integrations().add_required_configs().build()
@@ -206,6 +241,11 @@ def test_opencti_wait_platform_start(patch_check_platform_health):
 
 @pytest.mark.usefixtures("patch_check_platform_health")
 def test_pebble_ready():
+    """
+    arrange: provide the charm with the opencti container not ready
+    act: simulate a config-changed event
+    assert: charm set the correct status message
+    """
     ctx = ops.testing.Context(OpenCTICharm)
     state_in = (
         StateBuilder(can_connect=False, leader=False)
@@ -221,6 +261,11 @@ def test_pebble_ready():
 @pytest.mark.parametrize("leader", [True, False])
 @pytest.mark.usefixtures("patch_check_platform_health")
 def test_opencti_peer_initiation(leader):
+    """
+    arrange: none
+    act: simulate an opencti-peer-relation-created event
+    assert: charm correctly initializes the peer integration
+    """
     ctx = ops.testing.Context(OpenCTICharm)
     relation = ops.testing.PeerRelation("opencti-peer")
     state_in = ops.testing.State(
@@ -236,6 +281,11 @@ def test_opencti_peer_initiation(leader):
 
 @pytest.mark.usefixtures("patch_check_platform_health")
 def test_insecure_opensearch_integration():
+    """
+    arrange: provide the charm with an opensearch integration without password or TLS protection
+    act: simulate a config-changed event
+    assert: charm set the correct opensearch-related environment variables in the pebble plan
+    """
     ctx = ops.testing.Context(OpenCTICharm)
     state_in = (
         StateBuilder()
@@ -257,6 +307,11 @@ def test_insecure_opensearch_integration():
 )
 @pytest.mark.usefixtures("patch_check_platform_health")
 def test_incomplete_integration(incomplete_integration):
+    """
+    arrange: provide the charm with one required integration not ready
+    act: simulate a config-changed event
+    assert: charm set the correct status message
+    """
     ctx = ops.testing.Context(OpenCTICharm)
     state_in = (
         StateBuilder()
@@ -272,6 +327,11 @@ def test_incomplete_integration(incomplete_integration):
 
 @pytest.mark.usefixtures("patch_check_platform_health")
 def test_redis_library_workaround():
+    """
+    arrange: provide the charm with a broken redis integration
+    act: simulate a config-changed event
+    assert: charm set the correct status message
+    """
     ctx = ops.testing.Context(OpenCTICharm)
     state_in = (
         StateBuilder()

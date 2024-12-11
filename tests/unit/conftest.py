@@ -19,7 +19,7 @@ def juju_version(monkeypatch):
 
 @pytest.fixture(scope="function")
 def patch_check_platform_health():
-    """Patch OpenCTICharm._check_platform_health environment variable."""
+    """Patch OpenCTICharm._check_platform_health function."""
     mock = MagicMock()
     with unittest.mock.patch.object(src.charm.OpenCTICharm, "_check_platform_health", mock):
         yield mock

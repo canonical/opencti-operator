@@ -29,6 +29,8 @@ parts:
       - rustup
     stage-snaps:
       - node/20/stable
+    stage-packages:
+      - curl
     override-build: |
       craftctl default
       cd opencti-platform/opencti-graphql/
@@ -90,7 +92,7 @@ parts:
       mkdir -p ./opt/.support
       chmod 777 ./opt/logs ./opt/telemetry ./opt/.support
 
-  worker:
+  python:
     plugin: nil
     source: https://github.com/OpenCTI-Platform/opencti.git
     source-tag: *version
@@ -102,7 +104,8 @@ parts:
       - python3-dev
       - libmagic1
       - libffi-dev
-      - curl
+    build-environment:
+      - OPENCTI_VERSION: *version
     override-build: |
       craftctl default
       mkdir -p $CRAFT_PART_INSTALL/opt
@@ -112,4 +115,4 @@ parts:
         --target $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages \
         -r $CRAFT_PART_BUILD/opencti-worker/src/requirements.txt \
         -r $CRAFT_PART_BUILD/opencti-platform/opencti-graphql/src/python/requirements.txt \
-        https://github.com/OpenCTI-Platform/client-python/archive/6.4.1.tar.gz 
+        https://github.com/OpenCTI-Platform/client-python/archive/$OPENCTI_VERSION.tar.gz 

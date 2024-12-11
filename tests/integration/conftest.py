@@ -62,7 +62,7 @@ async def machine_model_fixture(
     await model.set_config(MACHINE_MODEL_CONFIG)
     yield model
     await model.disconnect()
-    # await machine_controller.destroy_models(model.uuid)
+    await machine_controller.destroy_models(model.uuid)
 
 
 @pytest_asyncio.fixture(name="get_unit_ips", scope="module")
