@@ -98,4 +98,4 @@ async def machine_charm_dependencies_fixture(machine_model: Model):
     await machine_model.create_offer(f"{opensearch.name}:opensearch-client", "opensearch-client")
     rabbitmq_server = await machine_model.deploy("rabbitmq-server", channel="3.9/stable")
     await machine_model.create_offer(f"{rabbitmq_server.name}:amqp", "amqp")
-    await machine_model.wait_for_idle(timeout=3600)
+    await machine_model.wait_for_idle(timeout=1200)

@@ -31,7 +31,8 @@ EOT
 
 sudo sysctl -p
 
-sudo rm -rf /usr/local/lib/node_modules/ \
+[[ -n "${CI}" ]] && [[ -n "${GITHUB_RUN_ID}" ]] && sudo rm -rf \
+  /usr/local/lib/node_modules/ \
   /usr/local/.ghcup \
   /usr/local/julia1.11.1 \
   /usr/local/share/powershell \
