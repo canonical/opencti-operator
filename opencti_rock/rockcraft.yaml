@@ -75,7 +75,7 @@ parts:
       - rustup
     override-build: |
       craftctl default
-      cd opencti-platform/opencti-front//
+      cd opencti-platform/opencti-front
       yarn install
       yarn build:standalone
       mkdir -p $CRAFT_PART_INSTALL/opt/opencti

@@ -178,57 +178,13 @@ class OpenCTICharm(ops.CharmBase):
         """
         self._init_peer_relation()
         self._check()
-        worker_service: ops.pebble.ServiceDict = {
-            "override": "replace",
-            "command": "python3 worker.py",
-            "working-dir": "/opt/opencti-worker",
-            "environment": {
-                "OPENCTI_URL": "http://localhost:8080",
-                "OPENCTI_TOKEN": self._get_peer_secret(self._PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD),
-                "WORKER_LOG_LEVEL": "info",
-            },
-            "after": ["platform"],
-            "requires": ["platform"],
-        }
         health_check_token = self._get_peer_secret(
             self._PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD
         )
         health_check_url = f"http://localhost:8080/health?health_access_key={health_check_token}"
         self._container.add_layer(
             "opencti",
-            layer=ops.pebble.LayerDict(
-                summary="OpenCTI platform/worker",
-                description="OpenCTI platform/worker",
-                services={
-                    "charm-callback": {
-                        "override": "replace",
-                        "command": f"bash {self._install_callback_script(health_check_url)}",
-                    },
-                    "platform": {
-                        "override": "replace",
-                        "command": "node build/back.js",
-                        "working-dir": "/opt/opencti",
-                        "environment": {
-                            "NODE_OPTIONS": "--max-old-space-size=8096",
-                            "NODE_ENV": "production",
-                            "PYTHONUNBUFFERED": "1",
-                            "APP__PORT": "8080",
-                            "APP__APP_LOGS__LOGS_LEVEL": "info",
-                            "PROVIDERS__LOCAL__STRATEGY": "LocalStrategy",
-                            "APP__TELEMETRY__METRICS__ENABLED": "true",
-                            **self._gen_secret_env(),
-                            **self._prepare_opensearch_env(),
-                            **self._gen_rabbitmq_env(),
-                            **self._gen_redis_env(),
-                            **self._gen_s3_env(),
-                            **self._gen_ingress_env(),
-                        },
-                    },
-                    "worker-0": worker_service,
-                    "worker-1": worker_service,
-                    "worker-2": worker_service,
-                },
-            ),
+            layer=self._gen_pebble_service_plan(health_check_url),
             combine=True,
         )
         self._container.replan()
@@ -241,26 +197,92 @@ class OpenCTICharm(ops.CharmBase):
         self._container.stop("charm-callback")
         self._container.add_layer(
             label="opencti",
-            layer=ops.pebble.LayerDict(
-                summary="OpenCTI platform/worker",
-                description="OpenCTI platform/worker",
-                checks={
-                    "platform": {
-                        "override": "replace",
-                        "level": "ready",
-                        "http": {"url": health_check_url},
-                        "period": "1m",
-                        "timeout": "5s",
-                        "threshold": 5,
-                    }
-                },
-            ),
+            layer=self._gen_pebble_check_plan(health_check_url),
             combine=True,
         )
         self._container.replan()
         self._container.start("worker-0")
         self._container.start("worker-1")
         self._container.start("worker-2")
+
+    def _gen_pebble_service_plan(self, health_check_url: str) -> ops.pebble.LayerDict:
+        """Generate the service part of OpenCTI pebble plan.
+
+        Args:
+            health_check_url: OpenCTI health check URL
+
+        Returns:
+            The service part of OpenCTI pebble plan
+        """
+        worker_service: ops.pebble.ServiceDict = {
+            "override": "replace",
+            "command": "python3 worker.py",
+            "working-dir": "/opt/opencti-worker",
+            "environment": {
+                "OPENCTI_URL": "http://localhost:8080",
+                "OPENCTI_TOKEN": self._get_peer_secret(self._PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD),
+                "WORKER_LOG_LEVEL": "info",
+            },
+            "after": ["platform"],
+            "requires": ["platform"],
+        }
+        return ops.pebble.LayerDict(
+            summary="OpenCTI platform/worker",
+            description="OpenCTI platform/worker",
+            services={
+                "charm-callback": {
+                    "override": "replace",
+                    "command": f"bash {self._install_callback_script(health_check_url)}",
+                },
+                "platform": {
+                    "override": "replace",
+                    "command": "node build/back.js",
+                    "working-dir": "/opt/opencti",
+                    "environment": {
+                        "NODE_OPTIONS": "--max-old-space-size=8096",
+                        "NODE_ENV": "production",
+                        "PYTHONUNBUFFERED": "1",
+                        "APP__PORT": "8080",
+                        "APP__APP_LOGS__LOGS_LEVEL": "info",
+                        "PROVIDERS__LOCAL__STRATEGY": "LocalStrategy",
+                        "APP__TELEMETRY__METRICS__ENABLED": "true",
+                        **self._gen_secret_env(),
+                        **self._prepare_opensearch_env(),
+                        **self._gen_rabbitmq_env(),
+                        **self._gen_redis_env(),
+                        **self._gen_s3_env(),
+                        **self._gen_ingress_env(),
+                    },
+                },
+                "worker-0": worker_service,
+                "worker-1": worker_service,
+                "worker-2": worker_service,
+            },
+        )
+
+    def _gen_pebble_check_plan(self, health_check_url: str) -> ops.pebble.LayerDict:
+        """Generate the check part of OpenCTI pebble plan.
+
+        Args:
+            health_check_url: OpenCTI health check URL
+
+        Returns:
+            The check part of OpenCTI pebble plan
+        """
+        return ops.pebble.LayerDict(
+            summary="OpenCTI platform/worker",
+            description="OpenCTI platform/worker",
+            checks={
+                "platform": {
+                    "override": "replace",
+                    "level": "ready",
+                    "http": {"url": health_check_url},
+                    "period": "1m",
+                    "timeout": "5s",
+                    "threshold": 5,
+                }
+            },
+        )
 
     def _install_callback_script(self, health_check_url: str) -> pathlib.Path:
         """Install platform startup callback script for noticing the charm on start.
