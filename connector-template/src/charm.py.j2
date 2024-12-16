@@ -1,0 +1,19 @@
+#!/usr/bin/env python3
+
+# Copyright 2024 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+"""OpenCTI {{ display_name }} connector charm the service."""
+
+import ops
+
+from charms.opencti.v0.opencti_connector import OpenCTIConnectorCharm
+
+
+class Opencti{{ kebab_to_pascal(connector_name) }}ConnectorCharm(OpenCTIConnectorCharm):
+    connector_type = "{{ connector_type }}"
+    connector_charm_name = "{{ connector_name }}"
+
+
+if __name__ == "__main__":
+    ops.main(Opencti{{ kebab_to_pascal(connector_name) }}ConnectorCharm)

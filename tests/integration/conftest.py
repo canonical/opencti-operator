@@ -53,7 +53,7 @@ async def machine_controller_fixture(
 
 @pytest_asyncio.fixture(scope="module", name="machine_model")
 async def machine_model_fixture(
-    machine_controller: Controller, machine_controller_name: str
+    machine_controller: Controller, machine_controller_name: str,pytestconfig
 ) -> typing.AsyncGenerator[Model, None]:
     """The machine model for OpenSearch charm."""
     machine_model_name = f"test-opencti-deps-{secrets.token_hex(2)}"
@@ -62,7 +62,8 @@ async def machine_model_fixture(
     await model.set_config(MACHINE_MODEL_CONFIG)
     yield model
     await model.disconnect()
-    await machine_controller.destroy_models(model.uuid)
+    if not pytestconfig.getoption("--keep-models"):
+        await machine_controller.destroy_models(model.uuid)
 
 
 @pytest_asyncio.fixture(name="get_unit_ips", scope="module")

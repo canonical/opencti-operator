@@ -16,6 +16,7 @@ import uuid
 
 import ops
 import requests
+
 from charms.data_platform_libs.v0.data_interfaces import OpenSearchRequires
 from charms.data_platform_libs.v0.s3 import S3Requirer
 from charms.grafana_k8s.v0.grafana_dashboard import GrafanaDashboardProvider
@@ -24,6 +25,8 @@ from charms.prometheus_k8s.v0.prometheus_scrape import MetricsEndpointProvider
 from charms.rabbitmq_k8s.v0.rabbitmq import RabbitMQRequires
 from charms.redis_k8s.v0.redis import RedisRelationCharmEvents, RedisRequires
 from charms.traefik_k8s.v2.ingress import IngressPerAppRequirer
+
+from opencti import OpenctiClient
 
 logger = logging.getLogger(__name__)
 
@@ -127,6 +130,9 @@ class OpenCTICharm(ops.CharmBase):
         self.framework.observe(self.on.opencti_peer_relation_created, self._reconcile)
         self.framework.observe(self.on.opencti_peer_relation_changed, self._reconcile)
         self.framework.observe(self.on.opencti_peer_relation_departed, self._reconcile)
+        self.framework.observe(self.on.opencti_connector_relation_created, self._reconcile)
+        self.framework.observe(self.on.opencti_connector_relation_changed, self._reconcile)
+        self.framework.observe(self.on.opencti_connector_relation_departed, self._reconcile)
         self.framework.observe(self._opensearch.on.index_created, self._reconcile)
         self.framework.observe(self._opensearch.on.endpoints_changed, self._reconcile)
         self.framework.observe(self._opensearch.on.authentication_updated, self._reconcile)
@@ -163,15 +169,16 @@ class OpenCTICharm(ops.CharmBase):
     def _reconcile(self, _: ops.EventBase) -> None:
         """Run charm reconcile function and catch all exceptions."""
         try:
-            self._reconcile_raw()
+            self._reconcile_platform()
+            self._reconcile_connector()
             self.unit.status = ops.ActiveStatus()
         except (MissingIntegration, MissingConfig, InvalidIntegration, InvalidConfig) as exc:
             self.unit.status = ops.BlockedStatus(str(exc))
         except (ContainerNotReady, IntegrationNotReady, PlatformNotReady) as exc:
             self.unit.status = ops.WaitingStatus(str(exc))
 
-    def _reconcile_raw(self) -> None:
-        """Run charm reconcile function.
+    def _reconcile_platform(self) -> None:
+        """Run charm reconcile function for OpenCTI platform and workers.
 
         Raises:
             PlatformNotReady: failed to start the OpenCTI platform at this moment
@@ -588,6 +595,70 @@ class OpenCTICharm(ops.CharmBase):
             dump["unit-data"] = {unit.name: dict(integration.data[unit]) for unit in units}
         return json.dumps(dump)
 
+    def _reconcile_connector(self):
+        """Run charm reconcile function for OpenCTI connectors."""
+        client = OpenctiClient(
+            url="http://localhost:8080",
+            api_token=self._get_peer_secret(self._PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD),
+        )
+        integrations = self.model.relations["opencti-connector"]
+        current_using_users = set()
+        for integration in integrations:
+            if integration.app is None:
+                continue
+            user = self._setup_connector_integration_and_user(client, integration)
+            if user:
+                current_using_users.add(user)
+        for user in client.list_users():
+            if user.name not in current_using_users and user.name.startswith("charm-connector-"):
+                client.set_account_status(user.id, "Inactive")
+
+    def _setup_connector_integration_and_user(
+        self, client: OpenctiClient, integration: ops.Relation
+    ) -> str | None:
+        """Set up the connector integration and connector user.
+
+        Args:
+            client: the OpenCTI client.
+            integration: the opencti-connector integration object.
+
+        Returns:
+            name of the opencti user created for this integration, None if no user is needed.
+        """
+        integration_data = integration.data[integration.app]
+        connector_charm_name, connector_type = (
+            integration_data.get("connector_charm_name"),
+            integration_data.get("connector_type"),
+        )
+        if not connector_charm_name or not connector_type:
+            return
+        opencti_url = f"http://{self.app.name}-endpoints.{self.model.name}.svc:8080"
+        integration.data[self.app]["opencti_url"] = opencti_url
+        connector_user = f"charm-connector-{connector_charm_name.replace('_', '-').lower()}"
+        users = {u.name: u for u in client.list_users()}
+        groups = {g.name: g for g in client.list_groups()}
+        if connector_user not in users:
+            group_id = (
+                groups["Administrators"]
+                if connector_type.replace("-", "_").upper() == "INTERNAL_EXPORT_FILE"
+                else groups["Connectors"]
+            ).id
+            client.create_user(name=connector_user, groups=[group_id])
+            users = {u.name: u for u in client.list_users()}
+        else:
+            if users[connector_user].account_status == "Inactive":
+                client.set_account_status(users[connector_user].id, "Active")
+        api_token = users[connector_user].api_token
+        opencti_token_id = integration.data[self.app].get("opencti_token")
+        if not opencti_token_id:
+            secret = self.app.add_secret(content={"token": api_token})
+            secret.grant(integration)
+            integration.data[self.app]["opencti_token"] = secret.id
+        if opencti_token_id:
+            secret = self.model.get_secret(id=opencti_token_id)
+            if secret.get_content(refresh=True)["token"] != api_token:
+                secret.set_content({"token": api_token})
+        return connector_user
 
 if __name__ == "__main__":  # pragma: nocover
     ops.main(OpenCTICharm)
