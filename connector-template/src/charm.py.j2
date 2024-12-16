@@ -7,13 +7,14 @@
 
 import ops
 
-from charms.opencti.v0.opencti_connector import OpenCTIConnectorCharm
+from charms.opencti.v0.opencti_connector import OpenctiConnectorCharm
 
 
-class Opencti{{ kebab_to_pascal(connector_name) }}ConnectorCharm(OpenCTIConnectorCharm):
+class Opencti{{ kebab_to_pascal(connector_name) }}ConnectorCharm(OpenctiConnectorCharm):
     connector_type = "{{ connector_type }}"
     connector_charm_name = "{{ connector_name }}"
 
+    {{ charm_override | safe | indent(4) }}
 
 if __name__ == "__main__":
     ops.main(Opencti{{ kebab_to_pascal(connector_name) }}ConnectorCharm)

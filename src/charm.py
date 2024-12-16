@@ -26,7 +26,7 @@ from charms.rabbitmq_k8s.v0.rabbitmq import RabbitMQRequires
 from charms.redis_k8s.v0.redis import RedisRelationCharmEvents, RedisRequires
 from charms.traefik_k8s.v2.ingress import IngressPerAppRequirer
 
-from opencti import OpenctiClient
+import opencti
 
 logger = logging.getLogger(__name__)
 
@@ -597,7 +597,7 @@ class OpenCTICharm(ops.CharmBase):
 
     def _reconcile_connector(self):
         """Run charm reconcile function for OpenCTI connectors."""
-        client = OpenctiClient(
+        client = opencti.OpenctiClient(
             url="http://localhost:8080",
             api_token=self._get_peer_secret(self._PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD),
         )
@@ -614,7 +614,7 @@ class OpenCTICharm(ops.CharmBase):
                 client.set_account_status(user.id, "Inactive")
 
     def _setup_connector_integration_and_user(
-        self, client: OpenctiClient, integration: ops.Relation
+        self, client: opencti.OpenctiClient, integration: ops.Relation
     ) -> str | None:
         """Set up the connector integration and connector user.
 

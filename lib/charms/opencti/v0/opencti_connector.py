@@ -21,7 +21,7 @@ class NotReady(Exception):
     """The OpenCTI connector is not ready."""
 
 
-class OpenCTIConnectorCharm(ops.CharmBase, abc.ABC):
+class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
     """OpenCTI connector base charm."""
 
     @property

@@ -256,6 +256,7 @@ class StateBuilder:
         Returns: ops.testing.State
         """
         return ops.testing.State(
+            model=ops.testing.Model("test-opencti"),
             leader=self._leader,
             containers=[
                 ops.testing.Container(  # type: ignore
