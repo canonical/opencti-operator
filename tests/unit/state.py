@@ -268,3 +268,66 @@ class StateBuilder:
             secrets=self._secrets,
             config=self._config,
         )
+
+
+class ConnectorStateBuilder:
+    """ops.testing.State builder for connector tests."""
+
+    def __init__(self, container_name: str) -> None:
+        """Initialize the state builder.
+
+        Args:
+            container_name: name of the container.
+        """
+        self._integrations = []
+        self._config = {}
+        self._secrets = []
+        self._container_name = container_name
+
+    def add_opencti_connector_integration(self) -> "ConnectorStateBuilder":
+        """Add opencti-connector integration."""
+        secret = ops.testing.Secret(
+            tracked_content={"token": "00000000-0000-0000-0000-000000000000"}
+        )
+        integration = ops.testing.Relation(
+            remote_app_name="opencti",
+            endpoint="opencti-connector",
+            remote_app_data={
+                "opencti_token": secret.id,
+                "opencti_url": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+            },
+        )
+        self._secrets.append(secret)
+        self._integrations.append(integration)
+        return self
+
+    def set_config(self, name: str, value: str) -> "ConnectorStateBuilder":
+        """Set charm config.
+
+        Args:
+            name: config name.
+            value: config value.
+
+        Returns: self
+        """
+        self._config[name] = value
+        return self
+
+    def build(self) -> ops.testing.State:
+        """Build state.
+
+        Returns: ops.testing.State
+        """
+        return ops.testing.State(
+            model=ops.testing.Model("test-opencti-connector"),
+            leader=True,
+            containers=[
+                ops.testing.Container(  # type: ignore
+                    name=self._container_name,
+                    can_connect=True,
+                )
+            ],
+            relations=self._integrations,
+            secrets=self._secrets,
+            config=self._config,
+        )

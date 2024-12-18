@@ -5,6 +5,8 @@
 
 """OpenCTI {{ display_name }} connector charm the service."""
 
+import pathlib
+
 import ops
 
 from charms.opencti.v0.opencti_connector import OpenctiConnectorCharm
@@ -13,6 +15,10 @@ from charms.opencti.v0.opencti_connector import OpenctiConnectorCharm
 class Opencti{{ kebab_to_pascal(connector_name) }}ConnectorCharm(OpenctiConnectorCharm):
     connector_type = "{{ connector_type }}"
     connector_charm_name = "{{ connector_name }}"
+
+    @property
+    def charm_dir(self) -> pathlib.Path:
+        return pathlib.Path(__file__).parent.parent.absolute()
 
     {{ charm_override | safe | indent(4) }}
 

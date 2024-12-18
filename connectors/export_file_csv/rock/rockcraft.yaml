@@ -1,0 +1,40 @@
+# Copyright 2024 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-export-file-csv-connector
+base: ubuntu@24.04
+version: &version '6.4.1'
+summary: OpenCTI Export CSV File Connector
+description: >-
+  OpenCTI is an open source platform allowing organizations to manage their 
+  cyber threat intelligence knowledge and observables. It has been created
+  in order to structure, store, organize and visualize technical and 
+  non-technical information about cyber threats.
+platforms:
+  amd64:
+
+parts:
+  export-file-csv-connector:
+    source: https://github.com/OpenCTI-Platform/connectors.git
+    source-type: git
+    source-tag: *version
+    source-depth: 1
+    plugin: nil
+    build-packages:
+      - python3-pip
+    stage-packages:
+      - python3-dev
+      - libmagic1
+      - libffi-dev
+    override-build: |
+      craftctl default
+      ls -lah
+      mkdir -p $CRAFT_PART_INSTALL/opt
+      cd internal-export-file/export-file-csv
+      cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-export-file-csv
+      cat entrypoint.sh | grep opencti-connector-export-file-csv
+      mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
+      pip install \
+        --target $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages \
+        -r ./src/requirements.txt
+      cp entrypoint.sh $CRAFT_PART_INSTALL/

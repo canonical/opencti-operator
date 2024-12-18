@@ -120,12 +120,6 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
     def _reconcile(self, _) -> None:
         """Reconcile the charm."""
         try:
-            if self.app.planned_units() != 1:
-                self.unit.status = ops.BlockedStatus(
-                    "connector charm cannot have multiple units, "
-                    "scale down using the `juju scale` command"
-                )
-                return
             self._check_config()
             self._check_integration()
             self._reconcile_integration()
