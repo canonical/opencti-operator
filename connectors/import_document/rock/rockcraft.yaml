@@ -36,5 +36,5 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \
         --target $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages \
-        -r ./src/requirements.txt
+        -r $(find -name requirements.txt)
       cp entrypoint.sh $CRAFT_PART_INSTALL/
