@@ -53,7 +53,7 @@ async def machine_controller_fixture(
 
 @pytest_asyncio.fixture(scope="module", name="machine_model")
 async def machine_model_fixture(
-    machine_controller: Controller, machine_controller_name: str,pytestconfig
+    machine_controller: Controller, machine_controller_name: str, pytestconfig
 ) -> typing.AsyncGenerator[Model, None]:
     """The machine model for OpenSearch charm."""
     machine_model_name = f"test-opencti-deps-{secrets.token_hex(2)}"

@@ -8,10 +8,9 @@ from unittest.mock import MagicMock
 
 import pytest
 
-import src.charm
 import opencti
-
-from opencti import OpenctiUser, OpenctiGroup
+import src.charm
+from opencti import OpenctiGroup, OpenctiUser
 
 
 @pytest.fixture(scope="function", autouse=True)
@@ -20,7 +19,7 @@ def juju_version(monkeypatch):
     monkeypatch.setenv("JUJU_VERSION", "3.3.0")
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="function", autouse=True)
 def patch_is_platform_healthy():
     """Patch OpenCTICharm.is_platform_healthy function."""
     mock = MagicMock(return_value=True)
@@ -28,7 +27,7 @@ def patch_is_platform_healthy():
         yield mock
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="function", autouse=True)
 def patch_opencti_client():
     """Patch OpenctiClient class."""
     with unittest.mock.patch.object(opencti, "OpenctiClient", OpenctiClientMock):

@@ -1,6 +1,8 @@
 # Copyright 2024 Canonical Ltd.
 # See LICENSE file for licensing details.
 
+"""OpenCTI API client."""
+
 import collections
 import secrets
 import textwrap
@@ -8,7 +10,6 @@ import typing
 import urllib.parse
 
 import requests
-
 
 OpenctiUser = collections.namedtuple("OpenctiUser", "id,name,user_email,account_status,api_token")
 OpenctiGroup = collections.namedtuple("OpenctiGroup", "id,name")

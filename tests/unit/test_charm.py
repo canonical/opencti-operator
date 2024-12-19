@@ -15,7 +15,6 @@ from src.charm import OpenCTICharm
 from tests.unit.state import StateBuilder
 
 
-@pytest.mark.usefixtures("patch_is_platform_healthy")
 def test_pebble_plan():
     """
     arrange: provide the charm with the required integrations and configurations
@@ -121,7 +120,6 @@ def test_pebble_plan():
 @pytest.mark.parametrize(
     "missing_integration", ["opensearch-client", "amqp", "redis", "s3", "ingress", "opencti-peer"]
 )
-@pytest.mark.usefixtures("patch_is_platform_healthy")
 def test_missing_integration(missing_integration):
     """
     arrange: set up the charm with a missing required integration
@@ -145,7 +143,6 @@ def test_missing_integration(missing_integration):
 
 
 @pytest.mark.parametrize("missing_config", ["admin-user"])
-@pytest.mark.usefixtures("patch_is_platform_healthy")
 def test_missing_config(missing_config):
     """
     arrange: set up the charm with a missing required configuration
@@ -164,7 +161,6 @@ def test_missing_config(missing_config):
     assert state_out.unit_status.message == "missing charm config: admin-user"
 
 
-@pytest.mark.usefixtures("patch_is_platform_healthy")
 def test_invalid_admin_user_not_a_secret():
     """
     arrange: set up the charm with admin-user contains a value that's not a juju user secret id
@@ -184,7 +180,6 @@ def test_invalid_admin_user_not_a_secret():
     assert state_out.unit_status.message == "admin-user config is not a secret"
 
 
-@pytest.mark.usefixtures("patch_is_platform_healthy")
 def test_invalid_admin_user_invalid_content():
     """
     arrange: set up the charm with admin-user configuration with incorrect permission setting
@@ -207,7 +202,6 @@ def test_invalid_admin_user_invalid_content():
 
 
 @pytest.mark.parametrize("leader", [True, False])
-@pytest.mark.usefixtures("patch_is_platform_healthy")
 def test_amqp_request_admin_user(leader):
     """
     arrange: none
@@ -237,7 +231,6 @@ def test_opencti_wait_platform_start(patch_is_platform_healthy):
     assert state_out.unit_status.message == "waiting for opencti platform to start"
 
 
-@pytest.mark.usefixtures("patch_is_platform_healthy")
 def test_pebble_ready():
     """
     arrange: provide the charm with the opencti container not ready
@@ -257,7 +250,6 @@ def test_pebble_ready():
 
 
 @pytest.mark.parametrize("leader", [True, False])
-@pytest.mark.usefixtures("patch_is_platform_healthy")
 def test_opencti_peer_initiation(leader):
     """
     arrange: none
@@ -277,7 +269,6 @@ def test_opencti_peer_initiation(leader):
         assert "secret" in data
 
 
-@pytest.mark.usefixtures("patch_is_platform_healthy")
 def test_insecure_opensearch_integration():
     """
     arrange: provide the charm with an opensearch integration without password or TLS protection
@@ -303,7 +294,6 @@ def test_insecure_opensearch_integration():
 @pytest.mark.parametrize(
     "incomplete_integration", ["opensearch-client", "amqp", "redis", "s3", "ingress"]
 )
-@pytest.mark.usefixtures("patch_is_platform_healthy")
 def test_incomplete_integration(incomplete_integration):
     """
     arrange: provide the charm with one required integration not ready
@@ -323,7 +313,6 @@ def test_incomplete_integration(incomplete_integration):
     assert state_out.unit_status.message == f"waiting for {incomplete_integration} integration"
 
 
-@pytest.mark.usefixtures("patch_is_platform_healthy")
 def test_redis_library_workaround():
     """
     arrange: provide the charm with a broken redis integration
@@ -350,7 +339,6 @@ def test_redis_library_workaround():
     assert state_out.unit_status.message == "invalid redis integration"
 
 
-@pytest.mark.usefixtures("patch_check_platform_health")
 def test_opencti_connector(patch_opencti_client):
     """
     arrange: provide the charm with the required integrations and configurations

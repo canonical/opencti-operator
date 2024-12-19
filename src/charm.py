@@ -16,7 +16,6 @@ import uuid
 
 import ops
 import requests
-
 from charms.data_platform_libs.v0.data_interfaces import OpenSearchRequires
 from charms.data_platform_libs.v0.s3 import S3Requirer
 from charms.grafana_k8s.v0.grafana_dashboard import GrafanaDashboardProvider
@@ -662,7 +661,7 @@ class OpenCTICharm(ops.CharmBase):
         """Run charm reconcile function for OpenCTI connectors."""
         client = opencti.OpenctiClient(
             url="http://localhost:8080",
-            api_token=self._get_peer_secret(self._PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD),
+            api_token=self._get_peer_secret(_PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD),
         )
         integrations = self.model.relations["opencti-connector"]
         current_using_users = set()
@@ -722,6 +721,7 @@ class OpenCTICharm(ops.CharmBase):
             if secret.get_content(refresh=True)["token"] != api_token:
                 secret.set_content({"token": api_token})
         return connector_user
+
 
 if __name__ == "__main__":  # pragma: nocover
     ops.main(OpenCTICharm)
