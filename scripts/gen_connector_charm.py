@@ -140,6 +140,7 @@ def render_template(
     config,
     charm_override: str = "",
     generate_entrypoint: str = "",
+    install_location: str | None = None,
     template_dir: pathlib.Path = pathlib.Path("connector-template"),
     output_dir: pathlib.Path = pathlib.Path("connectors"),
 ):
@@ -169,6 +170,9 @@ def render_template(
                     {"config": {"options": sort_config(config)}}, width=99999, sort_keys=False
                 ),
                 charm_override=charm_override,
+                install_location=(
+                    install_location if install_location else f"opencti-connector-{name}"
+                ),
                 generate_entrypoint=generate_entrypoint,
             ),
             encoding="utf-8",
@@ -323,6 +327,7 @@ def render(connector: str) -> None:
                     "type": "int",
                 },
             },
+            install_location="abuseipdb-ipblacklist"
         )
     if connector == "misp-feed" or connector == "all":
         render_template(
