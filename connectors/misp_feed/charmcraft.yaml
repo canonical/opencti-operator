@@ -1,0 +1,124 @@
+# Copyright 2024 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-misp-feed-connector
+title: OpenCTI MISP Source Charm
+summary: OpenCTI MISP Source charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
+  open-source threat intelligence platform in your systems.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI across a 
+  range of environments, organize your cyber threat intelligence to enhance 
+  and disseminate actionable insights.
+
+config:
+  options:
+    connector-scope:
+      type: string
+      description: connector scope
+    connector-type:
+      description: Should always be set toEXTERNAL_IMPORTfor this connector.
+      type: string
+    connector-log-level:
+      type: string
+      description: determines the verbosity of the logs. Options are debug, info, warn, or error
+      default: info
+    aws-access-key-id:
+      description: (optional) Access key used to access the bucket
+      type: string
+    aws-endpoint-url:
+      description: (optional) URL to specify for compatibility with other S3 buckets (MinIO)
+      type: string
+    aws-secret-access-key:
+      description: (optional) Secret  key used to access the bucket
+      type: string
+    misp-bucket-name:
+      description: (optional) Bucket Name where the MISP's files are stored
+      type: string
+    misp-bucket-prefix:
+      description: (optional) Used to filter imports
+      type: string
+    misp-create-tags-as-labels:
+      description: (optional) Whether to convert tags into labels.
+      type: boolean
+    misp-feed-author-from-tags:
+      description: (optional) Whether to infer authors from tags.
+      type: boolean
+    misp-feed-create-indicators:
+      description: (optional) Whether to create indicators from the MISP feed.
+      type: string
+    misp-feed-create-object-observables:
+      description: (optional) Whether to create object observables.
+      type: boolean
+    misp-feed-create-observables:
+      description: (optional) Whether to create observables from the MISP feed.
+      type: string
+    misp-feed-create-reports:
+      description: (optional) Whether to create reports from MISP feed data.
+      type: boolean
+    misp-feed-guess-threat-from-tags:
+      description: (optional) Whether to infer threats from tags.
+      type: boolean
+    misp-feed-import-from-date:
+      description: (optional) Start date for importing data from the MISP feed.
+      type: string
+    misp-feed-import-to-ids-no-score:
+      description: (optional) Import data without a score to IDS.
+      type: boolean
+    misp-feed-import-unsupported-observables-as-text:
+      description: (optional) Import unsupported observables as plain text.
+      type: boolean
+    misp-feed-import-unsupported-observables-as-text-transparent:
+      description: (optional) Whether to import unsupported observables transparently as text.
+      type: boolean
+    misp-feed-import-with-attachments:
+      description: (optional) Whether to import attachments from the feed.
+      type: boolean
+    misp-feed-markings-from-tags:
+      description: (optional) Whether to infer markings from tags.
+      type: boolean
+    misp-feed-report-type:
+      description: (optional) The type of reports to create from the MISP feed.
+      type: string
+    misp-feed-source-type:
+      description: (optional) Source type for the MISP feed (url or s3).
+      type: string
+    misp-feed-ssl-verify:
+      description: (optional) Whether to verify SSL certificates for the feed URL.
+      type: boolean
+    misp-feed-url:
+      description: (optional) The URL of the MISP feed (required ifsource_typeisurl).
+      type: string
+
+
+provides:
+  opencti-connector:
+    interface: opencti_connector
+    limit: 1
+
+type: charm
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm: {}
+
+containers:
+  opencti-misp-feed-connector:
+    resource: opencti-misp-feed-connector-image
+resources:
+  opencti-misp-feed-connector-image:
+    type: oci-image
+    description: OCI image for the OpenCTI MISP Source connector.
+
+assumes:
+  - juju >= 3.4

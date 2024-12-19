@@ -1,0 +1,68 @@
+# Copyright 2024 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-vxvault-connector
+title: OpenCTI VXVault Charm
+summary: OpenCTI VXVault charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
+  open-source threat intelligence platform in your systems.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI across a 
+  range of environments, organize your cyber threat intelligence to enhance 
+  and disseminate actionable insights.
+
+config:
+  options:
+    vxvault-interval:
+      description: In days, must be strictly greater than 1
+      type: integer
+    connector-scope:
+      description: The scope of the connector
+      type: string
+      default: vxvault
+    vxvault-url:
+      description: The URL for VX Vault URL list
+      type: string
+      default: https://vxvault.net/URL_List.php
+    connector-log-level:
+      description: (optional) The log level of the connector
+      type: string
+    vxvault-create-indicators:
+      description: (optional) Whether to create indicators from the VX Vault URL list
+      type: boolean
+    vxvault-ssl-verify:
+      description: (optional) Whether to verify SSL certificates
+      type: boolean
+
+
+provides:
+  opencti-connector:
+    interface: opencti_connector
+    limit: 1
+
+type: charm
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm: {}
+
+containers:
+  opencti-vxvault-connector:
+    resource: opencti-vxvault-connector-image
+resources:
+  opencti-vxvault-connector-image:
+    type: oci-image
+    description: OCI image for the OpenCTI VXVault connector.
+
+assumes:
+  - juju >= 3.4

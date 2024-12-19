@@ -57,6 +57,9 @@ config:
     crowdstrike-report-status:
       description: The status of imported reports in the OpenCTI.
       type: string
+    crowdstrike-report-target-industries:
+      description: The reports to be imported must contain this industry/sector. The industry's names are defined by the CrowdStrike.
+      type: string
     crowdstrike-report-type:
       description: The type of imported reports in the OpenCTI.
       type: string

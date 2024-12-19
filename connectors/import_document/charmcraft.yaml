@@ -1,0 +1,66 @@
+# Copyright 2024 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-import-document-connector
+title: OpenCTI Document Import Charm
+summary: OpenCTI Document Import charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
+  open-source threat intelligence platform in your systems.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI across a 
+  range of environments, organize your cyber threat intelligence to enhance 
+  and disseminate actionable insights.
+
+config:
+  options:
+    connector-auto:
+      description: false Enable/disable auto import of report file
+      type: boolean
+    connector-confidence-level:
+      description: The default confidence level for created sightings (a number between 1 and 4).
+      type: integer
+    connector-log-level:
+      description: The log level for this connector, could be debug, info, warn or error (less verbose).
+      type: string
+    connector-only-contextual:
+      description: true Only extract data related to an entity (a report, a threat actor, etc.)
+      type: boolean
+    connector-scope:
+      description: 'Supported file types: ''application/pdf'',''text/plain'',''text/html'', ''text/csv,''text/markdown'''
+      type: string
+    import-document-create-indicator:
+      description: Create an indicator for each extracted observable
+      type: boolean
+
+
+provides:
+  opencti-connector:
+    interface: opencti_connector
+    limit: 1
+
+type: charm
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm: {}
+
+containers:
+  opencti-import-document-connector:
+    resource: opencti-import-document-connector-image
+resources:
+  opencti-import-document-connector-image:
+    type: oci-image
+    description: OCI image for the OpenCTI Document Import connector.
+
+assumes:
+  - juju >= 3.4

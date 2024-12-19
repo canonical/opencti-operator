@@ -1,0 +1,64 @@
+# Copyright 2024 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-abuseipdb-ipblacklist-connector
+title: OpenCTI abuseipdb ipblacklist Charm
+summary: OpenCTI abuseipdb ipblacklist charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
+  open-source threat intelligence platform in your systems.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI across a 
+  range of environments, organize your cyber threat intelligence to enhance 
+  and disseminate actionable insights.
+
+config:
+  options:
+    abuseipdb-api-key:
+      description: Abuse IPDB API KEY
+      type: string
+    abuseipdb-interval:
+      description: interval between 2 collect itself
+      type: int
+    abuseipdb-limit:
+      description: limit number of result itself
+      type: int
+    abuseipdb-score:
+      description: AbuseIPDB Score Limitation
+      type: int
+    abuseipdb-url:
+      description: the Abuse IPDB URL
+      type: string
+      default: https://api.abuseipdb.com/api/v2/blacklist
+
+
+provides:
+  opencti-connector:
+    interface: opencti_connector
+    limit: 1
+
+type: charm
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm: {}
+
+containers:
+  opencti-abuseipdb-ipblacklist-connector:
+    resource: opencti-abuseipdb-ipblacklist-connector-image
+resources:
+  opencti-abuseipdb-ipblacklist-connector-image:
+    type: oci-image
+    description: OCI image for the OpenCTI abuseipdb ipblacklist connector.
+
+assumes:
+  - juju >= 3.4

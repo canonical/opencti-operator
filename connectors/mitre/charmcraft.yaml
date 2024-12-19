@@ -1,0 +1,73 @@
+# Copyright 2024 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-mitre-connector
+title: OpenCTI MITRE Datasets Charm
+summary: OpenCTI MITRE Datasets charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
+  open-source threat intelligence platform in your systems.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI across a 
+  range of environments, organize your cyber threat intelligence to enhance 
+  and disseminate actionable insights.
+
+config:
+  options:
+    connector-scope:
+      type: string
+      description: connector scope
+    mitre-enterprise-file-url:
+      description: Resource URL
+      type: string
+    mitre-ics-attack-file-url:
+      description: Resource URL
+      type: string
+    mitre-interval:
+      description: Number of the days between each MITRE datasets collection.
+      type: integer
+    mitre-mobile-attack-file-url:
+      description: Resource URL
+      type: string
+    mitre-remove-statement-marking:
+      description: Remove the statement MITRE marking definition.
+      type: boolean
+    connector-log-level:
+      type: string
+      description: determines the verbosity of the logs. Options are debug, info, warn, or error
+      default: info
+    mitre-capec-file-url:
+      description: (optional) Resource URL
+      type: string
+
+
+provides:
+  opencti-connector:
+    interface: opencti_connector
+    limit: 1
+
+type: charm
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm: {}
+
+containers:
+  opencti-mitre-connector:
+    resource: opencti-mitre-connector-image
+resources:
+  opencti-mitre-connector-image:
+    type: oci-image
+    description: OCI image for the OpenCTI MITRE Datasets connector.
+
+assumes:
+  - juju >= 3.4

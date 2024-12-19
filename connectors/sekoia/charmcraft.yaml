@@ -1,0 +1,65 @@
+# Copyright 2024 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-sekoia-connector
+title: OpenCTI Sekoia.io Charm
+summary: OpenCTI Sekoia.io charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
+  open-source threat intelligence platform in your systems.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI across a 
+  range of environments, organize your cyber threat intelligence to enhance 
+  and disseminate actionable insights.
+
+config:
+  options:
+    sekoia-api-key:
+      description: Sekoia API key
+      type: string
+    sekoia-collection:
+      description: Sekoia collection
+      type: string
+    sekoia-base-url:
+      description: Sekoia base url
+      type: string
+      default: https://api.sekoia.io
+    sekoia-create-observables:
+      description: create observables from indicators
+      type: boolean
+      default: true
+    sekoia-start-data:
+      description: (optional) the date to start consuming data from. Maybe in the formats YYYY-MM-DD or YYYY-MM-DDT00:00:00
+      type: string
+
+
+provides:
+  opencti-connector:
+    interface: opencti_connector
+    limit: 1
+
+type: charm
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm: {}
+
+containers:
+  opencti-sekoia-connector:
+    resource: opencti-sekoia-connector-image
+resources:
+  opencti-sekoia-connector-image:
+    type: oci-image
+    description: OCI image for the OpenCTI Sekoia.io connector.
+
+assumes:
+  - juju >= 3.4

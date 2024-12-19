@@ -1,0 +1,76 @@
+# Copyright 2024 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-urlscan-enrichment-connector
+title: OpenCTI URLScan Enrichment Charm
+summary: OpenCTI URLScan Enrichment charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
+  open-source threat intelligence platform in your systems.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI across a 
+  range of environments, organize your cyber threat intelligence to enhance 
+  and disseminate actionable insights.
+
+config:
+  options:
+    connector-scope:
+      type: string
+      description: connector scope
+    urlscan-enrichment-api-base-url:
+      description: URLScan Base Url
+      type: string
+    urlscan-enrichment-api-key:
+      description: URLScan API Key
+      type: string
+    urlscan-enrichment-import-screenshot:
+      description: Allows or not the import of the screenshot of the scan submitted in URLScan to OpenCTI.
+      type: boolean
+    urlscan-enrichment-max-tlp:
+      description: Do not send any data to URLScan if the TLP of the observable is greater than MAX_TLP
+      type: string
+    urlscan-enrichment-search-filtered-by-date:
+      description: Allows you to filter by date available:>now-1h,>now-1d,>now-1y,[2022 TO 2023],[2022/01/01 TO 2023/12/01]
+      type: string
+    urlscan-enrichment-visibility:
+      description: URLScan offers several levels of visibility for submitted scans:public,unlisted,private
+      type: string
+    connector-log-level:
+      type: string
+      description: determines the verbosity of the logs. Options are debug, info, warn, or error
+      default: info
+    connector-run-and-terminate:
+      description: (optional) Launch the connector once if set to True. Takes 2 available values:TrueorFalse
+      type: boolean
+
+
+provides:
+  opencti-connector:
+    interface: opencti_connector
+    limit: 1
+
+type: charm
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm: {}
+
+containers:
+  opencti-urlscan-enrichment-connector:
+    resource: opencti-urlscan-enrichment-connector-image
+resources:
+  opencti-urlscan-enrichment-connector-image:
+    type: oci-image
+    description: OCI image for the OpenCTI URLScan Enrichment connector.
+
+assumes:
+  - juju >= 3.4

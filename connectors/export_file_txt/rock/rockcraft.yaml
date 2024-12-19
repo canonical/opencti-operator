@@ -3,7 +3,7 @@
 
 name: opencti-export-file-txt-connector
 base: ubuntu@24.04
-version: &version '6.4.1'
+version: &version '6.4.5'
 summary: OpenCTI Export TXT File Connector
 description: >-
   OpenCTI is an open source platform allowing organizations to manage their 
