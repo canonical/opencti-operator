@@ -10,7 +10,11 @@ import yaml
 
 
 def list_connectors() -> list[str]:
-    """Return a list of opencti connector charms."""
+    """Return a list of opencti connector charms.
+
+    Returns:
+        list: list of opencti connector charms.
+    """
     connectors = []
     for file in pathlib.Path("connectors").glob("**/charmcraft.yaml"):
         charmcraft_yaml = yaml.safe_load(file.read_text())

@@ -182,8 +182,7 @@ async def test_opencti_connectors(
             """\
                 query ConnectorsStatusQuery {
                   ...ConnectorsStatus_data
-                }
-                
+                }                
                 fragment ConnectorsStatus_data on Query {
                   connectors {
                     name
