@@ -32,6 +32,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd {{ constant_to_kebab(connector_type) }}/{{ connector_name }}
       cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-{{ connector_name }}
+      {{ generate_entrypoint }}
       cat entrypoint.sh | grep opencti-connector-{{ connector_name }}
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \

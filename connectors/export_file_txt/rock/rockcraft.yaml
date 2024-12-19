@@ -32,6 +32,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd internal-export-file/export-file-txt
       cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-export-file-txt
+      
       cat entrypoint.sh | grep opencti-connector-export-file-txt
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \

@@ -32,6 +32,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd external-import/sekoia
       cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia
+      echo 'cd /opt/opencti-connector-sekoia; python3 sekoia.py' > entrypoint.sh
       cat entrypoint.sh | grep opencti-connector-sekoia
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \

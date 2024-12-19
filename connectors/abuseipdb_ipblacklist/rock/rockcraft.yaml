@@ -32,6 +32,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd external-import/abuseipdb-ipblacklist
       cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-abuseipdb-ipblacklist
+      
       cat entrypoint.sh | grep opencti-connector-abuseipdb-ipblacklist
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \

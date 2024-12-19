@@ -32,6 +32,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd external-import/vxvault
       cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-vxvault
+      
       cat entrypoint.sh | grep opencti-connector-vxvault
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \

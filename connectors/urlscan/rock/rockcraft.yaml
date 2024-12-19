@@ -32,6 +32,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd external-import/urlscan
       cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-urlscan
+      
       cat entrypoint.sh | grep opencti-connector-urlscan
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \

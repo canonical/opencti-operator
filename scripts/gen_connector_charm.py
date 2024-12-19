@@ -139,6 +139,7 @@ def render_template(
     display_name,
     config,
     charm_override: str = "",
+    generate_entrypoint: str = "",
     template_dir: pathlib.Path = pathlib.Path("connector-template"),
     output_dir: pathlib.Path = pathlib.Path("connectors"),
 ):
@@ -168,6 +169,7 @@ def render_template(
                     {"config": {"options": sort_config(config)}}, width=99999, sort_keys=False
                 ),
                 charm_override=charm_override,
+                generate_entrypoint=generate_entrypoint,
             ),
             encoding="utf-8",
         )
@@ -229,6 +231,7 @@ def render(connector: str) -> None:
                     "default": True,
                 },
             },
+            generate_entrypoint="echo 'cd /opt/opencti-connector-sekoia; python3 sekoia.py' > entrypoint.sh",
         )
     if connector == "" or connector == "all":
         render_template(

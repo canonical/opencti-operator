@@ -32,6 +32,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd external-import/crowdstrike
       cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-crowdstrike
+      
       cat entrypoint.sh | grep opencti-connector-crowdstrike
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \

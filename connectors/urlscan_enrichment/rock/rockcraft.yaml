@@ -32,6 +32,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd internal-enrichment/urlscan-enrichment
       cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-urlscan-enrichment
+      
       cat entrypoint.sh | grep opencti-connector-urlscan-enrichment
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \
