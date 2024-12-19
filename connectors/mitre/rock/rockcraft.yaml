@@ -32,7 +32,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd external-import/mitre
       cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-mitre
-      
+      echo 'cd /opt/opencti-connector-mitre; python3 connector.py' > entrypoint.sh
       cat entrypoint.sh | grep opencti-connector-mitre
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \

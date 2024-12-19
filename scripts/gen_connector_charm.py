@@ -560,6 +560,7 @@ def render(connector: str) -> None:
                 },
                 **DEFAULT_CONFIG,
             },
+            generate_entrypoint="echo 'cd /opt/opencti-connector-mitre; python3 connector.py' > entrypoint.sh",
         )
     if connector == "import-document" or connector == "all":
         render_template(
