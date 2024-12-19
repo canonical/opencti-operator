@@ -13,10 +13,6 @@ description: >-
 platforms:
   amd64:
 
-service:
-  opencti:
-    command:
-
 parts:
   platform/graphql:
     plugin: nil
