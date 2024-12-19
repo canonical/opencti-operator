@@ -59,6 +59,15 @@ class PlatformNotReady(Exception):
     """OpenCTI platform service not ready."""
 
 
+_PEER_INTEGRATION_NAME = "opencti-peer"
+# bandit false alarm
+_PEER_SECRET_FIELD = "secret"  # nosec
+_PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD = "admin-token"  # nosec
+_PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD = "health-access-key"  # nosec
+_CHARM_CALLBACK_SCRIPT_PATH = pathlib.Path("/opt/opencti/charm-callback.sh")
+_OPENSEARCH_CERT_PATH = pathlib.Path("/opt/opencti/config/opensearch.pem")
+
+
 # caused by charm libraries
 # pylint: disable=too-many-instance-attributes
 class OpenCTICharm(ops.CharmBase):
@@ -69,11 +78,6 @@ class OpenCTICharm(ops.CharmBase):
     """
 
     on = RedisRelationCharmEvents()
-    _PEER_INTEGRATION_NAME = "opencti-peer"
-    # bandit false alarm
-    _PEER_SECRET_FIELD = "secret"  # nosec
-    _PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD = "admin-token"  # nosec
-    _PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD = "health-access-key"  # nosec
 
     def __init__(self, *args: typing.Any):
         """Construct.
@@ -83,33 +87,11 @@ class OpenCTICharm(ops.CharmBase):
         """
         super().__init__(*args)
         self._container = self.unit.get_container("opencti")
-        if self.app.name == "x-opencti":
-            self.unit.status = ops.BlockedStatus("charm cannot be named 'x-opencti'")
-            return
-        self._opensearch = OpenSearchRequires(
-            self,
-            relation_name="opensearch-client",
-            # suppress the OpenSearch charm from creating the index
-            # use the name x-opencti so OpenSearch will create an index named 'x-opencti'
-            # which shouldn't interfere with the OpenCTI (index prefix is the charm app name)
-            # hope nobody names the charm app 'x-opencti'
-            index="x-opencti",
-            # the OpenSearch charm can't handle access control for index patterns
-            extra_user_roles="admin",
-        )
-        self._redis = RedisRequires(self, relation_name="redis")
-        self._rabbitmq = RabbitMQRequires(
-            self,
-            "amqp",
-            username=self.app.name,
-            vhost="/",
-        )
-        self._s3 = S3Requirer(self, relation_name="s3", bucket_name=self.app.name)
-        self._ingress = IngressPerAppRequirer(
-            self,
-            relation_name="ingress",
-            port=8080,
-        )
+        self._opensearch = self._register_opensearch()
+        self._redis = self._register_redis()
+        self._rabbitmq = self._register_rabbitmq()
+        self._s3 = self._register_s3()
+        self._ingress = self._register_ingress()
         self._log_forwarder = LogForwarder(self)
         self._grafana_dashboards = GrafanaDashboardProvider(self)
         self._metrics_endpoint = MetricsEndpointProvider(
@@ -121,7 +103,6 @@ class OpenCTICharm(ops.CharmBase):
                 }
             ],
         )
-        self.framework.observe(self.on.amqp_relation_joined, self._amqp_relation_joined)
         self.framework.observe(self.on.config_changed, self._reconcile)
         self.framework.observe(self.on.upgrade_charm, self._reconcile)
         self.framework.observe(self.on.update_status, self._reconcile)
@@ -130,22 +111,92 @@ class OpenCTICharm(ops.CharmBase):
         self.framework.observe(self.on.opencti_peer_relation_created, self._reconcile)
         self.framework.observe(self.on.opencti_peer_relation_changed, self._reconcile)
         self.framework.observe(self.on.opencti_peer_relation_departed, self._reconcile)
-        self.framework.observe(self.on.opencti_connector_relation_created, self._reconcile)
-        self.framework.observe(self.on.opencti_connector_relation_changed, self._reconcile)
-        self.framework.observe(self.on.opencti_connector_relation_departed, self._reconcile)
-        self.framework.observe(self._opensearch.on.index_created, self._reconcile)
-        self.framework.observe(self._opensearch.on.endpoints_changed, self._reconcile)
-        self.framework.observe(self._opensearch.on.authentication_updated, self._reconcile)
-        self.framework.observe(self.on.opensearch_client_relation_broken, self._reconcile)
-        self.framework.observe(self._redis.charm.on.redis_relation_updated, self._reconcile)
-        self.framework.observe(self.on.redis_relation_broken, self._reconcile)
-        self.framework.observe(self._s3.on.credentials_changed, self._reconcile)
-        self.framework.observe(self._s3.on.credentials_gone, self._reconcile)
-        self.framework.observe(self._ingress.on.ready, self._reconcile)
-        self.framework.observe(self._ingress.on.revoked, self._reconcile)
         self.framework.observe(
             self.on["opencti"].pebble_custom_notice, self._on_pebble_custom_notice
         )
+
+    def _register_opensearch(self) -> OpenSearchRequires:
+        """Create OpenSearchRequires instance and register related event handlers.
+
+        Returns:
+            The OpenSearchRequires instance.
+
+        Raises:
+            RuntimeError: If the charm is named 'x-opencti'
+        """
+        if self.app.name == "x-opencti":
+            raise RuntimeError("charm cannot be named 'x-opencti'")
+        opensearch = OpenSearchRequires(
+            self,
+            relation_name="opensearch-client",
+            # suppress the OpenSearch charm from creating the index
+            # use the name x-opencti so OpenSearch will create an index named 'x-opencti'
+            # which shouldn't interfere with the OpenCTI (index prefix is the charm app name)
+            # hope nobody names the charm app 'x-opencti'
+            index="x-opencti",
+            # the OpenSearch charm can't handle access control for index patterns
+            extra_user_roles="admin",
+        )
+        self.framework.observe(opensearch.on.index_created, self._reconcile)
+        self.framework.observe(opensearch.on.endpoints_changed, self._reconcile)
+        self.framework.observe(opensearch.on.authentication_updated, self._reconcile)
+        self.framework.observe(self.on.opensearch_client_relation_broken, self._reconcile)
+        return opensearch
+
+    def _register_redis(self) -> RedisRequires:
+        """Create RedisRequires instance and register related event handlers.
+
+        Returns:
+            The RedisRequires instance.
+        """
+        redis = RedisRequires(self, relation_name="redis")
+        self.framework.observe(redis.charm.on.redis_relation_updated, self._reconcile)
+        self.framework.observe(self.on.redis_relation_broken, self._reconcile)
+        return redis
+
+    def _register_rabbitmq(self) -> RabbitMQRequires:
+        """Create RabbitMQRequires instance and register related event handlers.
+
+        Returns:
+            The RabbitMQRequires instance.
+        """
+        rabbitmq = RabbitMQRequires(
+            self,
+            "amqp",
+            username=self.app.name,
+            vhost="/",
+        )
+        self.framework.observe(self.on.amqp_relation_joined, self._amqp_relation_joined)
+        self.framework.observe(rabbitmq.on.connected, self._reconcile)
+        self.framework.observe(rabbitmq.on.ready, self._reconcile)
+        self.framework.observe(rabbitmq.on.goneaway, self._reconcile)
+        return rabbitmq
+
+    def _register_s3(self) -> S3Requirer:
+        """Create S3Requirer instance and register related event handlers.
+
+        Returns:
+            The S3Requirer instance.
+        """
+        s3 = S3Requirer(self, relation_name="s3", bucket_name=self.app.name)
+        self.framework.observe(s3.on.credentials_changed, self._reconcile)
+        self.framework.observe(s3.on.credentials_gone, self._reconcile)
+        return s3
+
+    def _register_ingress(self) -> IngressPerAppRequirer:
+        """Create IngressPerAppRequirer instance and register related event handlers.
+
+        Returns:
+            The IngressPerAppRequirer instance.
+        """
+        ingress = IngressPerAppRequirer(
+            self,
+            relation_name="ingress",
+            port=8080,
+        )
+        self.framework.observe(ingress.on.ready, self._reconcile)
+        self.framework.observe(ingress.on.revoked, self._reconcile)
+        return ingress
 
     def _amqp_relation_joined(self, event: ops.RelationJoinedEvent) -> None:
         """Handle amqp relation joined event.
@@ -184,23 +235,23 @@ class OpenCTICharm(ops.CharmBase):
             PlatformNotReady: failed to start the OpenCTI platform at this moment
         """
         self._init_peer_relation()
-        self._check()
-        health_check_token = self._get_peer_secret(
-            self._PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD
-        )
+        self._check_preconditions()
+        health_check_token = self._get_peer_secret(_PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD)
         health_check_url = f"http://localhost:8080/health?health_access_key={health_check_token}"
+        self._install_callback_script(health_check_url)
+        self._install_opensearch_cert()
         self._container.add_layer(
             "opencti",
-            layer=self._gen_pebble_service_plan(health_check_url),
+            layer=self._gen_pebble_service_plan(),
             combine=True,
         )
         self._container.replan()
         self._container.start("platform")
-        try:
-            self._check_platform_health(health_check_url)
-        except PlatformNotReady as exc:
+
+        if not self._is_platform_healthy(health_check_url):
             self._container.start("charm-callback")
-            raise PlatformNotReady("waiting for opencti platform to start") from exc
+            raise PlatformNotReady("waiting for opencti platform to start")
+
         self._container.stop("charm-callback")
         self._container.add_layer(
             label="opencti",
@@ -212,11 +263,8 @@ class OpenCTICharm(ops.CharmBase):
         self._container.start("worker-1")
         self._container.start("worker-2")
 
-    def _gen_pebble_service_plan(self, health_check_url: str) -> ops.pebble.LayerDict:
+    def _gen_pebble_service_plan(self) -> ops.pebble.LayerDict:
         """Generate the service part of OpenCTI pebble plan.
-
-        Args:
-            health_check_url: OpenCTI health check URL
 
         Returns:
             The service part of OpenCTI pebble plan
@@ -227,7 +275,7 @@ class OpenCTICharm(ops.CharmBase):
             "working-dir": "/opt/opencti-worker",
             "environment": {
                 "OPENCTI_URL": "http://localhost:8080",
-                "OPENCTI_TOKEN": self._get_peer_secret(self._PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD),
+                "OPENCTI_TOKEN": self._get_peer_secret(_PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD),
                 "WORKER_LOG_LEVEL": "info",
             },
             "after": ["platform"],
@@ -239,7 +287,7 @@ class OpenCTICharm(ops.CharmBase):
             services={
                 "charm-callback": {
                     "override": "replace",
-                    "command": f"bash {self._install_callback_script(health_check_url)}",
+                    "command": f"bash {_CHARM_CALLBACK_SCRIPT_PATH}",
                 },
                 "platform": {
                     "override": "replace",
@@ -254,7 +302,7 @@ class OpenCTICharm(ops.CharmBase):
                         "PROVIDERS__LOCAL__STRATEGY": "LocalStrategy",
                         "APP__TELEMETRY__METRICS__ENABLED": "true",
                         **self._gen_secret_env(),
-                        **self._prepare_opensearch_env(),
+                        **self._gen_opensearch_env(),
                         **self._gen_rabbitmq_env(),
                         **self._gen_redis_env(),
                         **self._gen_s3_env(),
@@ -291,14 +339,11 @@ class OpenCTICharm(ops.CharmBase):
             },
         )
 
-    def _install_callback_script(self, health_check_url: str) -> pathlib.Path:
+    def _install_callback_script(self, health_check_url: str) -> None:
         """Install platform startup callback script for noticing the charm on start.
 
         Args:
             health_check_url: opencti health check endpoint.
-
-        Returns:
-            callback script path inside the container.
         """
         script = textwrap.dedent(
             f"""\
@@ -313,28 +358,27 @@ class OpenCTICharm(ops.CharmBase):
             done
             """
         )
-        path = pathlib.Path("/opt/opencti/charm-callback.sh")
-        self._container.make_dir(path.parent, make_parents=True)
-        self._container.push(path, script, encoding="utf-8")
-        return path
+        self._container.make_dir(_CHARM_CALLBACK_SCRIPT_PATH.parent, make_parents=True)
+        self._container.push(_CHARM_CALLBACK_SCRIPT_PATH, script, encoding="utf-8")
 
     @staticmethod
-    def _check_platform_health(health_check_url: str) -> None:  # pragma: nocover
+    def _is_platform_healthy(health_check_url: str) -> bool:  # pragma: nocover
         """Check OpenCTI platform is ready using the health check url.
 
         Args:
             health_check_url: OpenCTI platform health check endpoint.
 
-        Raises:
-            PlatformNotReady: If OpenCTI platform is not ready.
+        Returns:
+            True if platform is healthy, False otherwise.
         """
         try:
             response = requests.get(health_check_url, timeout=5)
             response.raise_for_status()
-        except requests.exceptions.RequestException as exc:
-            raise PlatformNotReady() from exc
+            return True
+        except requests.exceptions.RequestException:
+            return False
 
-    def _check(self) -> None:
+    def _check_preconditions(self) -> None:
         """Check the prerequisites for the OpenCTI charm."""
         if not self._container.can_connect():
             raise ContainerNotReady("waiting for opencti container")
@@ -358,23 +402,23 @@ class OpenCTICharm(ops.CharmBase):
 
         It is safe to call this method at any time.
         """
-        if not (peer_integration := self.model.get_relation(self._PEER_INTEGRATION_NAME)):
+        if not (peer_integration := self.model.get_relation(_PEER_INTEGRATION_NAME)):
             return
         if not self.unit.is_leader():
             return
-        if self._PEER_SECRET_FIELD in peer_integration.data[self.app]:
+        if _PEER_SECRET_FIELD in peer_integration.data[self.app]:
             return
         secret = self.app.add_secret(
             {
-                self._PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD: str(
+                _PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD: str(
                     uuid.UUID(bytes=secrets.token_bytes(16), version=4)
                 ),
-                self._PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD: str(
+                _PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD: str(
                     uuid.UUID(bytes=secrets.token_bytes(16), version=4)
                 ),
             }
         )
-        peer_integration.data[self.app][self._PEER_SECRET_FIELD] = typing.cast(str, secret.id)
+        peer_integration.data[self.app][_PEER_SECRET_FIELD] = typing.cast(str, secret.id)
 
     def _gen_secret_env(self) -> dict[str, str]:
         """Generate the secret (token, user, etc.) environment variables for the OpenCTI charm.
@@ -402,9 +446,9 @@ class OpenCTICharm(ops.CharmBase):
         return {
             "APP__ADMIN__EMAIL": admin_email,
             "APP__ADMIN__PASSWORD": admin_password,
-            "APP__ADMIN__TOKEN": self._get_peer_secret(self._PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD),
+            "APP__ADMIN__TOKEN": self._get_peer_secret(_PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD),
             "APP__HEALTH_ACCESS_KEY": self._get_peer_secret(
-                self._PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD
+                _PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD
             ),
         }
 
@@ -420,15 +464,15 @@ class OpenCTICharm(ops.CharmBase):
         Raises:
             IntegrationNotReady: peer relation not ready.
         """
-        peer_relation = self.model.get_relation(relation_name=self._PEER_INTEGRATION_NAME)
+        peer_relation = self.model.get_relation(relation_name=_PEER_INTEGRATION_NAME)
         if peer_relation is None or not (
-            secret_id := peer_relation.data[self.app].get(self._PEER_SECRET_FIELD)
+            secret_id := peer_relation.data[self.app].get(_PEER_SECRET_FIELD)
         ):
             raise IntegrationNotReady("waiting for peer integration")
         secret = self.model.get_secret(id=secret_id)
         return secret.get_content(refresh=True)[key]
 
-    def _prepare_opensearch_env(self) -> dict[str, str]:
+    def _gen_opensearch_env(self) -> dict[str, str]:
         """Generate the OpenSearch-related environment variables for the OpenCTI platform.
 
         Returns:
@@ -436,24 +480,8 @@ class OpenCTICharm(ops.CharmBase):
 
         Raises:
             IntegrationNotReady: OpenSearch integration not ready
-            InvalidIntegration: invalid OpenSearch integration.
         """
-        integration = typing.cast(
-            ops.Relation, self.model.get_relation(self._opensearch.relation_name)
-        )
-        integration_id = integration.id
-        try:
-            data = self._opensearch.fetch_relation_data(
-                relation_ids=[integration_id],
-                fields=["endpoints", "username", "password", "tls", "tls-ca", "index"],
-            )[integration_id]
-        except ops.ModelError as exc:
-            # secret in integration not accessible before the integration events?
-            logger.error(
-                "invalid opensearch-client integration: %s",
-                self._dump_integration("opensearch-client"),
-            )
-            raise InvalidIntegration("invalid opensearch integration") from exc
+        data = self._extract_opensearch_info()
         if "index" not in data:
             raise IntegrationNotReady("waiting for opensearch-client integration")
         uses_tls = data.get("tls-ca") or data.get("tls")
@@ -465,6 +493,47 @@ class OpenCTICharm(ops.CharmBase):
             "ELASTICSEARCH__URL": json.dumps(uris),
             "ELASTICSEARCH__INDEX_PREFIX": self.app.name,
         }
+        if "tls-ca" in data:
+            env["ELASTICSEARCH__SSL__CA"] = "/opt/opencti/config/opensearch.pem"
+        username, password = data.get("username"), data.get("password")
+        if username:
+            env["ELASTICSEARCH__USERNAME"] = username
+        if password:
+            env["ELASTICSEARCH__PASSWORD"] = password
+        return env
+
+    def _extract_opensearch_info(self) -> dict:
+        """Extract opensearch connection information from the opensearch integration.
+
+        Returns:
+            A dictionary containing the opensearch connection info.
+
+        Raises:
+            InvalidIntegration: invalid OpenSearch integration.
+        """
+        integration = typing.cast(
+            ops.Relation, self.model.get_relation(self._opensearch.relation_name)
+        )
+        integration_id = integration.id
+        try:
+            return self._opensearch.fetch_relation_data(
+                relation_ids=[integration_id],
+                fields=["endpoints", "username", "password", "tls", "tls-ca", "index"],
+            )[integration_id]
+        except ops.ModelError as exc:
+            # secret in integration not accessible before the integration events?
+            logger.error(
+                "invalid opensearch-client integration: %s",
+                self._dump_integration("opensearch-client"),
+            )
+            raise InvalidIntegration("invalid opensearch integration") from exc
+
+    def _install_opensearch_cert(self) -> None:
+        """Install opensearch TLS certification obtained from integration to the container.
+
+        Do nothing if opensearch doesn't use TLS.
+        """
+        data = self._extract_opensearch_info()
         if ca := data.get("tls-ca"):
             self._container.make_dir("/opt/opencti/config/", make_parents=True)
             self._container.push(
@@ -472,12 +541,6 @@ class OpenCTICharm(ops.CharmBase):
                 source=ca,
                 encoding="ascii",
             )
-            env["ELASTICSEARCH__SSL__CA"] = "/opt/opencti/config/opensearch.pem"
-        username, password = data.get("username"), data.get("password")
-        if username:
-            env["ELASTICSEARCH__USERNAME"] = username
-            env["ELASTICSEARCH__PASSWORD"] = password
-        return env
 
     def _gen_redis_env(self) -> dict[str, str]:
         """Generate the Redis-related environment variables for the OpenCTI platform.

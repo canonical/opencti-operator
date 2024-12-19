@@ -14,7 +14,7 @@ platforms:
   amd64:
 
 parts:
-  platform/graphql-deps:
+  platform/graphql:
     plugin: nil
     source: https://github.com/OpenCTI-Platform/opencti.git
     source-tag: *version
@@ -35,29 +35,10 @@ parts:
       craftctl default
       cd opencti-platform/opencti-graphql/
       yarn install --frozen-lockfile
+      yarn build:prod
       yarn cache clean --all
       mkdir -p $CRAFT_PART_INSTALL/opt/opencti
       cp -rp node_modules $CRAFT_PART_INSTALL/opt/opencti
-
-  platform/graphql:
-    plugin: nil
-    source: https://github.com/OpenCTI-Platform/opencti.git
-    source-tag: *version
-    source-type: git
-    source-depth: 1
-    build-packages:
-      - python3-dev
-      - postfix
-      - postfix-pcre
-    build-snaps:
-      - node/20/stable
-      - rustup
-    override-build: |
-      craftctl default
-      cd opencti-platform/opencti-graphql/
-      yarn install
-      yarn build:prod
-      mkdir -p $CRAFT_PART_INSTALL/opt/opencti
       cp -rp build static src config script $CRAFT_PART_INSTALL/opt/opencti
 
   platform/frontend:
