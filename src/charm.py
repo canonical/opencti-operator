@@ -657,7 +657,7 @@ class OpenCTICharm(ops.CharmBase):
             dump["unit-data"] = {unit.name: dict(integration.data[unit]) for unit in units}
         return json.dumps(dump)
 
-    def _reconcile_connector(self):
+    def _reconcile_connector(self) -> None:
         """Run charm reconcile function for OpenCTI connectors."""
         client = opencti.OpenctiClient(
             url="http://localhost:8080",
@@ -671,9 +671,11 @@ class OpenCTICharm(ops.CharmBase):
             user = self._setup_connector_integration_and_user(client, integration)
             if user:
                 current_using_users.add(user)
-        for user in client.list_users():
-            if user.name not in current_using_users and user.name.startswith("charm-connector-"):
-                client.set_account_status(user.id, "Inactive")
+        for opencti_user in client.list_users():
+            if opencti_user.name not in current_using_users and opencti_user.name.startswith(
+                "charm-connector-"
+            ):
+                client.set_account_status(opencti_user.id, "Inactive")
 
     def _setup_connector_integration_and_user(
         self, client: opencti.OpenctiClient, integration: ops.Relation
@@ -693,7 +695,7 @@ class OpenCTICharm(ops.CharmBase):
             integration_data.get("connector_type"),
         )
         if not connector_charm_name or not connector_type:
-            return
+            return None
         opencti_url = f"http://{self.app.name}-endpoints.{self.model.name}.svc:8080"
         integration.data[self.app]["opencti_url"] = opencti_url
         connector_user = f"charm-connector-{connector_charm_name.replace('_', '-').lower()}"
@@ -715,7 +717,7 @@ class OpenCTICharm(ops.CharmBase):
         if not opencti_token_id:
             secret = self.app.add_secret(content={"token": api_token})
             secret.grant(integration)
-            integration.data[self.app]["opencti_token"] = secret.id
+            integration.data[self.app]["opencti_token"] = typing.cast(str, secret.id)
         if opencti_token_id:
             secret = self.model.get_secret(id=opencti_token_id)
             if secret.get_content(refresh=True)["token"] != api_token:

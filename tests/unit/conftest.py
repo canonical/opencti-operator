@@ -35,6 +35,8 @@ def patch_opencti_client():
 
 
 class OpenctiClientMock:
+    """A mock for OpenctiClient."""
+
     _users = [
         {
             "id": "88ec0c6a-13ce-5e39-b486-354fe4a7084f",
@@ -50,21 +52,38 @@ class OpenctiClientMock:
         {"name": "Default", "id": "1e257543-6bfb-46f2-a25f-5d50bb0819bd"},
     ]
 
-    def __init__(self, *args, **kwargs):
-        pass
+    def __init__(self, *_args, **_kwargs):
+        """Initialize OpenctiClientMock."""
 
-    def list_users(self):
+    def list_users(self) -> list[OpenctiUser]:
+        """List OpenCTI users.
+
+        Returns:
+            A list of OpenctiUser objects.
+        """
         return [OpenctiUser(**u) for u in self._users]
 
-    def list_groups(self):
+    def list_groups(self) -> list[OpenctiGroup]:
+        """List OpenCTI groups.
+
+        Returns:
+            A list of OpenctiGroup objects.
+        """
         return [OpenctiGroup(**g) for g in self._groups]
 
     def create_user(
         self,
         name: str,
         user_email: str | None = None,
-        groups: list[str] | None = None,
-    ):
+        groups: list[str] | None = None,  # pylint: disable=unused-argument
+    ) -> None:
+        """Create a user.
+
+        Args:
+            name: The name of the user.
+            user_email: The email address of the user.
+            groups: The groups associated with the user.
+        """
         new_user = {
             "name": name,
             "id": "00000000-0000-0000-0000-000000000000",
@@ -79,6 +98,15 @@ class OpenctiClientMock:
         user_id: str,
         status: typing.Literal["Active", "Inactive"],
     ) -> None:
+        """Set OpenCTI account status.
+
+        Args:
+            user_id: The ID of the user.
+            status: The status of the user.
+
+        Raises:
+            RuntimeError: If user doesn't exist.
+        """
         for user in self._users:
             if user["id"] == user_id:
                 user["account_status"] = status

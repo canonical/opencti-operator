@@ -279,13 +279,16 @@ class ConnectorStateBuilder:
         Args:
             container_name: name of the container.
         """
-        self._integrations = []
-        self._config = {}
-        self._secrets = []
+        self._integrations: list[ops.testing.RelationBase] = []
+        self._config: dict[str, str | int | float | bool] = {}
+        self._secrets: list[ops.testing.Secret] = []
         self._container_name = container_name
 
     def add_opencti_connector_integration(self) -> "ConnectorStateBuilder":
-        """Add opencti-connector integration."""
+        """Add opencti-connector integration.
+
+        Returns: self
+        """
         secret = ops.testing.Secret(
             tracked_content={"token": "00000000-0000-0000-0000-000000000000"}
         )

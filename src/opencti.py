@@ -3,7 +3,6 @@
 
 """OpenCTI API client."""
 
-import collections
 import secrets
 import textwrap
 import typing
@@ -11,32 +10,81 @@ import urllib.parse
 
 import requests
 
-OpenctiUser = collections.namedtuple("OpenctiUser", "id,name,user_email,account_status,api_token")
-OpenctiGroup = collections.namedtuple("OpenctiGroup", "id,name")
+
+class OpenctiUser(typing.NamedTuple):
+    """Opencti user.
+
+    Attributes:
+        id: opencti user id
+        name: opencti username
+        user_email: opencti user email
+        account_status: opencti account status
+        api_token: opencti user api token
+    """
+
+    id: str
+    name: str
+    user_email: str
+    account_status: str
+    api_token: str
+
+
+class OpenctiGroup(typing.NamedTuple):
+    """Opencti group.
+
+    Attributes:
+        id: opencti group id
+        name: opencti group name
+    """
+
+    id: str
+    name: str
 
 
 class GraphqlError(Exception):
-    pass
+    """GraphQL error."""
 
 
 class OpenctiClient:
-    def __init__(self, url, api_token):
+    """Opencti API client."""
+
+    def __init__(self, url: str, api_token: str) -> None:
+        """Construct the Opencti client.
+
+        Args:
+            url: URL of the Opencti API.
+            api_token: Opencti API token.
+        """
         self._query_url = urllib.parse.urljoin(url, "graphql")
         self._api_token = api_token
-        self._cached_users = None
-        self._cached_groups = None
+        self._cached_users: list[OpenctiUser] | None = None
+        self._cached_groups: list[OpenctiGroup] | None = None
 
     def _graphql(
         self,
-        id: str,
+        query_id: str,
         query: str,
-        variables: dict = None,
-    ):
+        variables: dict | None = None,
+    ) -> dict:
+        """Call the OpenCTI GraphQL endpoint.
+
+        Args:
+            query_id: GraphQL id.
+            query: GraphQL query.
+            variables: GraphQL variables.
+
+        Returns:
+            data in GraphQL response.
+
+        Raises:
+            GraphqlError: errors returned in GraphQL response.
+        """
         variables = variables or {}
         response = requests.post(
             self._query_url,
-            json={"id": id, "query": query, "variables": variables},
+            json={"id": query_id, "query": query, "variables": variables},
             headers={"Authorization": f"Bearer {self._api_token}"},
+            timeout=10,
         )
         response.raise_for_status()
         result = response.json()
@@ -45,6 +93,11 @@ class OpenctiClient:
         return result["data"]
 
     def list_users(self) -> list[OpenctiUser]:
+        """List OpenCTI users.
+
+        Returns:
+            list of OpenctiUser objects.
+        """
         if self._cached_users is not None:
             return self._cached_users
         query = textwrap.dedent(
@@ -86,6 +139,13 @@ class OpenctiClient:
         user_email: str | None = None,
         groups: list[str] | None = None,
     ) -> None:
+        """Create a OpenCTI user.
+
+        Args:
+            name: User name.
+            user_email: User's email address.
+            groups: User's groups.
+        """
         self._cached_users = None
         if user_email is None:
             user_email = f"{name}@opencti.local"
@@ -101,7 +161,6 @@ class OpenctiClient:
                 id
               }
             }
-            
             fragment UserLine_node on User {
               id
               name
@@ -135,6 +194,11 @@ class OpenctiClient:
         self._graphql("UserCreationMutation", query=query, variables=variables)
 
     def list_groups(self) -> list[OpenctiGroup]:
+        """List OpenCTI groups.
+
+        Returns:
+            list of OpenctiGroup objects.
+        """
         if self._cached_groups is not None:
             return self._cached_groups
         query = textwrap.dedent(
@@ -163,7 +227,13 @@ class OpenctiClient:
         self,
         user_id: str,
         status: typing.Literal["Active", "Inactive"],
-    ):
+    ) -> None:
+        """Set Opencti account status.
+
+        Args:
+            user_id: Opencti user id.
+            status: Opencti account status.
+        """
         self._cached_users = None
         query = textwrap.dedent(
             """
@@ -179,7 +249,6 @@ class OpenctiClient:
             }
           }
         }
-        
         fragment UserEditionGroups_user_2AtC8h on User {
           id
           objectOrganization(orderBy: name, orderMode: asc) {
@@ -229,7 +298,6 @@ class OpenctiClient:
             }
           }
         }
-        
         fragment UserEditionOrganizationsAdmin_user_Z483F on User {
           id
           user_email
@@ -244,7 +312,6 @@ class OpenctiClient:
             }
           }
         }
-        
         fragment UserEditionOverview_user on User {
           id
           name
@@ -282,7 +349,6 @@ class OpenctiClient:
             }
           }
         }
-        
         fragment UserEditionOverview_user_2AtC8h on User {
           id
           name
@@ -320,11 +386,9 @@ class OpenctiClient:
             }
           }
         }
-        
         fragment UserEditionPassword_user on User {
           id
         }
-        
         fragment UserEdition_user on User {
           id
           external
@@ -394,7 +458,7 @@ class OpenctiClient:
         """
         )
         self._graphql(
-            id="UserEditionOverviewFieldPatchMutation",
+            query_id="UserEditionOverviewFieldPatchMutation",
             query=query,
             variables={
                 "id": user_id,

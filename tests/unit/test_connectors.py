@@ -7,12 +7,16 @@
 
 import ops.testing
 
+from connectors.export_file_stix.src.charm import OpenctiExportFileStixConnectorCharm
 from tests.unit.state import ConnectorStateBuilder
 
 
 def test_export_file_stix_connector():
-    from connectors.export_file_stix.src.charm import OpenctiExportFileStixConnectorCharm
-
+    """
+    arrange: provide the connector charm with the required integrations and configurations
+    act: simulate a config-changed event
+    assert: the installed Pebble plan matches the expectation
+    """
     container = "opencti-export-file-stix-connector"
     ctx = ops.testing.Context(OpenctiExportFileStixConnectorCharm)
     state_in = (

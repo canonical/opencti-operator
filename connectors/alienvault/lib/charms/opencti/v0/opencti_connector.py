@@ -74,7 +74,7 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
         Raises:
             RuntimeError: If charm metadata file doesn't exist.
         """
-        config_file = self.charm_dir / "metadata.yaml"
+        config_file = self.charm_dir / "config.yaml"
         if config_file.exists():
             return yaml.safe_load(config_file.read_text())["options"]
         config_file = self.charm_dir / "charmcraft.yaml"

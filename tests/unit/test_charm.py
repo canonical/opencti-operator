@@ -365,9 +365,9 @@ def test_opencti_connector(patch_opencti_client):
     assert "charm-connector-test" in users
     integration_out = state_out.get_relation(opencti_connector_integration.id)
     assert (
-        integration_out.local_app_data["opencti_url"]
+        integration_out.local_app_data["opencti_url"]  # type: ignore
         == "http://opencti-endpoints.test-opencti.svc:8080"
     )
-    secret_id = integration_out.local_app_data["opencti_token"]
+    secret_id = integration_out.local_app_data["opencti_token"]  # type: ignore
     secret = state_out.get_secret(id=secret_id)
     assert secret.tracked_content == {"token": "00000000-0000-0000-0000-000000000000"}
