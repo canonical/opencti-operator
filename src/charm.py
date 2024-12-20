@@ -199,8 +199,8 @@ class OpenCTICharm(ops.CharmBase):
         self.framework.observe(ingress.on.revoked, self._reconcile)
         return ingress
 
-    def _cleanup_secrets(self, event: ops.EventBase) -> None:
-        """Cleanup secrets created by the opencti charm"""
+    def _cleanup_secrets(self, _: ops.EventBase) -> None:
+        """Cleanup secrets created by the opencti charm."""
         if not self.unit.is_leader():
             return
         integration = self.model.get_relation(_PEER_INTEGRATION_NAME)
