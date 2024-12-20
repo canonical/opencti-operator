@@ -111,6 +111,8 @@ class OpenCTICharm(ops.CharmBase):
         self.framework.observe(
             self.on["opencti"].pebble_custom_notice, self._on_pebble_custom_notice
         )
+        self.framework.observe(self.on.opencti_peer_relation_broken, self._cleanup_secrets)
+        self.framework.observe(self.on.stop, self._cleanup_secrets)
 
     def _register_opensearch(self) -> OpenSearchRequires:
         """Create OpenSearchRequires instance and register related event handlers.
@@ -194,6 +196,22 @@ class OpenCTICharm(ops.CharmBase):
         self.framework.observe(ingress.on.ready, self._reconcile)
         self.framework.observe(ingress.on.revoked, self._reconcile)
         return ingress
+
+    def _cleanup_secrets(self, event: ops.EventBase) -> None:
+        """Cleanup secrets created by the opencti charm"""
+        if not self.unit.is_leader():
+            return
+        integration = self.model.get_relation(_PEER_INTEGRATION_NAME)
+        if not integration:
+            return
+        secret_id = integration.data[self.app].get(_PEER_SECRET_FIELD)
+        if not secret_id:
+            return
+        try:
+            secret = self.model.get_secret(id=secret_id)
+        except ops.SecretNotFoundError:
+            return
+        secret.remove_all_revisions()
 
     def _amqp_relation_joined(self, event: ops.RelationJoinedEvent) -> None:
         """Handle amqp relation joined event.
