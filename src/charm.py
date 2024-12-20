@@ -3,7 +3,7 @@
 # Copyright 2024 Canonical Ltd.
 # See LICENSE file for licensing details.
 
-"""OpenCTI charm the service."""
+"""OpenCTI charm."""
 
 import json
 import logging
