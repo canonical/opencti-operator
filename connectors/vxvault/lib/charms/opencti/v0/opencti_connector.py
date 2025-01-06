@@ -25,6 +25,10 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
     """OpenCTI connector base charm."""
 
     @property
+    def boolean_style(self) -> str:
+        return "json"
+
+    @property
     @abc.abstractmethod
     def connector_charm_name(self) -> str:
         pass
@@ -175,7 +179,10 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
             value = self.config.get(config)
             if value is None:
                 continue
-            environment[self.kebab_to_constant(config)] = str(value)
+            if self.boolean_style == "json" and isinstance(value, bool):
+                environment[self.kebab_to_constant(config)] = str(value).lower()
+            else:
+                environment[self.kebab_to_constant(config)] = str(value)
         return environment
 
     def _reconcile_connector(self) -> None:

@@ -23,7 +23,7 @@ config:
   options:
     connector-confidence-level:
       description: The default confidence level for created relationships (0 -> 100).
-      type: integer
+      type: int
     connector-log-level:
       description: The log level for this connector, could be `debug`, `info`, `warn` or `error` (less verbose).
       type: string
@@ -41,22 +41,22 @@ config:
       type: boolean
     connector-interval:
       description: (optional) An interval (in seconds) for data gathering from Urlscan.
-      type: integer
+      type: int
     connector-labels:
       description: (optional) Comma delimited list of labels to apply to each observable.
       type: string
     connector-lookback:
       description: (optional) How far to look back in days if the connector has never run or the last run is older than this value. Default is 3. You should not go above 7.
-      type: integer
+      type: int
     connector-tlp:
       description: (optional) The TLP to apply to any indicators and observables, this could be `white`,`green`,`amber` or `red`
       type: string
     urlscan-default-x-opencti-score:
       description: (optional) The default x_opencti_score to use across observable/indicator types. Default is 50.
-      type: integer
+      type: int
     urlscan-x-opencti-score-domain:
       description: (optional) The x_opencti_score to use across Domain-Name observable and indicators. Defaults to default score.
-      type: integer
+      type: int
     urlscan-x-opencti-score-url:
       description: (optional) The x_opencti_score to use across Url observable and indicators. Defaults to default score.
       type: integer

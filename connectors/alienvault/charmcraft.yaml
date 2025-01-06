@@ -33,6 +33,9 @@ config:
     alienvault-guess-malware:
       description: The Pulse tags are used to guess (queries malwares in the OpenCTI) malwares related to the given Pulse.
       type: boolean
+    alienvault-interval-sec:
+      description: alienvault interval seconds
+      type: int
     alienvault-pulse-start-timestamp:
       description: The Pulses modified after this timestamp will be imported. Timestamp in ISO 8601 format, UTC.
       type: string
@@ -63,7 +66,7 @@ config:
       type: boolean
     alienvault-default-x-opencti-score:
       description: (optional) The default x_opencti_score to use for indicators. If a per indicator type score is not set, this is used.
-      type: string
+      type: int
     alienvault-enable-attack-patterns-indicates:
       description: (optional) If true then the relationshipsindicateswill be created between indicators and attack patterns.
       type: boolean
@@ -78,31 +81,31 @@ config:
       type: string
     alienvault-x-opencti-score-cryptocurrency-wallet:
       description: (optional) The x_opencti_score to use for Cryptocurrency Wallet indicators. If not set, the default value isdefault_x_opencti_score.
-      type: string
+      type: int
     alienvault-x-opencti-score-domain:
       description: (optional) The x_opencti_score to use for Domain indicators. If not set, the default value isdefault_x_opencti_score.
-      type: string
+      type: int
     alienvault-x-opencti-score-email:
       description: (optional) The x_opencti_score to use for Email indicators. If not set, the default value isdefault_x_opencti_score.
-      type: string
+      type: int
     alienvault-x-opencti-score-file:
       description: (optional) The x_opencti_score to use for StixFile indicators. If not set, the default value isdefault_x_opencti_score.
-      type: string
+      type: int
     alienvault-x-opencti-score-hostname:
       description: (optional) The x_opencti_score to use for Hostname indicators. If not set, the default value isdefault_x_opencti_score.
-      type: string
+      type: int
     alienvault-x-opencti-score-ip:
       description: (optional) The x_opencti_score to use for IP indicators. If not set, the default value isdefault_x_opencti_score.
-      type: string
+      type: int
     alienvault-x-opencti-score-mutex:
       description: (optional) The x_opencti_score to use for Mutex indicators. If not set, the default value isdefault_x_opencti_score.
-      type: string
+      type: int
     alienvault-x-opencti-score-url:
       description: (optional) The x_opencti_score to use for URL indicators. If not set, the default value isdefault_x_opencti_score.
-      type: string
+      type: int
     connector-queue-threshold:
       description: (optional) Used to determine the limit (RabbitMQ) in MB at which the connector must go into buffering mode.
-      type: string
+      type: int
     connector-run-and-terminate:
       description: (optional) Launch the connector once if set to True. Takes 2 available values:TrueorFalse.
       type: boolean

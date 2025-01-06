@@ -24,18 +24,9 @@ config:
     connector-scope:
       type: string
       description: connector scope
-    mitre-enterprise-file-url:
-      description: Resource URL
-      type: string
-    mitre-ics-attack-file-url:
-      description: Resource URL
-      type: string
     mitre-interval:
       description: Number of the days between each MITRE datasets collection.
-      type: integer
-    mitre-mobile-attack-file-url:
-      description: Resource URL
-      type: string
+      type: int
     mitre-remove-statement-marking:
       description: Remove the statement MITRE marking definition.
       type: boolean
@@ -43,7 +34,19 @@ config:
       type: string
       description: determines the verbosity of the logs. Options are debug, info, warn, or error
       default: info
+    connector-run-and-terminate:
+      type: boolean
+      description: (optional) Launch the connector once if set to True
     mitre-capec-file-url:
+      description: (optional) Resource URL
+      type: string
+    mitre-enterprise-file-url:
+      description: (optional) Resource URL
+      type: string
+    mitre-ics-attack-file-url:
+      description: (optional) Resource URL
+      type: string
+    mitre-mobile-attack-file-url:
       description: (optional) Resource URL
       type: string
 

@@ -21,6 +21,9 @@ description: |
 
 config:
   options:
+    connector-auto:
+      type: boolean
+      description: connector auto
     connector-scope:
       type: string
       description: connector scope

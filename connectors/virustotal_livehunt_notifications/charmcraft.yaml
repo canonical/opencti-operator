@@ -1,0 +1,94 @@
+# Copyright 2024 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-virustotal-livehunt-notifications-connector
+title: OpenCTI VirusTotal Livehunt Notifications Charm
+summary: OpenCTI VirusTotal Livehunt Notifications charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
+  open-source threat intelligence platform in your systems.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI across a 
+  range of environments, organize your cyber threat intelligence to enhance 
+  and disseminate actionable insights.
+
+config:
+  options:
+    connector-scope:
+      type: string
+      description: connector scope
+    virustotal-livehunt-notifications-api-key:
+      description: Private API Key
+      type: string
+    virustotal-livehunt-notifications-create-alert:
+      description: Set to true to create alerts
+      type: boolean
+    virustotal-livehunt-notifications-create-file:
+      description: Set to true to create file object linked to the alerts
+      type: boolean
+    virustotal-livehunt-notifications-create-yara-rule:
+      description: Set to true to create yara rule linked to the alert and the file
+      type: boolean
+    virustotal-livehunt-notifications-delete-notification:
+      description: Set to true to remove livehunt notifications
+      type: boolean
+    virustotal-livehunt-notifications-filter-with-tag:
+      description: Filter livehunt notifications with this tag
+      type: string
+    virustotal-livehunt-notifications-interval-sec:
+      description: Time to wait in seconds between subsequent requests
+      type: int
+    virustotal-livehunt-notifications-max-age-days:
+      description: Only create the alert if the first submission of the file is not older than `max_age_days`
+      type: int
+    virustotal-livehunt-notifications-upload-artifact:
+      description: Set to true to upload the file to opencti
+      type: boolean
+    connector-log-level:
+      type: string
+      description: determines the verbosity of the logs. Options are debug, info, warn, or error
+      default: info
+    virustotal-livehunt-notifications-extensions:
+      description: (optional) Comma separated filter to only download files matching these extensions
+      type: string
+    virustotal-livehunt-notifications-max-file-size:
+      description: (optional) Don't download files larger than this many bytes
+      type: int
+    virustotal-livehunt-notifications-min-file-size:
+      description: (optional) Don't download files smaller than this many bytes
+      type: int
+    virustotal-livehunt-notifications-min-positives:
+      description: (optional) Don't download files with less than this many vendors marking malicious
+      type: int
+
+
+provides:
+  opencti-connector:
+    interface: opencti_connector
+    limit: 1
+
+type: charm
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm: {}
+
+containers:
+  opencti-virustotal-livehunt-notifications-connector:
+    resource: opencti-virustotal-livehunt-notifications-connector-image
+resources:
+  opencti-virustotal-livehunt-notifications-connector-image:
+    type: oci-image
+    description: OCI image for the OpenCTI VirusTotal Livehunt Notifications connector.
+
+assumes:
+  - juju >= 3.4

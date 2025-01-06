@@ -21,26 +21,26 @@ description: |
 
 config:
   options:
+    connector-scope:
+      description: connector scope
+      type: string
+    vxvault-create-indicators:
+      description: vxvault create indicators
+      type: boolean
     vxvault-interval:
       description: In days, must be strictly greater than 1
-      type: integer
-    connector-scope:
-      description: The scope of the connector
-      type: string
-      default: vxvault
+      type: int
+    vxvault-ssl-verify:
+      description: Whether to verify SSL certificates
+      type: boolean
+      default: true
     vxvault-url:
-      description: The URL for VX Vault URL list
+      description: vxvault url
       type: string
       default: https://vxvault.net/URL_List.php
     connector-log-level:
       description: (optional) The log level of the connector
       type: string
-    vxvault-create-indicators:
-      description: (optional) Whether to create indicators from the VX Vault URL list
-      type: boolean
-    vxvault-ssl-verify:
-      description: (optional) Whether to verify SSL certificates
-      type: boolean
 
 
 provides:

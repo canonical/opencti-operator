@@ -24,9 +24,9 @@ config:
     connector-scope:
       type: string
       description: connector scope
-    connector-type:
-      description: Should always be set toEXTERNAL_IMPORTfor this connector.
-      type: string
+    misp-feed-interval:
+      type: int
+      description: misp feed interval in minutes
     connector-log-level:
       type: string
       description: determines the verbosity of the logs. Options are debug, info, warn, or error
@@ -40,6 +40,9 @@ config:
     aws-secret-access-key:
       description: (optional) Secret  key used to access the bucket
       type: string
+    connector-run-and-terminate:
+      type: boolean
+      description: (optional) Launch the connector once if set to True
     misp-bucket-name:
       description: (optional) Bucket Name where the MISP's files are stored
       type: string
@@ -54,16 +57,19 @@ config:
       type: boolean
     misp-feed-create-indicators:
       description: (optional) Whether to create indicators from the MISP feed.
-      type: string
+      type: boolean
     misp-feed-create-object-observables:
       description: (optional) Whether to create object observables.
       type: boolean
     misp-feed-create-observables:
       description: (optional) Whether to create observables from the MISP feed.
-      type: string
+      type: boolean
     misp-feed-create-reports:
       description: (optional) Whether to create reports from MISP feed data.
       type: boolean
+    misp-feed-create-tags-as-labels:
+      type: boolean
+      description: (optional) create tags as labels (sanitize MISP tag to OpenCTI labels)
     misp-feed-guess-threat-from-tags:
       description: (optional) Whether to infer threats from tags.
       type: boolean

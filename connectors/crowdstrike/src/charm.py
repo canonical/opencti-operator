@@ -22,7 +22,7 @@ class OpenctiCrowdstrikeConnectorCharm(OpenctiConnectorCharm):
 
     def _gen_env(self) -> dict[str, str]:
         env = super()._gen_env()
-        env["CONNECTOR_SCOPE"] = "crowdStrike"
+        env["CONNECTOR_SCOPE"] = "crowdstrike"
         return env
 
 

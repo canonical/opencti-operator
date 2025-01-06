@@ -33,10 +33,17 @@ config:
     abuseipdb-score:
       description: AbuseIPDB Score Limitation
       type: int
+    connector-scope:
+      type: string
+      description: connector scope
     abuseipdb-url:
       description: the Abuse IPDB URL
       type: string
       default: https://api.abuseipdb.com/api/v2/blacklist
+    connector-log-level:
+      type: string
+      description: determines the verbosity of the logs. Options are debug, info, warn, or error
+      default: info
 
 
 provides:

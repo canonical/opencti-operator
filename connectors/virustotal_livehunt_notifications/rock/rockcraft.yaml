@@ -1,0 +1,41 @@
+# Copyright 2024 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-virustotal-livehunt-notifications-connector
+base: ubuntu@24.04
+version: &version '6.4.5'
+summary: OpenCTI VirusTotal Livehunt Notifications Connector
+description: >-
+  OpenCTI is an open source platform allowing organizations to manage their 
+  cyber threat intelligence knowledge and observables. It has been created
+  in order to structure, store, organize and visualize technical and 
+  non-technical information about cyber threats.
+platforms:
+  amd64:
+
+parts:
+  virustotal-livehunt-notifications-connector:
+    source: https://github.com/OpenCTI-Platform/connectors.git
+    source-type: git
+    source-tag: *version
+    source-depth: 1
+    plugin: nil
+    build-packages:
+      - python3-pip
+    stage-packages:
+      - python3-dev
+      - libmagic1
+      - libffi-dev
+    override-build: |
+      craftctl default
+      ls -lah
+      mkdir -p $CRAFT_PART_INSTALL/opt
+      cd external-import/virustotal-livehunt-notifications
+      cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-virustotal-livehunt-notifications
+      
+      cat entrypoint.sh | grep opencti-connector-virustotal-livehunt-notifications
+      mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
+      pip install \
+        --target $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages \
+        -r $(find -name requirements.txt)
+      cp entrypoint.sh $CRAFT_PART_INSTALL/

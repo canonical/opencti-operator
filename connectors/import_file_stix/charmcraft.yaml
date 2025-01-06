@@ -21,21 +21,22 @@ description: |
 
 config:
   options:
-    connector-log-level:
-      description: The logging level of the connector
-      type: string
-    connector-scope:
-      description: The accepted file types for import
-      type: string
     connector-auto:
-      description: (optional) Enable/disable auto-import of file
+      description: enable/disable auto-import of file
       type: boolean
     connector-confidence-level:
-      description: (optional) From 0 (Unknown) to 100 (Fully trusted)
-      type: integer
+      description: from 0 (Unknown) to 100 (Fully trusted)
+      type: int
+    connector-scope:
+      description: connector scope
+      type: string
     connector-validate-before-import:
-      description: (optional) Validate any bundle before import
+      description: validate any bundle before import
       type: boolean
+    connector-log-level:
+      description: logging level of the connector
+      type: string
+      default: info
 
 
 provides:
