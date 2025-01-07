@@ -27,7 +27,8 @@ select = ["E", "W", "F", "C", "N", "R", "D", "H"]
 ignore = ["W503", "E501", "D107"]
 # D100, D101, D102, D103: Ignore missing docstrings in tests
 # N818: use the suffix “Error” on your exception names **if the exception actually is an error**
-per-file-ignores = ["tests/*:D100,D101,D102,D103,D104,D205,D212,D415", "src/charm.py:N818"]
+# D205, D212: conflict with test docstring format
+per-file-ignores = ["tests/*:D100,D101,D102,D103,D205,D212", "src/charm.py:N818"]
 docstring-convention = "google"
 
 [tool.isort]

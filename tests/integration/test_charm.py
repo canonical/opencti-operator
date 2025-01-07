@@ -27,9 +27,9 @@ async def test_deploy_charm(
     get_unit_ips,
 ):
     """
-    arrange: deploy dependencies of the OpenCTI charm
-    act: deploy the OpenCTI charm
-    assert: deployment is successful
+    arrange: deploy dependencies of the OpenCTI charm.
+    act: deploy the OpenCTI charm.
+    assert: deployment is successful.
     """
     minio = await model.deploy(
         "minio",
@@ -98,9 +98,9 @@ async def test_deploy_charm(
 
 async def test_opencti_workers(get_unit_ips, ops_test):
     """
-    arrange: deploy the OpenCTI charm
-    act: get the number of OpenCTI workers
-    assert: the number of OpenCTI workers matches the expectation
+    arrange: deploy the OpenCTI charm.
+    act: get the number of OpenCTI workers.
+    assert: the number of OpenCTI workers matches the expectation.
     """
     query = {
         "id": "WorkersStatusQuery",
