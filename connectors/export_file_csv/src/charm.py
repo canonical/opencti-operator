@@ -14,7 +14,6 @@ from charms.opencti.v0.opencti_connector import OpenctiConnectorCharm
 
 class OpenctiExportFileCsvConnectorCharm(OpenctiConnectorCharm):
     connector_type = "INTERNAL_EXPORT_FILE"
-    connector_charm_name = "export-file-csv"
 
     @property
     def charm_dir(self) -> pathlib.Path:

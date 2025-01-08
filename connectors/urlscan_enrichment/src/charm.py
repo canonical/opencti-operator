@@ -14,7 +14,6 @@ from charms.opencti.v0.opencti_connector import OpenctiConnectorCharm
 
 class OpenctiUrlscanEnrichmentConnectorCharm(OpenctiConnectorCharm):
     connector_type = "INTERNAL_ENRICHMENT"
-    connector_charm_name = "urlscan-enrichment"
 
     @property
     def charm_dir(self) -> pathlib.Path:

@@ -14,7 +14,6 @@ from charms.opencti.v0.opencti_connector import OpenctiConnectorCharm
 
 class OpenctiImportFileStixConnectorCharm(OpenctiConnectorCharm):
     connector_type = "INTERNAL_IMPORT_FILE"
-    connector_charm_name = "import-file-stix"
 
     @property
     def charm_dir(self) -> pathlib.Path:

@@ -6,10 +6,8 @@ base: ubuntu@24.04
 version: &version '6.4.5'
 summary: OpenCTI Document Import Connector
 description: >-
-  OpenCTI is an open source platform allowing organizations to manage their 
-  cyber threat intelligence knowledge and observables. It has been created
-  in order to structure, store, organize and visualize technical and 
-  non-technical information about cyber threats.
+  OpenCTI connectors are the cornerstone of the OpenCTI platform and
+  allow organizations to easily ingest, enrich or export data.
 platforms:
   amd64:
 

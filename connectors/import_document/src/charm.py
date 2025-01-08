@@ -14,7 +14,6 @@ from charms.opencti.v0.opencti_connector import OpenctiConnectorCharm
 
 class OpenctiImportDocumentConnectorCharm(OpenctiConnectorCharm):
     connector_type = "INTERNAL_IMPORT_FILE"
-    connector_charm_name = "import-document"
 
     @property
     def charm_dir(self) -> pathlib.Path:

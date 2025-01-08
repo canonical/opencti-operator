@@ -12,9 +12,8 @@ import ops
 from charms.opencti.v0.opencti_connector import OpenctiConnectorCharm
 
 
-class Opencti{{ kebab_to_pascal(connector_name) }}ConnectorCharm(OpenctiConnectorCharm):
+class Opencti{{ kebab_to_pascal(name) }}ConnectorCharm(OpenctiConnectorCharm):
     connector_type = "{{ connector_type }}"
-    connector_charm_name = "{{ connector_name }}"
 
     @property
     def charm_dir(self) -> pathlib.Path:
@@ -23,4 +22,4 @@ class Opencti{{ kebab_to_pascal(connector_name) }}ConnectorCharm(OpenctiConnecto
     {{ charm_override | safe | indent(4) }}
 
 if __name__ == "__main__":
-    ops.main(Opencti{{ kebab_to_pascal(connector_name) }}ConnectorCharm)
+    ops.main(Opencti{{ kebab_to_pascal(name) }}ConnectorCharm)

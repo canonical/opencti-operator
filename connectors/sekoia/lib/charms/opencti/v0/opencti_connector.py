@@ -25,17 +25,15 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
     """OpenCTI connector base charm."""
 
     @property
-    def boolean_style(self) -> str:
-        return "json"
-
-    @property
-    @abc.abstractmethod
-    def connector_charm_name(self) -> str:
-        pass
-
-    @property
     @abc.abstractmethod
     def connector_type(self) -> str:
+        """The OpenCTI connector type.
+
+        Can be either "EXTERNAL_IMPORT", "INTERNAL_ENRICHMENT", "INTERNAL_IMPORT_FILE",
+        "INTERNAL_EXPORT_FILE" or "STREAM".
+
+        Returns: the connector type.
+        """
         pass
 
     @property
@@ -50,6 +48,16 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
         self.framework.observe(self.on.secret_changed, self._reconcile)
         self.framework.observe(self.on.upgrade_charm, self._reconcile)
         self.framework.observe(self.on[self._charm_name].pebble_ready, self._reconcile)
+
+    @property
+    def boolean_style(self) -> str:
+        """Dictate how boolean-typed configurations should translate to environment variable values.
+
+        The style should be either "json" for true/false or "python" for True/False.
+
+        Returns: "json" or "python"
+        """
+        return "json"
 
     @property
     def _charm_name(self):
@@ -145,7 +153,7 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
             data = integration.data[self.app]
             data.update(
                 {
-                    "connector_charm_name": self.connector_charm_name,
+                    "connector_charm_name": self._charm_name,
                     "connector_type": self.connector_type,
                 }
             )

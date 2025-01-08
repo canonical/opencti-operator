@@ -1,4 +1,4 @@
-# Copyright 2024 Canonical Ltd.
+# Copyright 2025 Canonical Ltd.
 # See LICENSE file for licensing details.
 
 import operator
@@ -131,6 +131,7 @@ def render_template(
     display_name,
     config,
     output_dir,
+    connector_name: str | None = None,
     charm_override: str = "",
     generate_entrypoint: str = "",
     install_location: str | None = None,
@@ -156,7 +157,8 @@ def render_template(
         template.globals["constant_to_kebab"] = constant_to_kebab
         output.write_text(
             template.render(
-                connector_name=name,
+                name=name,
+                connector_name=name if connector_name is None else connector_name,
                 connector_type=connector_type,
                 version=version,
                 display_name=display_name,
@@ -242,9 +244,9 @@ def generate_alienvault_connector(location: pathlib.Path, version: str):
     )
 
 
-@connector_generator("cisa-known-exploited-vulnerabilities")
+@connector_generator("cisa-kve")
 def generate_cisa_known_exploited_vulnerabilities_connector(location: pathlib.Path, version: str):
-    """Generate opencti cisa-known-exploited-vulnerabilities connector.
+    """Generate opencti cisa-known-exploited-vulnerabilities (cisa-kve) connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/cisa-known-exploited-vulnerabilities
     """
@@ -254,7 +256,8 @@ def generate_cisa_known_exploited_vulnerabilities_connector(location: pathlib.Pa
     )
     config["cisa-create-infrastructures"]["type"] = "boolean"
     render_template(
-        name="cisa-known-exploited-vulnerabilities",
+        name="cisa-kve",
+        connector_name="cisa-known-exploited-vulnerabilities",
         connector_type="EXTERNAL_IMPORT",
         version=version,
         display_name="CISA Known Exploited Vulnerabilities",
@@ -315,14 +318,15 @@ def gen_crowdstrike_connector(location: pathlib.Path, version: str):
     )
 
 
-@connector_generator("cyber-campaign-collection")
+@connector_generator("cyber-campaign")
 def gen_cyber_campaign_collection_connector(location: pathlib.Path, version: str):
-    """Generate opencti cyber-campaign-collection connector.
+    """Generate opencti cyber-campaign-collection (cyber-campaign) connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/cyber-campaign-collection
     """
     render_template(
-        name="cyber-campaign-collection",
+        name="cyber-campaign",
+        connector_name="cyber-campaign-collection",
         connector_type="EXTERNAL_IMPORT",
         version=version,
         display_name="APT & Cybercriminals Campaign Collection",
@@ -503,14 +507,15 @@ def gen_import_file_stix_connector(location: pathlib.Path, version: str):
     )
 
 
-@connector_generator("malwarebazaar-recent-additions")
+@connector_generator("malwarebazaar")
 def gen_malwarebazaar_recent_additions_connector(location: pathlib.Path, version: str):
-    """Generate opencti malwarebazaar-recent-additions connector.
+    """Generate opencti malwarebazaar-recent-additions (malwarebazaar) connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/malwarebazaar-recent-additions
     """
     render_template(
-        name="malwarebazaar-recent-additions",
+        name="malwarebazaar",
+        connector_name="malwarebazaar-recent-additions",
         connector_type="EXTERNAL_IMPORT",
         version=version,
         display_name="MalwareBazaar Recent Additions",
@@ -762,14 +767,15 @@ def gen_urlscan_enrichment_connector(location: pathlib.Path, version: str):
     )
 
 
-@connector_generator("virustotal-livehunt-notifications")
+@connector_generator("virustotal-livehunt")
 def gen_virustotal_livehunt_notifications_connector(location: pathlib.Path, version: str):
-    """Generate opencti virustotal-livehunt-notifications connector.
+    """Generate opencti virustotal-livehunt-notifications (virustotal-livehunt) connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/virustotal-livehunt-notifications
     """
     render_template(
-        name="virustotal-livehunt-notifications",
+        name="virustotal-livehunt",
+        connector_name="virustotal-livehunt-notifications",
         connector_type="EXTERNAL_IMPORT",
         version=version,
         display_name="VirusTotal Livehunt Notifications",

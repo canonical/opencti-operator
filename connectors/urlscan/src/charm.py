@@ -14,7 +14,6 @@ from charms.opencti.v0.opencti_connector import OpenctiConnectorCharm
 
 class OpenctiUrlscanConnectorCharm(OpenctiConnectorCharm):
     connector_type = "EXTERNAL_IMPORT"
-    connector_charm_name = "urlscan"
 
     @property
     def charm_dir(self) -> pathlib.Path:

@@ -14,7 +14,6 @@ from charms.opencti.v0.opencti_connector import OpenctiConnectorCharm
 
 class OpenctiAlienvaultConnectorCharm(OpenctiConnectorCharm):
     connector_type = "EXTERNAL_IMPORT"
-    connector_charm_name = "alienvault"
 
     @property
     def charm_dir(self) -> pathlib.Path:

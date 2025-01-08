@@ -14,7 +14,6 @@ from charms.opencti.v0.opencti_connector import OpenctiConnectorCharm
 
 class OpenctiAbuseipdbIpblacklistConnectorCharm(OpenctiConnectorCharm):
     connector_type = "EXTERNAL_IMPORT"
-    connector_charm_name = "abuseipdb-ipblacklist"
 
     @property
     def charm_dir(self) -> pathlib.Path:
