@@ -135,9 +135,9 @@ async def test_opencti_workers(get_unit_ips, ops_test):
 
 async def test_opencti_client(get_unit_ips, ops_test):
     """
-    arrange: deploy the OpenCTI charm
-    act: use the OpenCTI client to create some users
-    assert: users are created normally
+    arrange: deploy the OpenCTI charm.
+    act: use the OpenCTI client to create some users.
+    assert: users are created normally.
     """
     _, stdout, _ = await ops_test.juju(
         "ssh", "--container", "opencti", "opencti/0", "pebble", "plan"

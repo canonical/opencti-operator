@@ -664,9 +664,9 @@ _add_connector_test_params(
 @pytest.mark.parametrize("connector_name, charm_config, environment", _CONNECTOR_TEST_PARAMS)
 def test_connector_environment(connector_name, charm_config, environment):
     """
-    arrange: provide the connector charm with the required integrations and configurations
-    act: simulate a config-changed event
-    assert: the installed Pebble plan matches the expectation
+    arrange: provide the connector charm with the required integrations and configurations.
+    act: simulate a config-changed event.
+    assert: the installed Pebble plan matches the expectation.
     """
     name = f"opencti-{connector_name}-connector"
     module = connector_name

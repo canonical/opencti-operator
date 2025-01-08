@@ -341,9 +341,9 @@ def test_redis_library_workaround():
 
 def test_opencti_connector(patch_opencti_client):
     """
-    arrange: provide the charm with the required integrations and configurations
-    act: simulate a config-changed event
-    assert: opencti charm should configure opencti users properly for the connector
+    arrange: provide the charm with the required integrations and configurations.
+    act: simulate a config-changed event.
+    assert: opencti charm should configure opencti users properly for the connector.
     """
     ctx = ops.testing.Context(OpenCTICharm)
     opencti_connector_integration = ops.testing.Relation(
