@@ -12,7 +12,7 @@ import ops
 from charms.opencti.v0.opencti_connector import OpenctiConnectorCharm
 
 
-class OpenctiCisaKveConnectorCharm(OpenctiConnectorCharm):
+class OpenctiCisaKevConnectorCharm(OpenctiConnectorCharm):
     connector_type = "EXTERNAL_IMPORT"
 
     @property
@@ -22,4 +22,4 @@ class OpenctiCisaKveConnectorCharm(OpenctiConnectorCharm):
     
 
 if __name__ == "__main__":
-    ops.main(OpenctiCisaKveConnectorCharm)
+    ops.main(OpenctiCisaKevConnectorCharm)

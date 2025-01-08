@@ -130,8 +130,8 @@ _add_connector_test_params(
 )
 
 _add_connector_test_params(
-    name="cisa-kve",
-    connector_name="cisa-kve",
+    name="cisa-kev",
+    connector_name="cisa-kev",
     charm_config={
         "connector-scope": "cisa",
         "connector-run-and-terminate": False,
@@ -147,7 +147,7 @@ _add_connector_test_params(
     environment={
         "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "CONNECTOR_NAME": "opencti-cisa-kve-connector",
+        "CONNECTOR_NAME": "opencti-cisa-kev-connector",
         "CONNECTOR_SCOPE": "cisa",
         "CONNECTOR_RUN_AND_TERMINATE": "false",
         "CONNECTOR_LOG_LEVEL": "error",

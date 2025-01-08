@@ -2,7 +2,7 @@
 # See LICENSE file for licensing details.
 
 name: opencti-virustotal-livehunt-connector
-title: OpenCTI VirusTotal Livehunt Notifications Charm
+title: OpenCTI VirusTotal Livehunt Charm
 summary: OpenCTI VirusTotal Livehunt Notifications charm.
 links:
   documentation: https://discourse.charmhub.io

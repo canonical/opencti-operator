@@ -132,6 +132,7 @@ def render_template(
     config,
     output_dir,
     connector_name: str | None = None,
+    display_name_short: str | None = None,
     charm_override: str = "",
     generate_entrypoint: str = "",
     install_location: str | None = None,
@@ -162,6 +163,9 @@ def render_template(
                 connector_type=connector_type,
                 version=version,
                 display_name=display_name,
+                display_name_short=(
+                    display_name if display_name_short is None else display_name_short
+                ),
                 config=yaml.safe_dump(
                     {"config": {"options": sort_config(config)}}, width=99999, sort_keys=False
                 ),
@@ -244,9 +248,9 @@ def generate_alienvault_connector(location: pathlib.Path, version: str):
     )
 
 
-@connector_generator("cisa-kve")
+@connector_generator("cisa-kev")
 def generate_cisa_known_exploited_vulnerabilities_connector(location: pathlib.Path, version: str):
-    """Generate opencti cisa-known-exploited-vulnerabilities (cisa-kve) connector.
+    """Generate opencti cisa-known-exploited-vulnerabilities (cisa-kev) connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/cisa-known-exploited-vulnerabilities
     """
@@ -256,11 +260,12 @@ def generate_cisa_known_exploited_vulnerabilities_connector(location: pathlib.Pa
     )
     config["cisa-create-infrastructures"]["type"] = "boolean"
     render_template(
-        name="cisa-kve",
+        name="cisa-kev",
         connector_name="cisa-known-exploited-vulnerabilities",
         connector_type="EXTERNAL_IMPORT",
         version=version,
         display_name="CISA Known Exploited Vulnerabilities",
+        display_name_short="CISA KEV",
         output_dir=location,
         config=config,
     )
@@ -330,6 +335,7 @@ def gen_cyber_campaign_collection_connector(location: pathlib.Path, version: str
         connector_type="EXTERNAL_IMPORT",
         version=version,
         display_name="APT & Cybercriminals Campaign Collection",
+        display_name_short="APT & Cyber Campaign",
         output_dir=location,
         config={
             "connector-scope": {
@@ -519,6 +525,7 @@ def gen_malwarebazaar_recent_additions_connector(location: pathlib.Path, version
         connector_type="EXTERNAL_IMPORT",
         version=version,
         display_name="MalwareBazaar Recent Additions",
+        display_name_short="MalwareBazaar",
         output_dir=location,
         config={
             "connector-log-level": {
@@ -779,6 +786,7 @@ def gen_virustotal_livehunt_notifications_connector(location: pathlib.Path, vers
         connector_type="EXTERNAL_IMPORT",
         version=version,
         display_name="VirusTotal Livehunt Notifications",
+        display_name_short="VirusTotal Livehunt",
         output_dir=location,
         config={
             **DEFAULT_CONFIG,

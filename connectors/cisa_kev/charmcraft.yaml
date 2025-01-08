@@ -1,8 +1,8 @@
 # Copyright 2025 Canonical Ltd.
 # See LICENSE file for licensing details.
 
-name: opencti-cisa-kve-connector
-title: OpenCTI CISA Known Exploited Vulnerabilities Charm
+name: opencti-cisa-kev-connector
+title: OpenCTI CISA KEV Charm
 summary: OpenCTI CISA Known Exploited Vulnerabilities charm.
 links:
   documentation: https://discourse.charmhub.io
@@ -62,10 +62,10 @@ parts:
   charm: {}
 
 containers:
-  opencti-cisa-kve-connector:
-    resource: opencti-cisa-kve-connector-image
+  opencti-cisa-kev-connector:
+    resource: opencti-cisa-kev-connector-image
 resources:
-  opencti-cisa-kve-connector-image:
+  opencti-cisa-kev-connector-image:
     type: oci-image
     description: OCI image for the OpenCTI CISA Known Exploited Vulnerabilities connector.
 
