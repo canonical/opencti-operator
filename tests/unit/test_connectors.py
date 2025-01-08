@@ -130,8 +130,8 @@ _add_connector_test_params(
 )
 
 _add_connector_test_params(
-    name="cisa-known-exploited-vulnerabilities",
-    connector_name="cisa-known-exploited-vulnerabilities",
+    name="cisa-kve",
+    connector_name="cisa-kve",
     charm_config={
         "connector-scope": "cisa",
         "connector-run-and-terminate": False,
@@ -147,7 +147,7 @@ _add_connector_test_params(
     environment={
         "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "CONNECTOR_NAME": "opencti-cisa-known-exploited-vulnerabilities-connector",
+        "CONNECTOR_NAME": "opencti-cisa-kve-connector",
         "CONNECTOR_SCOPE": "cisa",
         "CONNECTOR_RUN_AND_TERMINATE": "false",
         "CONNECTOR_LOG_LEVEL": "error",
@@ -231,8 +231,8 @@ _add_connector_test_params(
 
 
 _add_connector_test_params(
-    name="cyber-campaign-collection",
-    connector_name="cyber-campaign-collection",
+    name="cyber-campaign",
+    connector_name="cyber-campaign",
     charm_config={
         "connector-scope": "report",
         "connector-run-and-terminate": False,
@@ -244,7 +244,7 @@ _add_connector_test_params(
     environment={
         "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "CONNECTOR_NAME": "opencti-cyber-campaign-collection-connector",
+        "CONNECTOR_NAME": "opencti-cyber-campaign-connector",
         "CONNECTOR_SCOPE": "report",
         "CONNECTOR_TYPE": "EXTERNAL_IMPORT",
         "CONNECTOR_RUN_AND_TERMINATE": "false",
@@ -379,8 +379,8 @@ _add_connector_test_params(
 )
 
 _add_connector_test_params(
-    name="malwarebazaar-recent-additions",
-    connector_name="malwarebazaar-recent-additions",
+    name="malwarebazaar",
+    connector_name="malwarebazaar",
     charm_config={
         "connector-log-level": "error",
         "malwarebazaar-recent-additions-api-url": "https://mb-api.abuse.ch/api/v1/",
@@ -393,7 +393,7 @@ _add_connector_test_params(
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
         "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
-        "CONNECTOR_NAME": "opencti-malwarebazaar-recent-additions-connector",
+        "CONNECTOR_NAME": "opencti-malwarebazaar-connector",
         "CONNECTOR_LOG_LEVEL": "error",
         "CONNECTOR_TYPE": "EXTERNAL_IMPORT",
         "MALWAREBAZAAR_RECENT_ADDITIONS_API_URL": "https://mb-api.abuse.ch/api/v1/",
@@ -592,8 +592,8 @@ _add_connector_test_params(
 )
 
 _add_connector_test_params(
-    name="virustotal-livehunt-notifications",
-    connector_name="virustotal-livehunt-notifications",
+    name="virustotal-livehunt",
+    connector_name="virustotal-livehunt",
     charm_config={
         "connector-scope": "StixFile,Indicator,Incident",
         "connector-log-level": "error",
@@ -614,7 +614,7 @@ _add_connector_test_params(
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
         "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
-        "CONNECTOR_NAME": "opencti-virustotal-livehunt-notifications-connector",
+        "CONNECTOR_NAME": "opencti-virustotal-livehunt-connector",
         "CONNECTOR_SCOPE": "StixFile,Indicator,Incident",
         "CONNECTOR_LOG_LEVEL": "error",
         "CONNECTOR_TYPE": "EXTERNAL_IMPORT",
