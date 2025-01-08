@@ -140,6 +140,8 @@ def render_template(
 ):
     if "_" in name or name.lower() != name:
         raise ValueError(f"connector name should be in kebab case: {name}")
+    connector_name = connector_name or name
+    display_name_short = display_name_short or display_name
     output_dir.mkdir(exist_ok=True)
     for source in template_dir.glob("**/*"):
         file = source.relative_to(template_dir)
@@ -159,7 +161,7 @@ def render_template(
         output.write_text(
             template.render(
                 name=name,
-                connector_name=name if connector_name is None else connector_name,
+                connector_name=connector_name,
                 connector_type=connector_type,
                 version=version,
                 display_name=display_name,
@@ -171,7 +173,7 @@ def render_template(
                 ),
                 charm_override=charm_override,
                 install_location=(
-                    install_location if install_location else f"opencti-connector-{name}"
+                    install_location if install_location else f"opencti-connector-{connector_name}"
                 ),
                 generate_entrypoint=generate_entrypoint,
             ),

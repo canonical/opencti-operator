@@ -29,9 +29,9 @@ parts:
       ls -lah
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd external-import/virustotal-livehunt-notifications
-      cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-virustotal-livehunt
+      cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-virustotal-livehunt-notifications
       
-      cat entrypoint.sh | grep opencti-connector-virustotal-livehunt
+      cat entrypoint.sh | grep opencti-connector-virustotal-livehunt-notifications
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \
         --target $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages \

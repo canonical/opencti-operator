@@ -29,9 +29,9 @@ parts:
       ls -lah
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd external-import/cyber-campaign-collection
-      cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-cyber-campaign
+      cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-cyber-campaign-collection
       
-      cat entrypoint.sh | grep opencti-connector-cyber-campaign
+      cat entrypoint.sh | grep opencti-connector-cyber-campaign-collection
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \
         --target $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages \
