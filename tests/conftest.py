@@ -1,4 +1,4 @@
-# Copyright 2024 Canonical Ltd.
+# Copyright 2025 Canonical Ltd.
 # See LICENSE file for licensing details.
 
 """Fixtures for charm tests."""
@@ -11,3 +11,5 @@ def pytest_addoption(parser):
         parser: Pytest parser.
     """
     parser.addoption("--charm-file", action="store")
+    parser.addoption("--opencti-image", action="store")
+    parser.addoption("--machine-controller", action="store", default="localhost")
