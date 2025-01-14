@@ -4,13 +4,19 @@
 """OpenCTI connector charm library."""
 
 # The unique Charmhub library identifier, never change it
-LIBID = "bced1658f20f49d28b88f61f83c2d233"
+LIBID = "312661b5c30e4aeba8767706f3974899"
 
+# Increment this major API version when introducing breaking changes
 LIBAPI = 0
+
+# Increment this PATCH version before using `charmcraft publish-lib` or reset
+# to 0 if you are raising the major API version
 LIBPATCH = 1
 
 import abc
+import os
 import pathlib
+import urllib.parse
 import uuid
 
 import ops
@@ -191,6 +197,21 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
                 environment[self.kebab_to_constant(config)] = str(value).lower()
             else:
                 environment[self.kebab_to_constant(config)] = str(value)
+        http_proxy = os.environ.get("JUJU_CHARM_HTTP_PROXY")
+        https_proxy = os.environ.get("JUJU_CHARM_HTTPS_PROXY")
+        no_proxy = os.environ.get("JUJU_CHARM_NO_PROXY")
+        if http_proxy:
+            environment["HTTP_PROXY"] = http_proxy
+            environment["http_proxy"] = http_proxy
+        if https_proxy:
+            environment["HTTPS_PROXY"] = https_proxy
+            environment["https_proxy"] = https_proxy
+        no_proxy_list = no_proxy.split(",") if no_proxy else []
+        if http_proxy or https_proxy:
+            opencti_host = urllib.parse.urlparse(opencti_url).hostname
+            no_proxy_list.append(opencti_host)
+            environment["NO_PROXY"] = https_proxy
+            environment["no_proxy"] = https_proxy
         return environment
 
     def _reconcile_connector(self) -> None:
