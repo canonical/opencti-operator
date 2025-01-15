@@ -8,6 +8,7 @@ on:
 
 jobs:
   find-charms:
+    name: Find Charms
     runs-on: ubuntu-latest
     outputs:
       charm-dirs: ${{ steps.charm-dirs.outputs.charm-dirs }}
@@ -58,8 +59,9 @@ jobs:
         run: |
           echo charm-name=`yq -r .name charmcraft.yaml` >> $GITHUB_OUTPUT
       - run: |
-          sudo apt update && apt install python3-yaml -y
-      - shell: python
+          sudo apt update && sudo apt install python3-yaml -y
+      - name: update upstream-source
+        shell: python
         run: |
           import yaml
           
