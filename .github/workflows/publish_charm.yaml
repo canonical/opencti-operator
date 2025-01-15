@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
       - id: charm-dirs
         run: |
-          echo charm-dirs=`find -name charmcraft.yaml | jq --raw-input --slurp 'split("\n") | map(select(. != ""))'` >> $GITHUB_OUTPUT
+          echo charm-dirs=`find -name charmcraft.yaml | xargs dirname | jq --raw-input --slurp 'split("\n") | map(select(. != ""))'` >> $GITHUB_OUTPUT
 
   publish-charm:
     needs: [ find-charms ]
