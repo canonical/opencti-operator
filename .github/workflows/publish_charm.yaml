@@ -43,7 +43,7 @@ jobs:
       - name: build rock
         id: rockcraft
         run: |
-          sudo snap install --channel stable --classic rockcraft
+          sudo snap install --channel latest/stable --classic rockcraft
           cd ${{ steps.rock-dir.outputs.rock-dir }}
           rockcraft pack --verbosity trace
           echo rock=`ls *.rock` >> $GITHUB_OUTPUT
@@ -56,8 +56,8 @@ jobs:
           rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false oci-archive:${{ steps.rockcraft.outputs.rock }} docker-daemon:rock:latest
       - name: build charm
         id: charmcraft
-        run:
-          sudo snap install --channel stable --classic charmcraft
+        run: |
+          sudo snap install --channel latest/stable --classic charmcraft
           charmcraft pack --verbosity trace
           echo charms=`ls *.charm` >> $GITHUB_OUTPUT
       - run: |
