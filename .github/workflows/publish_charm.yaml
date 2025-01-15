@@ -47,7 +47,7 @@ jobs:
           sudo snap install --channel stable --classic rockcraft
           cd ${{ steps.rock-dir.outputs.rock-dir }}
           rockcraft pack --verbosity trace
-          echo rock=`ls *.rock`
+          echo rock=`ls *.rock` >> $GITHUB_OUTPUT
       - run: |
           echo rockcraft pack:
           echo ${{ steps.rockcraft.outputs.rock }}
@@ -59,7 +59,7 @@ jobs:
         run:
           sudo snap install --channel stable --classic charmcraft
           charmcraft pack --verbosity trace
-          echo charms=`ls *.charm`
+          echo charms=`ls *.charm` >> $GITHUB_OUTPUT
       - run: |
           echo charmcraft pack:
           echo ${{ steps.charmcraft.outputs.charms }}
