@@ -40,9 +40,14 @@ jobs:
           echo rock-dir=`dirname *rock/rockcraft.yaml` >> $GITHUB_OUTPUT
       - name: build rock
         id: rockcraft
-        uses: canonical/craft-actions/rockcraft-pack@main
-        with:
-          path: ${{ steps.rock-dir.outputs.rock-dir }}
+        run: |
+          sudo snap install lxd
+          sudo lxd init --auto
+          sudo iptables -P FORWARD ACCEPT
+          sudo snap install --channel stable --classic rockcraft
+          cd ${{ steps.rock-dir.outputs.rock-dir }}
+          rockcraft pack --verbosity trace
+          echo rock=`ls *.rock`
       - run: |
           echo rockcraft pack:
           echo ${{ steps.rockcraft.outputs.rock }}
@@ -51,7 +56,10 @@ jobs:
           rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false oci-archive:${{ steps.rockcraft.outputs.rock }} docker-daemon:rock:latest
       - name: build charm
         id: charmcraft
-        uses: canonical/craft-actions/charmcraft/pack@main
+        run:
+          sudo snap install --channel stable --classic charmcraft
+          charmcraft pack --verbosity trace
+          echo charms=`ls *.charm`
       - run: |
           echo charmcraft pack:
           echo ${{ steps.charmcraft.outputs.charms }}
