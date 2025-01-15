@@ -2,6 +2,7 @@
 # See LICENSE file for licensing details.
 
 """Fixtures for charm unit tests."""
+
 import typing
 import unittest.mock
 from unittest.mock import MagicMock
