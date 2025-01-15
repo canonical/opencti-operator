@@ -52,6 +52,7 @@ jobs:
           echo ${{ steps.rockcraft.outputs.rock }}
       - name: upload rock
         run: |
+          cd ${{ steps.rock-dir.outputs.rock-dir }}
           rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false oci-archive:${{ steps.rockcraft.outputs.rock }} docker-daemon:rock:latest
       - name: build charm
         id: charmcraft
