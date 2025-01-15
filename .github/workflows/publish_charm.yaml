@@ -34,6 +34,8 @@ jobs:
           rm -rf .* * || :
           cp -rp $TEMP_DIR/. .
           rm -rf $TEMP_DIR
+      - name: setup lxd
+        uses: canonical/setup-lxd@v0.1.2
       - name: find rock
         id: rock-dir
         run: |
@@ -41,9 +43,6 @@ jobs:
       - name: build rock
         id: rockcraft
         run: |
-          sudo snap install lxd
-          sudo lxd init --auto
-          sudo iptables -P FORWARD ACCEPT
           sudo snap install --channel stable --classic rockcraft
           cd ${{ steps.rock-dir.outputs.rock-dir }}
           rockcraft pack --verbosity trace
