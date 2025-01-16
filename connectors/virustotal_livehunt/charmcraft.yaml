@@ -3,7 +3,7 @@
 
 name: opencti-virustotal-livehunt-connector
 title: OpenCTI VirusTotal Livehunt Charm
-summary: OpenCTI VirusTotal Livehunt Notifications charm.
+summary: OpenCTI VirusTotal Livehunt Notifications connector charm.
 links:
   documentation: https://discourse.charmhub.io
   issues: https://github.com/canonical/opencti-operator/issues

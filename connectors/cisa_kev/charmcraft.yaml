@@ -3,7 +3,7 @@
 
 name: opencti-cisa-kev-connector
 title: OpenCTI CISA KEV Charm
-summary: OpenCTI CISA Known Exploited Vulnerabilities charm.
+summary: OpenCTI CISA Known Exploited Vulnerabilities connector charm.
 links:
   documentation: https://discourse.charmhub.io
   issues: https://github.com/canonical/opencti-operator/issues

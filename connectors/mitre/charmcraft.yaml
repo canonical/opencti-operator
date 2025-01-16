@@ -3,7 +3,7 @@
 
 name: opencti-mitre-connector
 title: OpenCTI MITRE Datasets Charm
-summary: OpenCTI MITRE Datasets charm.
+summary: OpenCTI MITRE Datasets connector charm.
 links:
   documentation: https://discourse.charmhub.io
   issues: https://github.com/canonical/opencti-operator/issues

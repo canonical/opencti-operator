@@ -3,7 +3,7 @@
 
 name: opencti-vxvault-connector
 title: OpenCTI VXVault Charm
-summary: OpenCTI VXVault charm.
+summary: OpenCTI VXVault connector charm.
 links:
   documentation: https://discourse.charmhub.io
   issues: https://github.com/canonical/opencti-operator/issues

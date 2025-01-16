@@ -3,7 +3,7 @@
 
 name: opencti-abuseipdb-ipblacklist-connector
 title: OpenCTI abuseipdb ipblacklist Charm
-summary: OpenCTI abuseipdb ipblacklist charm.
+summary: OpenCTI abuseipdb ipblacklist connector charm.
 links:
   documentation: https://discourse.charmhub.io
   issues: https://github.com/canonical/opencti-operator/issues

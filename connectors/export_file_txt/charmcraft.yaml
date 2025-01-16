@@ -3,7 +3,7 @@
 
 name: opencti-export-file-txt-connector
 title: OpenCTI Export TXT File Charm
-summary: OpenCTI Export TXT File charm.
+summary: OpenCTI Export TXT File connector charm.
 links:
   documentation: https://discourse.charmhub.io
   issues: https://github.com/canonical/opencti-operator/issues

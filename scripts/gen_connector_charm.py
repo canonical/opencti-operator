@@ -155,7 +155,7 @@ def render_template(
             output.write_bytes(source.read_bytes())
             continue
         output = pathlib.Path(str(output).removesuffix(".j2"))
-        template = jinja2.Template(source.read_text())
+        template = jinja2.Template(source.read_text(), keep_trailing_newline=True)
         template.globals["kebab_to_pascal"] = kebab_to_pascal
         template.globals["constant_to_kebab"] = constant_to_kebab
         output.write_text(

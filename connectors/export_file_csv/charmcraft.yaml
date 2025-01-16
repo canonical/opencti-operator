@@ -3,7 +3,7 @@
 
 name: opencti-export-file-csv-connector
 title: OpenCTI Export CSV File Charm
-summary: OpenCTI Export CSV File charm.
+summary: OpenCTI Export CSV File connector charm.
 links:
   documentation: https://discourse.charmhub.io
   issues: https://github.com/canonical/opencti-operator/issues

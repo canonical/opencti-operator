@@ -3,7 +3,7 @@
 
 name: opencti-export-file-stix-connector
 title: OpenCTI Export STIX File Charm
-summary: OpenCTI Export STIX File charm.
+summary: OpenCTI Export STIX File connector charm.
 links:
   documentation: https://discourse.charmhub.io
   issues: https://github.com/canonical/opencti-operator/issues

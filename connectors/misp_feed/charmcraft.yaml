@@ -3,7 +3,7 @@
 
 name: opencti-misp-feed-connector
 title: OpenCTI MISP Source Charm
-summary: OpenCTI MISP Source charm.
+summary: OpenCTI MISP Source connector charm.
 links:
   documentation: https://discourse.charmhub.io
   issues: https://github.com/canonical/opencti-operator/issues
