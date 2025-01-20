@@ -159,7 +159,7 @@ def render_template(
         install_location: The install location of the connector inside Rock.
         template_dir: The directory containing the connector template.
     """
-    if "_" in name or name.lower() != name:
+    if "_" in name or not name.islower():
         raise ValueError(f"connector name should be in kebab case: {name}")
     connector_name = connector_name or name
     display_name_short = display_name_short or display_name
