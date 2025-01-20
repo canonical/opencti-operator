@@ -115,6 +115,8 @@ class OpenCTICharm(ops.CharmBase):
         )
         self.framework.observe(self.on.opencti_peer_relation_broken, self._cleanup_secrets)
         self.framework.observe(self.on.stop, self._cleanup_secrets)
+        self.framework.observe(self.on.opencti_connector_relation_joined, self._reconcile)
+        self.framework.observe(self.on.opencti_connector_relation_changed, self._reconcile)
 
     def _register_opensearch(self) -> OpenSearchRequires:
         """Create OpenSearchRequires instance and register related event handlers.

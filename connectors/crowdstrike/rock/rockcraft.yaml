@@ -24,6 +24,8 @@ parts:
       - python3
       - libmagic1
       - libffi8
+      - libxslt1.1
+      - libxml2
     override-build: |
       craftctl default
       mkdir -p $CRAFT_PART_INSTALL/opt

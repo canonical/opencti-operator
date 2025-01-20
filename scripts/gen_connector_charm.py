@@ -330,6 +330,11 @@ def extract_crowdstrike_configs(doc_url: str) -> dict:
         }
     result.update(DEFAULT_CONFIG)
     del result["connector-scope"]
+    result["crowdstrike-default-x-opencti-score"] = {
+        "description": "(optional) crowdstrike default x opencti score.",
+        "type": "int",
+        "optional": True,
+    }
     return result
 
 

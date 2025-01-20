@@ -98,6 +98,10 @@ config:
       description: (optional) The base URL for the CrowdStrike APIs.
       type: string
       optional: true
+    crowdstrike-default-x-opencti-score:
+      description: (optional) crowdstrike default x opencti score.
+      type: int
+      optional: true
     crowdstrike-indicator-high-score:
       description: (optional) If any of the low score labels are found on the indicator then this value is used as a score.
       type: int
