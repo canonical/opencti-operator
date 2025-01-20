@@ -223,6 +223,8 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
     def _reconcile_connector(self) -> None:
         """Reconcile connector service."""
         container = self.unit.get_container(self._charm_name)
+        if not container.can_connect():
+            raise NotReady("waiting for container ready")
         container.add_layer(
             "connector",
             layer=ops.pebble.LayerDict(
