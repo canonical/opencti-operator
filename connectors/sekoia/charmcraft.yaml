@@ -24,26 +24,33 @@ config:
     connector-scope:
       type: string
       description: connector scope
+      optional: false
     sekoia-api-key:
       description: Sekoia API key
       type: string
+      optional: false
     sekoia-collection:
       description: Sekoia collection
       type: string
+      optional: false
     sekoia-create-observables:
       description: create observables from indicators
       type: boolean
+      optional: false
     connector-log-level:
       type: string
       description: determines the verbosity of the logs. Options are debug, info, warn, or error
       default: info
+      optional: false
     sekoia-base-url:
       description: Sekoia base url
       type: string
       default: https://api.sekoia.io
+      optional: false
     sekoia-start-date:
       description: (optional) the date to start consuming data from. Maybe in the formats YYYY-MM-DD or YYYY-MM-DDT00:00:00
       type: string
+      optional: true
 
 
 provides:

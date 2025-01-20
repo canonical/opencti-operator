@@ -24,19 +24,24 @@ config:
     connector-auto:
       description: enable/disable auto-import of file
       type: boolean
+      optional: false
     connector-confidence-level:
       description: from 0 (Unknown) to 100 (Fully trusted)
       type: int
+      optional: false
     connector-scope:
       description: connector scope
       type: string
+      optional: false
     connector-validate-before-import:
       description: validate any bundle before import
       type: boolean
+      optional: false
     connector-log-level:
       description: logging level of the connector
       type: string
       default: info
+      optional: false
 
 
 provides:

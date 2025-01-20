@@ -75,13 +75,7 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
         Raises:
             RuntimeError: If charm metadata file doesn't exist.
         """
-        config_file = self.charm_dir / "metadata.yaml"
-        if config_file.exists():
-            return yaml.safe_load(config_file.read_text())["name"]
-        config_file = self.charm_dir / "charmcraft.yaml"
-        if config_file.exists():
-            return yaml.safe_load(config_file.read_text())["name"]
-        raise RuntimeError("charm metadata doesn't exist")
+        return self.meta.name
 
     def _config_metadata(self) -> dict:
         """Get charm configuration metadata.
@@ -189,14 +183,26 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
             "CONNECTOR_NAME": self.app.name,
             "CONNECTOR_TYPE": self.connector_type,
         }
+
         for config, config_meta in self._config_metadata().items():
             value = self.config.get(config)
             if value is None:
                 continue
+            environment[self.kebab_to_constant(config)] = str(value)
             if self.boolean_style == "json" and isinstance(value, bool):
                 environment[self.kebab_to_constant(config)] = str(value).lower()
-            else:
-                environment[self.kebab_to_constant(config)] = str(value)
+
+        environment.update(self._get_proxy_environment())
+
+        return environment
+
+    def _get_proxy_environment(self) -> dict[str, str]:
+        """Get proxy environment variables.
+
+        Returns:
+            proxy environment variables.
+        """
+        environment = {}
         http_proxy = os.environ.get("JUJU_CHARM_HTTP_PROXY")
         https_proxy = os.environ.get("JUJU_CHARM_HTTPS_PROXY")
         no_proxy = os.environ.get("JUJU_CHARM_NO_PROXY")

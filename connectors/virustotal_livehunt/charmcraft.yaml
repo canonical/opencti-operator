@@ -24,49 +24,64 @@ config:
     connector-scope:
       type: string
       description: connector scope
+      optional: false
     virustotal-livehunt-notifications-api-key:
       description: Private API Key
       type: string
+      optional: false
     virustotal-livehunt-notifications-create-alert:
       description: Set to true to create alerts
       type: boolean
+      optional: false
     virustotal-livehunt-notifications-create-file:
       description: Set to true to create file object linked to the alerts
       type: boolean
+      optional: false
     virustotal-livehunt-notifications-create-yara-rule:
       description: Set to true to create yara rule linked to the alert and the file
       type: boolean
+      optional: false
     virustotal-livehunt-notifications-delete-notification:
       description: Set to true to remove livehunt notifications
       type: boolean
+      optional: false
     virustotal-livehunt-notifications-filter-with-tag:
       description: Filter livehunt notifications with this tag
       type: string
+      optional: false
     virustotal-livehunt-notifications-interval-sec:
       description: Time to wait in seconds between subsequent requests
       type: int
+      optional: false
     virustotal-livehunt-notifications-max-age-days:
       description: Only create the alert if the first submission of the file is not older than `max_age_days`
       type: int
+      optional: false
     virustotal-livehunt-notifications-upload-artifact:
       description: Set to true to upload the file to opencti
       type: boolean
+      optional: false
     connector-log-level:
       type: string
       description: determines the verbosity of the logs. Options are debug, info, warn, or error
       default: info
+      optional: false
     virustotal-livehunt-notifications-extensions:
       description: (optional) Comma separated filter to only download files matching these extensions
       type: string
+      optional: true
     virustotal-livehunt-notifications-max-file-size:
       description: (optional) Don't download files larger than this many bytes
       type: int
+      optional: true
     virustotal-livehunt-notifications-min-file-size:
       description: (optional) Don't download files smaller than this many bytes
       type: int
+      optional: true
     virustotal-livehunt-notifications-min-positives:
       description: (optional) Don't download files with less than this many vendors marking malicious
       type: int
+      optional: true
 
 
 provides:

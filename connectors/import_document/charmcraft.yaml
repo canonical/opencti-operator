@@ -24,25 +24,32 @@ config:
     connector-auto:
       description: enable/disable auto import of report file
       type: boolean
+      optional: false
     connector-confidence-level:
       description: connector confidence level, from 0 (unknown) to 100 (fully trusted).
       type: int
+      optional: false
     connector-only-contextual:
       description: true only extract data related to an entity (a report, a threat actor, etc.)
       type: boolean
+      optional: false
     connector-scope:
       description: connector scope
       type: string
+      optional: false
     connector-validate-before-import:
       description: validate any bundle before import.
       type: boolean
+      optional: false
     import-document-create-indicator:
       description: import document create indicator
       type: boolean
+      optional: false
     connector-log-level:
       description: log level for this connector.
       type: string
       default: info
+      optional: false
 
 
 provides:

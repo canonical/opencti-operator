@@ -24,23 +24,29 @@ config:
     connector-scope:
       description: connector scope
       type: string
+      optional: false
     vxvault-create-indicators:
       description: vxvault create indicators
       type: boolean
+      optional: false
     vxvault-interval:
       description: In days, must be strictly greater than 1
       type: int
+      optional: false
     vxvault-ssl-verify:
       description: Whether to verify SSL certificates
       type: boolean
       default: true
+      optional: false
     vxvault-url:
       description: vxvault url
       type: string
       default: https://vxvault.net/URL_List.php
+      optional: false
     connector-log-level:
       description: (optional) The log level of the connector
       type: string
+      optional: true
 
 
 provides:

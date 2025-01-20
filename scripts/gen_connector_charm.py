@@ -17,6 +17,8 @@ _CONNECTOR_GENERATORS = {}
 
 
 def connector_generator(name: str) -> Callable:
+    """Decorator for marking connector generators."""
+
     def decorator(func: Callable) -> Callable:
         _CONNECTOR_GENERATORS[name] = func
         return func
@@ -25,11 +27,16 @@ def connector_generator(name: str) -> Callable:
 
 
 DEFAULT_CONFIG = {
-    "connector-scope": {"type": "string", "description": "connector scope"},
+    "connector-scope": {
+        "type": "string",
+        "description": "connector scope",
+        "optional": False,
+    },
     "connector-log-level": {
         "type": "string",
         "description": "determines the verbosity of the logs. Options are debug, info, warn, or error",
         "default": "info",
+        "optional": False,
     },
 }
 
@@ -42,19 +49,23 @@ CHARM_MANAGED_ENV = {
 
 
 def constant_to_kebab(string: str) -> str:
+    """Convert names in constant case to kebab case."""
     return string.replace("_", "-").lower()
 
 
 def kebab_to_pascal(string: str) -> str:
+    """Convert names in kebab case to pascal case."""
     words = string.split("-")
     return "".join(word.capitalize() for word in words)
 
 
 def kebab_to_snake(string: str) -> str:
+    """Convert names in kebab case to snake case."""
     return string.replace("-", "_")
 
 
 def extract_tables(doc) -> list[dict[str, str]]:
+    """Extract table rows from a markdown document."""
     html = markdown.markdown(doc, extensions=["tables"])
     soup = BeautifulSoup(html, "html.parser")
     tables = soup.find_all("table")
@@ -72,6 +83,7 @@ def extract_tables(doc) -> list[dict[str, str]]:
 
 
 def extract_template_configs(doc_url: str) -> dict:
+    """Extract OpenCTI connector configuration from connector document derived from document template."""
     response = requests.get(doc_url, timeout=10)
     response.raise_for_status()
     rows = extract_tables(response.text)
@@ -94,55 +106,65 @@ def extract_template_configs(doc_url: str) -> dict:
         result[constant_to_kebab(name)] = {
             "description": description,
             "type": config_type,
+            "optional": not is_mandatory,
         }
     result.update(DEFAULT_CONFIG)
     return result
 
 
-def sort_config(options):
-    mandatory = {
-        k: v
-        for k, v in options.items()
-        if not v["description"].startswith("(optional)") and "default" not in v
-    }
+def sort_config(options: dict) -> dict:
+    """Sorting configuration options, first mandatory, then optional, alphabetically."""
+    mandatory = {k: v for k, v in options.items() if not v["optional"] and "default" not in v}
     mandatory_with_default = {
-        k: v
-        for k, v in options.items()
-        if not v["description"].startswith("(optional)") and "default" in v
+        k: v for k, v in options.items() if not v["optional"] and "default" in v
     }
     optional = {
         k: v for k, v in options.items() if k not in mandatory and k not in mandatory_with_default
     }
     sorted_options = {}
-    for k, v in sorted(mandatory.items(), key=operator.itemgetter(0)):
-        sorted_options[k] = v
-    for k, v in sorted(mandatory_with_default.items(), key=operator.itemgetter(0)):
-        sorted_options[k] = v
-    for k, v in sorted(optional.items(), key=operator.itemgetter(0)):
-        sorted_options[k] = v
+    sorted_options.update(sorted(mandatory.items(), key=operator.itemgetter(0)))
+    sorted_options.update(sorted(mandatory_with_default.items(), key=operator.itemgetter(0)))
+    sorted_options.update(sorted(optional.items(), key=operator.itemgetter(0)))
     return sorted_options
 
 
 def render_template(
     *,
-    name,
-    connector_type,
-    version,
-    display_name,
-    config,
-    output_dir,
+    name: str,
+    connector_type: str,
+    version: str,
+    display_name: str,
+    config: dict,
+    output_dir: pathlib.Path,
     connector_name: str | None = None,
     display_name_short: str | None = None,
     charm_override: str = "",
     generate_entrypoint: str = "",
     install_location: str | None = None,
     template_dir: pathlib.Path = pathlib.Path("connector-template"),
-):
+) -> None:
+    """Render the connector template.
+
+    Args:
+        name: The connector charm name.
+        connector_type: The type of connector.
+        version: The version of the connector.
+        display_name: The display name of the connector.
+        config: The configuration for the connector charm.
+        output_dir: The output directory for the connector charm.
+        connector_name: The name of the connector, defaults to the connector charm name if not set.
+        display_name_short: The short version of the connector display name, defaults to display_name if not set.
+        charm_override: A Python snippet to append after the connector charm class.
+        generate_entrypoint: A shell script snippet to generate `entrypoint.sh` in Rock.
+        install_location: The install location of the connector inside Rock.
+        template_dir: The directory containing the connector template.
+    """
     if "_" in name or name.lower() != name:
         raise ValueError(f"connector name should be in kebab case: {name}")
     connector_name = connector_name or name
     display_name_short = display_name_short or display_name
     output_dir.mkdir(exist_ok=True)
+
     for source in template_dir.glob("**/*"):
         file = source.relative_to(template_dir)
         if "__pycache__" in str(file):
@@ -154,10 +176,12 @@ def render_template(
         if not str(file).endswith(".j2"):
             output.write_bytes(source.read_bytes())
             continue
+
         output = pathlib.Path(str(output).removesuffix(".j2"))
         template = jinja2.Template(source.read_text(), keep_trailing_newline=True)
         template.globals["kebab_to_pascal"] = kebab_to_pascal
         template.globals["constant_to_kebab"] = constant_to_kebab
+
         output.write_text(
             template.render(
                 name=name,
@@ -179,6 +203,7 @@ def render_template(
             ),
             encoding="utf-8",
         )
+
     (output_dir / "lib/charms/opencti/v0").mkdir(parents=True, exist_ok=True)
     (output_dir / "lib/charms/opencti/v0/opencti_connector.py").write_bytes(
         pathlib.Path("lib/charms/opencti/v0/opencti_connector.py").read_bytes()
@@ -187,7 +212,7 @@ def render_template(
 
 
 @connector_generator("abuseipdb-ipblacklist")
-def generate_abuseipdb_ipblacklist_connector(location: pathlib.Path, version: str):
+def generate_abuseipdb_ipblacklist_connector(location: pathlib.Path, version: str) -> None:
     """Generate opencti abuseipdb-ipblacklist connector
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/abuseipdb-ipblacklist
@@ -203,22 +228,27 @@ def generate_abuseipdb_ipblacklist_connector(location: pathlib.Path, version: st
             "abuseipdb-url": {
                 "description": "the Abuse IPDB URL",
                 "type": "string",
+                "optional": False,
                 "default": "https://api.abuseipdb.com/api/v2/blacklist",
             },
             "abuseipdb-api-key": {
                 "description": "Abuse IPDB API KEY",
+                "optional": False,
                 "type": "string",
             },
             "abuseipdb-score": {
                 "description": "AbuseIPDB Score Limitation",
+                "optional": False,
                 "type": "int",
             },
             "abuseipdb-limit": {
                 "description": "limit number of result itself",
+                "optional": False,
                 "type": "int",
             },
             "abuseipdb-interval": {
                 "description": "interval between 2 collect itself",
+                "optional": False,
                 "type": "int",
             },
         },
@@ -227,7 +257,7 @@ def generate_abuseipdb_ipblacklist_connector(location: pathlib.Path, version: st
 
 
 @connector_generator("alienvault")
-def generate_alienvault_connector(location: pathlib.Path, version: str):
+def generate_alienvault_connector(location: pathlib.Path, version: str) -> None:
     """Generate opencti alienvault connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/alienvault
@@ -239,6 +269,7 @@ def generate_alienvault_connector(location: pathlib.Path, version: str):
     config["alienvault-interval-sec"] = {
         "description": "alienvault interval seconds",
         "type": "int",
+        "optional": False,
     }
     render_template(
         name="alienvault",
@@ -251,7 +282,9 @@ def generate_alienvault_connector(location: pathlib.Path, version: str):
 
 
 @connector_generator("cisa-kev")
-def generate_cisa_known_exploited_vulnerabilities_connector(location: pathlib.Path, version: str):
+def generate_cisa_known_exploited_vulnerabilities_connector(
+    location: pathlib.Path, version: str
+) -> None:
     """Generate opencti cisa-known-exploited-vulnerabilities (cisa-kev) connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/cisa-known-exploited-vulnerabilities
@@ -274,6 +307,7 @@ def generate_cisa_known_exploited_vulnerabilities_connector(location: pathlib.Pa
 
 
 def extract_crowdstrike_configs(doc_url: str) -> dict:
+    """Extract crowdstrike connector config from the crowdstrike connector document."""
     response = requests.get(doc_url, timeout=10)
     response.raise_for_status()
     rows = extract_tables(response.text)
@@ -292,6 +326,7 @@ def extract_crowdstrike_configs(doc_url: str) -> dict:
         result[constant_to_kebab(name)] = {
             "description": description,
             "type": config_type,
+            "optional": not is_mandatory,
         }
     result.update(DEFAULT_CONFIG)
     del result["connector-scope"]
@@ -299,7 +334,7 @@ def extract_crowdstrike_configs(doc_url: str) -> dict:
 
 
 @connector_generator("crowdstrike")
-def gen_crowdstrike_connector(location: pathlib.Path, version: str):
+def gen_crowdstrike_connector(location: pathlib.Path, version: str) -> None:
     """Generate opencti crowdstrike connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/crowdstrike
@@ -326,7 +361,7 @@ def gen_crowdstrike_connector(location: pathlib.Path, version: str):
 
 
 @connector_generator("cyber-campaign")
-def gen_cyber_campaign_collection_connector(location: pathlib.Path, version: str):
+def gen_cyber_campaign_collection_connector(location: pathlib.Path, version: str) -> None:
     """Generate opencti cyber-campaign-collection (cyber-campaign) connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/cyber-campaign-collection
@@ -343,26 +378,32 @@ def gen_cyber_campaign_collection_connector(location: pathlib.Path, version: str
             "connector-scope": {
                 "description": "The data scope of the connector.",
                 "type": "string",
+                "optional": False,
             },
             "connector-run-and-terminate": {
                 "description": "Whether the connector should run and terminate after execution.",
                 "type": "boolean",
+                "optional": False,
             },
             "connector-log-level": {
                 "description": "The log level for the connector.",
                 "type": "string",
+                "optional": False,
             },
             "cyber-monitor-github-token": {
                 "description": "(optional) If not provided, rate limit will be very low.",
                 "type": "string",
+                "optional": True,
             },
             "cyber-monitor-from-year": {
                 "description": "The starting year for monitoring cyber campaigns.",
                 "type": "int",
+                "optional": False,
             },
             "cyber-monitor-interval": {
                 "description": "The interval in days, must be strictly greater than 1.",
                 "type": "int",
+                "optional": False,
             },
         },
     )
@@ -373,12 +414,13 @@ _FILE_EXPORTER_CONFIGS = {
     "connector-confidence-level": {
         "type": "int",
         "description": "(optional) the confidence level of the connector.",
+        "optional": True,
     },
 }
 
 
 @connector_generator("export-file-csv")
-def gen_export_file_csv_connector(location: pathlib.Path, version: str):
+def gen_export_file_csv_connector(location: pathlib.Path, version: str) -> None:
     """Generate opencti export-file-csv connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/internal-export-file/export-file-csv
@@ -394,13 +436,14 @@ def gen_export_file_csv_connector(location: pathlib.Path, version: str):
             "export-file-csv-delimiter": {
                 "type": "string",
                 "description": "(optional) the delimiter of the exported CSV file.",
+                "optional": True,
             },
         },
     )
 
 
 @connector_generator("export-file-stix")
-def gen_export_file_stix_connector(location: pathlib.Path, version: str):
+def gen_export_file_stix_connector(location: pathlib.Path, version: str) -> None:
     """Generate opencti export-file-stix connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/internal-export-file/export-file-stix
@@ -416,7 +459,7 @@ def gen_export_file_stix_connector(location: pathlib.Path, version: str):
 
 
 @connector_generator("export-file-txt")
-def gen_export_file_txt_connector(location: pathlib.Path, version: str):
+def gen_export_file_txt_connector(location: pathlib.Path, version: str) -> None:
     """Generate opencti export-file-txt connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/internal-export-file/export-file-txt
@@ -432,7 +475,7 @@ def gen_export_file_txt_connector(location: pathlib.Path, version: str):
 
 
 @connector_generator("import-document")
-def gen_import_document(location: pathlib.Path, version: str):
+def gen_import_document(location: pathlib.Path, version: str) -> None:
     """Generate opencti import-document connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/internal-import-file/import-document
@@ -447,38 +490,45 @@ def gen_import_document(location: pathlib.Path, version: str):
             "connector-only-contextual": {
                 "description": "true only extract data related to an entity (a report, a threat actor, etc.)",
                 "type": "boolean",
+                "optional": False,
             },
             "connector-auto": {
                 "description": "enable/disable auto import of report file",
                 "type": "boolean",
+                "optional": False,
             },
             "connector-scope": {
                 "description": "connector scope",
                 "type": "string",
+                "optional": False,
             },
             "connector-confidence-level": {
                 "description": "connector confidence level, from 0 (unknown) to 100 (fully trusted).",
                 "type": "int",
+                "optional": False,
             },
             "connector-log-level": {
                 "description": "log level for this connector.",
                 "type": "string",
                 "default": "info",
+                "optional": False,
             },
             "connector-validate-before-import": {
                 "description": "validate any bundle before import.",
                 "type": "boolean",
+                "optional": False,
             },
             "import-document-create-indicator": {
                 "description": "import document create indicator",
                 "type": "boolean",
+                "optional": False,
             },
         },
     )
 
 
 @connector_generator("import-file-stix")
-def gen_import_file_stix_connector(location: pathlib.Path, version: str):
+def gen_import_file_stix_connector(location: pathlib.Path, version: str) -> None:
     """Generate opencti import-file-stix connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/internal-import-file/import-file-stix
@@ -493,30 +543,35 @@ def gen_import_file_stix_connector(location: pathlib.Path, version: str):
             "connector-validate-before-import": {
                 "description": "validate any bundle before import",
                 "type": "boolean",
+                "optional": False,
             },
             "connector-scope": {
                 "description": "connector scope",
                 "type": "string",
+                "optional": False,
             },
             "connector-auto": {
                 "description": "enable/disable auto-import of file",
                 "type": "boolean",
+                "optional": False,
             },
             "connector-confidence-level": {
                 "description": "from 0 (Unknown) to 100 (Fully trusted)",
                 "type": "int",
+                "optional": False,
             },
             "connector-log-level": {
                 "description": "logging level of the connector",
                 "type": "string",
                 "default": "info",
+                "optional": False,
             },
         },
     )
 
 
 @connector_generator("malwarebazaar")
-def gen_malwarebazaar_recent_additions_connector(location: pathlib.Path, version: str):
+def gen_malwarebazaar_recent_additions_connector(location: pathlib.Path, version: str) -> None:
     """Generate opencti malwarebazaar-recent-additions (malwarebazaar) connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/malwarebazaar-recent-additions
@@ -533,37 +588,44 @@ def gen_malwarebazaar_recent_additions_connector(location: pathlib.Path, version
             "connector-log-level": {
                 "description": "The log level for the connector",
                 "type": "string",
+                "optional": False,
             },
             "malwarebazaar-recent-additions-api-url": {
                 "description": "The API URL",
                 "type": "string",
+                "optional": False,
             },
             "malwarebazaar-recent-additions-cooldown-seconds": {
                 "description": "Time to wait in seconds between subsequent requests",
                 "type": "int",
+                "optional": False,
             },
             "malwarebazaar-recent-additions-include-tags": {
                 "description": "(optional) Only download files if any tag matches. (Comma separated)",
                 "type": "string",
+                "optional": True,
             },
             "malwarebazaar-recent-additions-include-reporters": {
                 "description": "(optional) Only download files uploaded by these reporters. (Comma separated)",
                 "type": "string",
+                "optional": True,
             },
             "malwarebazaar-recent-additions-labels": {
                 "description": "(optional) Labels to apply to uploaded Artifacts. (Comma separated)",
                 "type": "string",
+                "optional": True,
             },
             "malwarebazaar-recent-additions-labels-color": {
                 "description": "Color to use for labels",
                 "type": "string",
+                "optional": False,
             },
         },
     )
 
 
 @connector_generator("misp-feed")
-def gen_misp_feed_connector(location: pathlib.Path, version: str):
+def gen_misp_feed_connector(location: pathlib.Path, version: str) -> None:
     """Generate opencti misp-feed connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/misp-feed
@@ -579,11 +641,17 @@ def gen_misp_feed_connector(location: pathlib.Path, version: str):
     config["connector-run-and-terminate"] = {
         "type": "boolean",
         "description": "(optional) Launch the connector once if set to True",
+        "optional": True,
     }
-    config["misp-feed-interval"] = {"type": "int", "description": "misp feed interval in minutes"}
+    config["misp-feed-interval"] = {
+        "type": "int",
+        "description": "misp feed interval in minutes",
+        "optional": False,
+    }
     config["misp-feed-create-tags-as-labels"] = {
         "type": "boolean",
         "description": "(optional) create tags as labels (sanitize MISP tag to OpenCTI labels)",
+        "optional": True,
     }
     render_template(
         name="misp-feed",
@@ -596,7 +664,7 @@ def gen_misp_feed_connector(location: pathlib.Path, version: str):
 
 
 @connector_generator("mitre")
-def gen_mitre_connector(location: pathlib.Path, version: str):
+def gen_mitre_connector(location: pathlib.Path, version: str) -> None:
     """Generate opencti mitre connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/mitre
@@ -611,30 +679,37 @@ def gen_mitre_connector(location: pathlib.Path, version: str):
             "connector-run-and-terminate": {
                 "type": "boolean",
                 "description": "(optional) Launch the connector once if set to True",
+                "optional": True,
             },
             "mitre-interval": {
                 "description": "Number of the days between each MITRE datasets collection.",
                 "type": "int",
+                "optional": False,
             },
             "mitre-remove-statement-marking": {
                 "description": "Remove the statement MITRE marking definition.",
                 "type": "boolean",
+                "optional": False,
             },
             "mitre-enterprise-file-url": {
                 "description": "(optional) Resource URL",
                 "type": "string",
+                "optional": True,
             },
             "mitre-mobile-attack-file-url": {
                 "description": "(optional) Resource URL",
                 "type": "string",
+                "optional": True,
             },
             "mitre-ics-attack-file-url": {
                 "description": "(optional) Resource URL",
                 "type": "string",
+                "optional": True,
             },
             "mitre-capec-file-url": {
                 "description": "(optional) Resource URL",
                 "type": "string",
+                "optional": True,
             },
             **DEFAULT_CONFIG,
         },
@@ -643,7 +718,11 @@ def gen_mitre_connector(location: pathlib.Path, version: str):
 
 
 @connector_generator("sekoia")
-def gen_sekoia_connector(location: pathlib.Path, version: str):
+def gen_sekoia_connector(location: pathlib.Path, version: str) -> None:
+    """Generate opencti sekoia connector.
+
+    https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/sekoia
+    """
     render_template(
         name="sekoia",
         connector_type="EXTERNAL_IMPORT",
@@ -656,22 +735,27 @@ def gen_sekoia_connector(location: pathlib.Path, version: str):
                 "description": "Sekoia base url",
                 "type": "string",
                 "default": "https://api.sekoia.io",
+                "optional": False,
             },
             "sekoia-api-key": {
                 "description": "Sekoia API key",
                 "type": "string",
+                "optional": False,
             },
             "sekoia-collection": {
                 "description": "Sekoia collection",
                 "type": "string",
+                "optional": False,
             },
             "sekoia-start-date": {
                 "description": "(optional) the date to start consuming data from. Maybe in the formats YYYY-MM-DD or YYYY-MM-DDT00:00:00",
                 "type": "string",
+                "optional": True,
             },
             "sekoia-create-observables": {
                 "description": "create observables from indicators",
                 "type": "boolean",
+                "optional": False,
             },
         },
         generate_entrypoint="echo 'cd /opt/opencti-connector-sekoia; python3 sekoia.py' > entrypoint.sh",
@@ -679,7 +763,7 @@ def gen_sekoia_connector(location: pathlib.Path, version: str):
 
 
 @connector_generator("urlscan")
-def genc_urlscan_connector(location: pathlib.Path, version: str):
+def genc_urlscan_connector(location: pathlib.Path, version: str) -> None:
     """Generate opencti urlscan connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/urlscan
@@ -694,54 +778,67 @@ def genc_urlscan_connector(location: pathlib.Path, version: str):
             "connector-confidence-level": {
                 "description": "The default confidence level for created relationships (0 -> 100).",
                 "type": "int",
+                "optional": False,
             },
             "connector-update-existing-data": {
                 "description": "If an entity already exists, update its attributes with information provided by this connector.",
                 "type": "boolean",
+                "optional": False,
             },
             "connector-log-level": {
                 "description": "The log level for this connector, could be `debug`, `info`, `warn` or `error` (less verbose).",
                 "type": "string",
+                "optional": False,
             },
             "connector-create-indicators": {
                 "description": "(optional) Create indicators for each observable processed.",
                 "type": "boolean",
+                "optional": True,
             },
             "connector-tlp": {
                 "description": "(optional) The TLP to apply to any indicators and observables, this could be `white`,`green`,`amber` or `red`",
                 "type": "string",
+                "optional": True,
             },
             "connector-labels": {
                 "description": "(optional) Comma delimited list of labels to apply to each observable.",
                 "type": "string",
+                "optional": True,
             },
             "connector-interval": {
                 "description": "(optional) An interval (in seconds) for data gathering from Urlscan.",
                 "type": "int",
+                "optional": True,
             },
             "connector-lookback": {
                 "description": "(optional) How far to look back in days if the connector has never run or the last run is older than this value. Default is 3. You should not go above 7.",
                 "type": "int",
+                "optional": True,
             },
             "urlscan-url": {
                 "description": "The Urlscan URL.",
                 "type": "string",
+                "optional": False,
             },
             "urlscan-api-key": {
                 "description": "The Urlscan client secret.",
                 "type": "string",
+                "optional": False,
             },
             "urlscan-default-x-opencti-score": {
                 "description": "(optional) The default x_opencti_score to use across observable/indicator types. Default is 50.",
                 "type": "int",
+                "optional": True,
             },
             "urlscan-x-opencti-score-domain": {
                 "description": "(optional) The x_opencti_score to use across Domain-Name observable and indicators. Defaults to default score.",
                 "type": "int",
+                "optional": True,
             },
             "urlscan-x-opencti-score-url": {
                 "description": "(optional) The x_opencti_score to use across Url observable and indicators. Defaults to default score.",
                 "type": "integer",
+                "optional": True,
             },
         },
         charm_override=textwrap.dedent(
@@ -756,7 +853,7 @@ def genc_urlscan_connector(location: pathlib.Path, version: str):
 
 
 @connector_generator("urlscan-enrichment")
-def gen_urlscan_enrichment_connector(location: pathlib.Path, version: str):
+def gen_urlscan_enrichment_connector(location: pathlib.Path, version: str) -> None:
     """Generate opencti urlscan-enrichment connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/internal-enrichment/urlscan-enrichment
@@ -765,7 +862,11 @@ def gen_urlscan_enrichment_connector(location: pathlib.Path, version: str):
         "https://raw.githubusercontent.com/OpenCTI-Platform/connectors"
         f"/refs/tags/{version}/internal-enrichment/urlscan-enrichment/README.md"
     )
-    config["connector-auto"] = {"type": "boolean", "description": "connector auto"}
+    config["connector-auto"] = {
+        "type": "boolean",
+        "description": "connector auto",
+        "optional": False,
+    }
     render_template(
         name="urlscan-enrichment",
         connector_type="INTERNAL_ENRICHMENT",
@@ -777,7 +878,7 @@ def gen_urlscan_enrichment_connector(location: pathlib.Path, version: str):
 
 
 @connector_generator("virustotal-livehunt")
-def gen_virustotal_livehunt_notifications_connector(location: pathlib.Path, version: str):
+def gen_virustotal_livehunt_notifications_connector(location: pathlib.Path, version: str) -> None:
     """Generate opencti virustotal-livehunt-notifications (virustotal-livehunt) connector.
 
     https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/virustotal-livehunt-notifications
@@ -795,54 +896,67 @@ def gen_virustotal_livehunt_notifications_connector(location: pathlib.Path, vers
             "virustotal-livehunt-notifications-api-key": {
                 "description": "Private API Key",
                 "type": "string",
+                "optional": False,
             },
             "virustotal-livehunt-notifications-interval-sec": {
                 "description": "Time to wait in seconds between subsequent requests",
                 "type": "int",
+                "optional": False,
             },
             "virustotal-livehunt-notifications-create-alert": {
                 "description": "Set to true to create alerts",
                 "type": "boolean",
+                "optional": False,
             },
             "virustotal-livehunt-notifications-extensions": {
                 "description": "(optional) Comma separated filter to only download files matching these extensions",
                 "type": "string",
+                "optional": True,
             },
             "virustotal-livehunt-notifications-min-file-size": {
                 "description": "(optional) Don't download files smaller than this many bytes",
                 "type": "int",
+                "optional": True,
             },
             "virustotal-livehunt-notifications-max-file-size": {
                 "description": "(optional) Don't download files larger than this many bytes",
                 "type": "int",
+                "optional": True,
             },
             "virustotal-livehunt-notifications-max-age-days": {
                 "description": "Only create the alert if the first submission of the file is not older than `max_age_days`",
                 "type": "int",
+                "optional": False,
             },
             "virustotal-livehunt-notifications-min-positives": {
                 "description": "(optional) Don't download files with less than this many vendors marking malicious",
                 "type": "int",
+                "optional": True,
             },
             "virustotal-livehunt-notifications-create-file": {
                 "description": "Set to true to create file object linked to the alerts",
                 "type": "boolean",
+                "optional": False,
             },
             "virustotal-livehunt-notifications-upload-artifact": {
                 "description": "Set to true to upload the file to opencti",
                 "type": "boolean",
+                "optional": False,
             },
             "virustotal-livehunt-notifications-create-yara-rule": {
                 "description": "Set to true to create yara rule linked to the alert and the file",
                 "type": "boolean",
+                "optional": False,
             },
             "virustotal-livehunt-notifications-delete-notification": {
                 "description": "Set to true to remove livehunt notifications",
                 "type": "boolean",
+                "optional": False,
             },
             "virustotal-livehunt-notifications-filter-with-tag": {
                 "description": "Filter livehunt notifications with this tag",
                 "type": "string",
+                "optional": False,
             },
         },
         charm_override=textwrap.dedent(
@@ -857,6 +971,10 @@ def gen_virustotal_livehunt_notifications_connector(location: pathlib.Path, vers
 
 @connector_generator("vxvault")
 def gen_vxvault_connector(location: pathlib, version: str) -> None:
+    """Generate opencti vxvault (vxvault) connector.
+
+    https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/vxvault
+    """
     render_template(
         name="vxvault",
         connector_type="EXTERNAL_IMPORT",
@@ -867,44 +985,49 @@ def gen_vxvault_connector(location: pathlib, version: str) -> None:
             "connector-scope": {
                 "description": "connector scope",
                 "type": "string",
+                "optional": False,
             },
             "connector-log-level": {
                 "description": "(optional) The log level of the connector",
                 "type": "string",
+                "optional": True,
             },
             "vxvault-url": {
                 "description": "vxvault url",
                 "type": "string",
                 "default": "https://vxvault.net/URL_List.php",
+                "optional": False,
             },
             "vxvault-create-indicators": {
                 "description": "vxvault create indicators",
                 "type": "boolean",
+                "optional": False,
             },
             "vxvault-interval": {
                 "description": "In days, must be strictly greater than 1",
                 "type": "int",
+                "optional": False,
             },
             "vxvault-ssl-verify": {
                 "description": "Whether to verify SSL certificates",
                 "type": "boolean",
                 "default": True,
+                "optional": False,
             },
         },
     )
 
 
-def render(connector: str, version: str):
-    location = (
-        pathlib.Path(__file__).resolve().parent.parent / "connectors" / kebab_to_snake(connector)
-    )
-    _CONNECTOR_GENERATORS[connector](location=location, version=version)
-
-
-def render_all(version):
+def render(version: str) -> None:
+    """Render a OpenCTI connector charm from the template."""
     for connector in _CONNECTOR_GENERATORS:
-        render(connector, version)
+        location = (
+            pathlib.Path(__file__).resolve().parent.parent
+            / "connectors"
+            / kebab_to_snake(connector)
+        )
+        _CONNECTOR_GENERATORS[connector](location=location, version=version)
 
 
 if __name__ == "__main__":
-    render_all("6.4.5")
+    render("6.4.5")

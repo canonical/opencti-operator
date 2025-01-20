@@ -23,27 +23,34 @@ config:
   options:
     abuseipdb-api-key:
       description: Abuse IPDB API KEY
+      optional: false
       type: string
     abuseipdb-interval:
       description: interval between 2 collect itself
+      optional: false
       type: int
     abuseipdb-limit:
       description: limit number of result itself
+      optional: false
       type: int
     abuseipdb-score:
       description: AbuseIPDB Score Limitation
+      optional: false
       type: int
     connector-scope:
       type: string
       description: connector scope
+      optional: false
     abuseipdb-url:
       description: the Abuse IPDB URL
       type: string
+      optional: false
       default: https://api.abuseipdb.com/api/v2/blacklist
     connector-log-level:
       type: string
       description: determines the verbosity of the logs. Options are debug, info, warn, or error
       default: info
+      optional: false
 
 
 provides:

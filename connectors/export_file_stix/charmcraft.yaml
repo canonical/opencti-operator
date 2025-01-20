@@ -24,13 +24,16 @@ config:
     connector-scope:
       type: string
       description: connector scope
+      optional: false
     connector-log-level:
       type: string
       description: determines the verbosity of the logs. Options are debug, info, warn, or error
       default: info
+      optional: false
     connector-confidence-level:
       type: int
       description: (optional) the confidence level of the connector.
+      optional: true
 
 
 provides:

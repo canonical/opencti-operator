@@ -24,21 +24,27 @@ config:
     connector-log-level:
       description: The log level for the connector.
       type: string
+      optional: false
     connector-run-and-terminate:
       description: Whether the connector should run and terminate after execution.
       type: boolean
+      optional: false
     connector-scope:
       description: The data scope of the connector.
       type: string
+      optional: false
     cyber-monitor-from-year:
       description: The starting year for monitoring cyber campaigns.
       type: int
+      optional: false
     cyber-monitor-interval:
       description: The interval in days, must be strictly greater than 1.
       type: int
+      optional: false
     cyber-monitor-github-token:
       description: (optional) If not provided, rate limit will be very low.
       type: string
+      optional: true
 
 
 provides:

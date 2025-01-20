@@ -24,85 +24,112 @@ config:
     connector-scope:
       type: string
       description: connector scope
+      optional: false
     misp-feed-interval:
       type: int
       description: misp feed interval in minutes
+      optional: false
     connector-log-level:
       type: string
       description: determines the verbosity of the logs. Options are debug, info, warn, or error
       default: info
+      optional: false
     aws-access-key-id:
       description: (optional) Access key used to access the bucket
       type: string
+      optional: true
     aws-endpoint-url:
       description: (optional) URL to specify for compatibility with other S3 buckets (MinIO)
       type: string
+      optional: true
     aws-secret-access-key:
       description: (optional) Secret  key used to access the bucket
       type: string
+      optional: true
     connector-run-and-terminate:
       type: boolean
       description: (optional) Launch the connector once if set to True
+      optional: true
     misp-bucket-name:
       description: (optional) Bucket Name where the MISP's files are stored
       type: string
+      optional: true
     misp-bucket-prefix:
       description: (optional) Used to filter imports
       type: string
+      optional: true
     misp-create-tags-as-labels:
       description: (optional) Whether to convert tags into labels.
       type: boolean
+      optional: true
     misp-feed-author-from-tags:
       description: (optional) Whether to infer authors from tags.
       type: boolean
+      optional: true
     misp-feed-create-indicators:
       description: (optional) Whether to create indicators from the MISP feed.
       type: boolean
+      optional: true
     misp-feed-create-object-observables:
       description: (optional) Whether to create object observables.
       type: boolean
+      optional: true
     misp-feed-create-observables:
       description: (optional) Whether to create observables from the MISP feed.
       type: boolean
+      optional: true
     misp-feed-create-reports:
       description: (optional) Whether to create reports from MISP feed data.
       type: boolean
+      optional: true
     misp-feed-create-tags-as-labels:
       type: boolean
       description: (optional) create tags as labels (sanitize MISP tag to OpenCTI labels)
+      optional: true
     misp-feed-guess-threat-from-tags:
       description: (optional) Whether to infer threats from tags.
       type: boolean
+      optional: true
     misp-feed-import-from-date:
       description: (optional) Start date for importing data from the MISP feed.
       type: string
+      optional: true
     misp-feed-import-to-ids-no-score:
       description: (optional) Import data without a score to IDS.
       type: boolean
+      optional: true
     misp-feed-import-unsupported-observables-as-text:
       description: (optional) Import unsupported observables as plain text.
       type: boolean
+      optional: true
     misp-feed-import-unsupported-observables-as-text-transparent:
       description: (optional) Whether to import unsupported observables transparently as text.
       type: boolean
+      optional: true
     misp-feed-import-with-attachments:
       description: (optional) Whether to import attachments from the feed.
       type: boolean
+      optional: true
     misp-feed-markings-from-tags:
       description: (optional) Whether to infer markings from tags.
       type: boolean
+      optional: true
     misp-feed-report-type:
       description: (optional) The type of reports to create from the MISP feed.
       type: string
+      optional: true
     misp-feed-source-type:
       description: (optional) Source type for the MISP feed (url or s3).
       type: string
+      optional: true
     misp-feed-ssl-verify:
       description: (optional) Whether to verify SSL certificates for the feed URL.
       type: boolean
+      optional: true
     misp-feed-url:
       description: (optional) The URL of the MISP feed (required ifsource_typeisurl).
       type: string
+      optional: true
 
 
 provides:

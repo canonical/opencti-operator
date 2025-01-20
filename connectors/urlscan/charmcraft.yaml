@@ -24,42 +24,55 @@ config:
     connector-confidence-level:
       description: The default confidence level for created relationships (0 -> 100).
       type: int
+      optional: false
     connector-log-level:
       description: The log level for this connector, could be `debug`, `info`, `warn` or `error` (less verbose).
       type: string
+      optional: false
     connector-update-existing-data:
       description: If an entity already exists, update its attributes with information provided by this connector.
       type: boolean
+      optional: false
     urlscan-api-key:
       description: The Urlscan client secret.
       type: string
+      optional: false
     urlscan-url:
       description: The Urlscan URL.
       type: string
+      optional: false
     connector-create-indicators:
       description: (optional) Create indicators for each observable processed.
       type: boolean
+      optional: true
     connector-interval:
       description: (optional) An interval (in seconds) for data gathering from Urlscan.
       type: int
+      optional: true
     connector-labels:
       description: (optional) Comma delimited list of labels to apply to each observable.
       type: string
+      optional: true
     connector-lookback:
       description: (optional) How far to look back in days if the connector has never run or the last run is older than this value. Default is 3. You should not go above 7.
       type: int
+      optional: true
     connector-tlp:
       description: (optional) The TLP to apply to any indicators and observables, this could be `white`,`green`,`amber` or `red`
       type: string
+      optional: true
     urlscan-default-x-opencti-score:
       description: (optional) The default x_opencti_score to use across observable/indicator types. Default is 50.
       type: int
+      optional: true
     urlscan-x-opencti-score-domain:
       description: (optional) The x_opencti_score to use across Domain-Name observable and indicators. Defaults to default score.
       type: int
+      optional: true
     urlscan-x-opencti-score-url:
       description: (optional) The x_opencti_score to use across Url observable and indicators. Defaults to default score.
       type: integer
+      optional: true
 
 
 provides:

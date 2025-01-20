@@ -24,34 +24,44 @@ config:
     connector-auto:
       type: boolean
       description: connector auto
+      optional: false
     connector-scope:
       type: string
       description: connector scope
+      optional: false
     urlscan-enrichment-api-base-url:
       description: URLScan Base Url
       type: string
+      optional: false
     urlscan-enrichment-api-key:
       description: URLScan API Key
       type: string
+      optional: false
     urlscan-enrichment-import-screenshot:
       description: Allows or not the import of the screenshot of the scan submitted in URLScan to OpenCTI.
       type: boolean
+      optional: false
     urlscan-enrichment-max-tlp:
       description: Do not send any data to URLScan if the TLP of the observable is greater than MAX_TLP
       type: string
+      optional: false
     urlscan-enrichment-search-filtered-by-date:
       description: Allows you to filter by date available:>now-1h,>now-1d,>now-1y,[2022 TO 2023],[2022/01/01 TO 2023/12/01]
       type: string
+      optional: false
     urlscan-enrichment-visibility:
       description: URLScan offers several levels of visibility for submitted scans:public,unlisted,private
       type: string
+      optional: false
     connector-log-level:
       type: string
       description: determines the verbosity of the logs. Options are debug, info, warn, or error
       default: info
+      optional: false
     connector-run-and-terminate:
       description: (optional) Launch the connector once if set to True. Takes 2 available values:TrueorFalse
       type: boolean
+      optional: true
 
 
 provides:
