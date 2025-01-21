@@ -65,6 +65,7 @@ _PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD = "admin-token"  # nosec
 _PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD = "health-access-key"  # nosec
 _CHARM_CALLBACK_SCRIPT_PATH = pathlib.Path("/opt/opencti/charm-callback.sh")
 _OPENSEARCH_CERT_PATH = pathlib.Path("/opt/opencti/config/opensearch.pem")
+_OPENCTI_CONNECTOR_USER_PREFIX = "charm-connector-"
 
 
 # caused by charm libraries
@@ -691,10 +692,8 @@ class OpenCTICharm(ops.CharmBase):
             user = self._setup_connector_integration_and_user(client, integration)
             if user:
                 current_using_users.add(user)
-        for opencti_user in client.list_users():
-            if opencti_user.name not in current_using_users and opencti_user.name.startswith(
-                "charm-connector-"
-            ):
+        for opencti_user in client.list_users(name_starts_with=_OPENCTI_CONNECTOR_USER_PREFIX):
+            if opencti_user.name not in current_using_users:
                 client.set_account_status(opencti_user.id, "Inactive")
 
     def _setup_connector_integration_and_user(
@@ -719,7 +718,9 @@ class OpenCTICharm(ops.CharmBase):
         opencti_url = f"http://{self.app.name}-endpoints.{self.model.name}.svc:8080"
         integration.data[self.app]["opencti_url"] = opencti_url
         connector_user = f"charm-connector-{connector_charm_name.replace('_', '-').lower()}"
-        users = {u.name: u for u in client.list_users()}
+        users = {
+            u.name: u for u in client.list_users(name_starts_with=_OPENCTI_CONNECTOR_USER_PREFIX)
+        }
         groups = {g.name: g for g in client.list_groups()}
         if connector_user not in users:
             group_id = (
@@ -728,7 +729,10 @@ class OpenCTICharm(ops.CharmBase):
                 else groups["Connectors"]
             ).id
             client.create_user(name=connector_user, groups=[group_id])
-            users = {u.name: u for u in client.list_users()}
+            users = {
+                u.name: u
+                for u in client.list_users(name_starts_with=_OPENCTI_CONNECTOR_USER_PREFIX)
+            }
         else:
             if users[connector_user].account_status == "Inactive":
                 client.set_account_status(users[connector_user].id, "Active")
