@@ -21,6 +21,7 @@ jobs:
   publish-charm:
     needs: [ find-charms ]
     strategy:
+      fail-fast: false
       matrix:
         charm-dir: ${{ fromJSON(needs.find-charms.outputs.charm-dirs) }}
     name: Publish Charm (${{ matrix.charm-dir }})
