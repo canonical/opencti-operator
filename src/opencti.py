@@ -11,6 +11,7 @@ import urllib.parse
 import gql
 import gql.dsl
 import gql.transport.requests
+import graphql
 
 
 class OpenctiUser(typing.NamedTuple):
@@ -65,9 +66,11 @@ class OpenctiClient:
             transport=transport,
             schema=(pathlib.Path(__file__).parent / "opencti.graphql").read_text(),
         )
-        self._dsl_schema = gql.dsl.DSLSchema(self._client.schema)
+        self._dsl_schema = gql.dsl.DSLSchema(
+            typing.cast(graphql.GraphQLSchema, self._client.schema)
+        )
 
-    @functools.lru_cache(maxsize=None)
+    @functools.lru_cache(maxsize=10)
     def list_users(self, name_starts_with: str | None = None) -> list[OpenctiUser]:
         """List OpenCTI users.
 
@@ -145,15 +148,15 @@ class OpenctiClient:
         query = gql.dsl.dsl_gql(
             gql.dsl.DSLMutation(
                 self._dsl_schema.Mutation.userAdd.args(
-                    input=dict(
-                        name=name,
-                        user_email=user_email,
-                        first_name="",
-                        last_name="",
-                        password=secrets.token_urlsafe(32),
-                        account_status="Active",
-                        groups=groups,
-                    )
+                    input={
+                        "name": name,
+                        "user_email": user_email,
+                        "first_name": "",
+                        "last_name": "",
+                        "password": secrets.token_urlsafe(32),
+                        "account_status": "Active",
+                        "groups": groups,
+                    }
                 ).select(
                     self._dsl_schema.User.id,
                     self._dsl_schema.User.name,
@@ -173,7 +176,7 @@ class OpenctiClient:
             api_token=user["api_token"],
         )
 
-    @functools.lru_cache(maxsize=None)
+    @functools.lru_cache(maxsize=10)
     def list_groups(self) -> list[OpenctiGroup]:
         """List OpenCTI groups.
 
@@ -215,11 +218,11 @@ class OpenctiClient:
                 self._dsl_schema.Mutation.userEdit(id=user_id).select(
                     self._dsl_schema.UserEditMutations.fieldPatch(
                         input=[
-                            dict(
-                                key="account_status",
-                                value=status,
-                                operation="replace",
-                            )
+                            {
+                                "key": "account_status",
+                                "value": status,
+                                "operation": "replace",
+                            }
                         ]
                     ).select(self._dsl_schema.User.id)
                 )

@@ -56,13 +56,18 @@ class OpenctiClientMock:
     def __init__(self, *_args, **_kwargs):
         """Initialize OpenctiClientMock."""
 
-    def list_users(self) -> list[OpenctiUser]:
+    def list_users(self, name_starts_with: str | None = None) -> list[OpenctiUser]:
         """List OpenCTI users.
+
+        Args:
+            name_starts_with: Name starts with this string.
 
         Returns:
             A list of OpenctiUser objects.
         """
-        return [OpenctiUser(**u) for u in self._users]
+        return [
+            OpenctiUser(**u) for u in self._users if u["name"].startswith(name_starts_with or "")
+        ]
 
     def list_groups(self) -> list[OpenctiGroup]:
         """List OpenCTI groups.
