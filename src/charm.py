@@ -685,15 +685,15 @@ class OpenCTICharm(ops.CharmBase):
             api_token=self._get_peer_secret(_PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD),
         )
         integrations = self.model.relations["opencti-connector"]
-        current_using_users = set()
+        active_connector_users = set()
         for integration in integrations:
             if integration.app is None:
                 continue
             user = self._setup_connector_integration_and_user(client, integration)
             if user:
-                current_using_users.add(user)
+                active_connector_users.add(user)
         for opencti_user in client.list_users(name_starts_with=_OPENCTI_CONNECTOR_USER_PREFIX):
-            if opencti_user.name not in current_using_users:
+            if opencti_user.name not in active_connector_users:
                 client.set_account_status(opencti_user.id, "Inactive")
 
     def _setup_connector_integration_and_user(
