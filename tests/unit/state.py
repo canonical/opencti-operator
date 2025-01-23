@@ -304,7 +304,7 @@ class ConnectorStateBuilder:
         self._integrations.append(integration)
         return self
 
-    def set_config(self, name: str, value: str) -> "ConnectorStateBuilder":
+    def set_config(self, name: str, value: str | int) -> "ConnectorStateBuilder":
         """Set charm config.
 
         Args:

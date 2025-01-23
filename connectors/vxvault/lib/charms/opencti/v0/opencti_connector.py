@@ -53,7 +53,7 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
         self.framework.observe(self.on["opencti-connector"].relation_changed, self._reconcile)
         self.framework.observe(self.on.secret_changed, self._reconcile)
         self.framework.observe(self.on.upgrade_charm, self._reconcile)
-        self.framework.observe(self.on[self._charm_name].pebble_ready, self._reconcile)
+        self.framework.observe(self.on[self.meta.name].pebble_ready, self._reconcile)
 
     @property
     def boolean_style(self) -> str:
@@ -64,18 +64,6 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
         Returns: "json" or "python"
         """
         return "json"
-
-    @property
-    def _charm_name(self):
-        """Get charm name.
-
-        Returns:
-            The charm name.
-
-        Raises:
-            RuntimeError: If charm metadata file doesn't exist.
-        """
-        return self.meta.name
 
     def _config_metadata(self) -> dict:
         """Get charm configuration metadata.
@@ -153,7 +141,7 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
             data = integration.data[self.app]
             data.update(
                 {
-                    "connector_charm_name": self._charm_name,
+                    "connector_charm_name": self.meta.name,
                     "connector_type": self.connector_type,
                 }
             )
@@ -192,12 +180,15 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
             if self.boolean_style == "json" and isinstance(value, bool):
                 environment[self.kebab_to_constant(config)] = str(value).lower()
 
-        environment.update(self._get_proxy_environment())
+        environment.update(self._get_proxy_environment(opencti_url))
 
         return environment
 
-    def _get_proxy_environment(self) -> dict[str, str]:
+    def _get_proxy_environment(self, opencti_url: str) -> dict[str, str]:
         """Get proxy environment variables.
+
+        Args:
+            opencti_url: OpenCTI URL.
 
         Returns:
             proxy environment variables.
@@ -216,20 +207,20 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
         if http_proxy or https_proxy:
             opencti_host = urllib.parse.urlparse(opencti_url).hostname
             no_proxy_list.append(opencti_host)
-            environment["NO_PROXY"] = https_proxy
-            environment["no_proxy"] = https_proxy
+            environment["NO_PROXY"] = ",".join(no_proxy_list)
+            environment["no_proxy"] = ",".join(no_proxy_list)
         return environment
 
     def _reconcile_connector(self) -> None:
         """Reconcile connector service."""
-        container = self.unit.get_container(self._charm_name)
+        container = self.unit.get_container(self.meta.name)
         if not container.can_connect():
             raise NotReady("waiting for container ready")
         container.add_layer(
             "connector",
             layer=ops.pebble.LayerDict(
-                summary=self._charm_name,
-                description=self._charm_name,
+                summary=self.meta.name,
+                description=self.meta.name,
                 services={
                     "connector": {
                         "startup": "enabled",

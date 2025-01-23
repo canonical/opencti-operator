@@ -9,6 +9,7 @@ import importlib
 import ops.testing
 import pytest
 
+from connectors.export_file_stix.src.charm import OpenctiExportFileStixConnectorCharm
 from tests.unit.state import ConnectorStateBuilder
 
 
@@ -685,6 +686,54 @@ def test_connector_environment(connector_name, charm_config, environment):
             "connector": {
                 "command": "bash /entrypoint.sh",
                 "environment": environment,
+                "on-failure": "restart",
+                "override": "replace",
+                "startup": "enabled",
+            }
+        }
+    }
+
+
+def test_proxy_environment(monkeypatch):
+    """
+    arrange: provide the connector charm with http proxy configured.
+    act: simulate a config-changed event.
+    assert: the installed Pebble plan matches the expectation.
+    """
+    monkeypatch.setenv("JUJU_CHARM_HTTP_PROXY", "http://example.com")
+    monkeypatch.setenv("JUJU_CHARM_HTTPS_PROXY", "https://example.com")
+    monkeypatch.setenv("JUJU_CHARM_NO_PROXY", "localhost,127.0.0.1")
+
+    ctx = ops.testing.Context(OpenctiExportFileStixConnectorCharm)
+    state_builder = ConnectorStateBuilder(
+        "opencti-export-file-stix-connector"
+    ).add_opencti_connector_integration()
+    state_builder = state_builder.set_config("connector-scope", "application/vnd.oasis.stix+json")
+    state_builder = state_builder.set_config("connector-confidence-level", 100)
+    state_in = state_builder.build()
+    state_out = ctx.run(ctx.on.config_changed(), state_in)
+
+    plan = state_out.get_container("opencti-export-file-stix-connector").plan.to_dict()
+    del plan["services"]["connector"]["environment"]["CONNECTOR_ID"]
+    assert plan == {
+        "services": {
+            "connector": {
+                "command": "bash /entrypoint.sh",
+                "environment": {
+                    "CONNECTOR_CONFIDENCE_LEVEL": "100",
+                    "CONNECTOR_LOG_LEVEL": "info",
+                    "CONNECTOR_NAME": "opencti-export-file-stix-connector",
+                    "CONNECTOR_SCOPE": "application/vnd.oasis.stix+json",
+                    "CONNECTOR_TYPE": "INTERNAL_EXPORT_FILE",
+                    "HTTPS_PROXY": "https://example.com",
+                    "HTTP_PROXY": "http://example.com",
+                    "NO_PROXY": "localhost,127.0.0.1,opencti-endpoints.test-opencti-connector.svc",
+                    "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
+                    "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+                    "http_proxy": "http://example.com",
+                    "https_proxy": "https://example.com",
+                    "no_proxy": "localhost,127.0.0.1,opencti-endpoints.test-opencti-connector.svc",
+                },
                 "on-failure": "restart",
                 "override": "replace",
                 "startup": "enabled",
