@@ -21,7 +21,7 @@ jobs:
       self-hosted-runner: false
   check-connector-sync:
     name: Check Connectors
-    uses: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
