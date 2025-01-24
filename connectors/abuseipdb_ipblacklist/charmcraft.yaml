@@ -1,0 +1,78 @@
+# Copyright 2025 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-abuseipdb-ipblacklist-connector
+title: OpenCTI abuseipdb ipblacklist Charm
+summary: OpenCTI abuseipdb ipblacklist connector charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI Connectors](https://docs.opencti.io/latest/deployment/connectors/)
+  for the OpenCTI charm.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI Connectors
+  across a  range of environments, organize your cyber threat intelligence to
+  enhance and disseminate actionable insights.
+
+config:
+  options:
+    abuseipdb-api-key:
+      description: Abuse IPDB API KEY
+      optional: false
+      type: string
+    abuseipdb-interval:
+      description: interval between 2 collect itself
+      optional: false
+      type: int
+    abuseipdb-limit:
+      description: limit number of result itself
+      optional: false
+      type: int
+    abuseipdb-score:
+      description: AbuseIPDB Score Limitation
+      optional: false
+      type: int
+    connector-scope:
+      type: string
+      description: connector scope
+      optional: false
+    abuseipdb-url:
+      description: the Abuse IPDB URL
+      type: string
+      optional: false
+      default: https://api.abuseipdb.com/api/v2/blacklist
+    connector-log-level:
+      type: string
+      description: determines the verbosity of the logs. Options are debug, info, warn, or error
+      default: info
+      optional: false
+
+
+provides:
+  opencti-connector:
+    interface: opencti_connector
+    limit: 1
+
+type: charm
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm: {}
+
+containers:
+  opencti-abuseipdb-ipblacklist-connector:
+    resource: opencti-abuseipdb-ipblacklist-connector-image
+resources:
+  opencti-abuseipdb-ipblacklist-connector-image:
+    type: oci-image
+    description: OCI image for the OpenCTI abuseipdb ipblacklist connector.
+
+assumes:
+  - juju >= 3.4

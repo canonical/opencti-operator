@@ -1,0 +1,46 @@
+# Copyright 2025 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-{{ name }}-connector
+title: OpenCTI {{ display_name_short }} Charm
+summary: OpenCTI {{ display_name }} connector charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI Connectors](https://docs.opencti.io/latest/deployment/connectors/)
+  for the OpenCTI charm.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI Connectors
+  across a  range of environments, organize your cyber threat intelligence to
+  enhance and disseminate actionable insights.
+
+{{ config | safe }}
+
+provides:
+  opencti-connector:
+    interface: opencti_connector
+    limit: 1
+
+type: charm
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm: {}
+
+containers:
+  opencti-{{ name }}-connector:
+    resource: opencti-{{ name }}-connector-image
+resources:
+  opencti-{{ name }}-connector-image:
+    type: oci-image
+    description: OCI image for the OpenCTI {{ display_name }} connector.
+
+assumes:
+  - juju >= 3.4

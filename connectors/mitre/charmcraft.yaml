@@ -1,0 +1,85 @@
+# Copyright 2025 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-mitre-connector
+title: OpenCTI MITRE Datasets Charm
+summary: OpenCTI MITRE Datasets connector charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI Connectors](https://docs.opencti.io/latest/deployment/connectors/)
+  for the OpenCTI charm.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI Connectors
+  across a  range of environments, organize your cyber threat intelligence to
+  enhance and disseminate actionable insights.
+
+config:
+  options:
+    connector-scope:
+      type: string
+      description: connector scope
+      optional: false
+    mitre-interval:
+      description: Number of the days between each MITRE datasets collection.
+      type: int
+      optional: false
+    mitre-remove-statement-marking:
+      description: Remove the statement MITRE marking definition.
+      type: boolean
+      optional: false
+    connector-log-level:
+      type: string
+      description: determines the verbosity of the logs. Options are debug, info, warn, or error
+      default: info
+      optional: false
+    connector-run-and-terminate:
+      type: boolean
+      description: (optional) Launch the connector once if set to True
+      optional: true
+    mitre-capec-file-url:
+      description: (optional) Resource URL
+      type: string
+      optional: true
+    mitre-enterprise-file-url:
+      description: (optional) Resource URL
+      type: string
+      optional: true
+    mitre-ics-attack-file-url:
+      description: (optional) Resource URL
+      type: string
+      optional: true
+    mitre-mobile-attack-file-url:
+      description: (optional) Resource URL
+      type: string
+      optional: true
+
+
+provides:
+  opencti-connector:
+    interface: opencti_connector
+    limit: 1
+
+type: charm
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm: {}
+
+containers:
+  opencti-mitre-connector:
+    resource: opencti-mitre-connector-image
+resources:
+  opencti-mitre-connector-image:
+    type: oci-image
+    description: OCI image for the OpenCTI MITRE Datasets connector.
+
+assumes:
+  - juju >= 3.4

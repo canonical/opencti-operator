@@ -16,6 +16,8 @@ import requests
 import yaml
 from juju.model import Model
 
+from opencti import OpenctiClient
+
 
 @pytest.mark.abort_on_fail
 @pytest.mark.usefixtures("machine_charm_dependencies")
@@ -25,6 +27,7 @@ async def test_deploy_charm(
     machine_model: Model,
     machine_controller_name: str,
     get_unit_ips,
+    opencti_charm,
 ):
     """
     arrange: deploy dependencies of the OpenCTI charm.
@@ -63,7 +66,7 @@ async def test_deploy_charm(
     )
     await action.wait()
     opencti = await model.deploy(
-        f"./{pytestconfig.getoption('--charm-file')}",
+        f"./{opencti_charm}",
         resources={
             "opencti-image": pytestconfig.getoption("--opencti-image"),
         },
@@ -128,3 +131,79 @@ async def test_opencti_workers(get_unit_ips, ops_test):
     )
     worker_count = resp.json()["data"]["rabbitMQMetrics"]["consumers"]
     assert worker_count == str(3)
+
+
+async def test_opencti_client(get_unit_ips, ops_test):
+    """
+    arrange: deploy the OpenCTI charm.
+    act: use the OpenCTI client to create some users.
+    assert: users are created normally.
+    """
+    _, stdout, _ = await ops_test.juju(
+        "ssh", "--container", "opencti", "opencti/0", "pebble", "plan"
+    )
+    plan = yaml.safe_load(stdout)
+    api_token = plan["services"]["platform"]["environment"]["APP__ADMIN__TOKEN"]
+    client = OpenctiClient(
+        url=f"http://{(await get_unit_ips('opencti'))[0]}:8080", api_token=api_token
+    )
+    assert {u.name for u in client.list_users()} == {"admin"}
+    assert {g.name for g in client.list_groups()} == {"Administrators", "Connectors", "Default"}
+    client.create_user(name="testing")
+    user = {u.name: u for u in client.list_users()}["testing"]
+    client.set_account_status(user.id, "Inactive")
+    user = {u.name: u for u in client.list_users()}["testing"]
+    assert user.account_status == "Inactive"
+
+
+async def test_opencti_connectors(
+    get_unit_ips, ops_test, model, opencti_connector_charms, opencti_connector_images
+):
+    """
+    arrange: deploy the OpenCTI charm and OpenCTI connector charm.
+    act: integrate the OpenCTI connector charm with the OpenCTI charm.
+    assert: OpenCTI connector should register itself inside the OpenCTI platform
+    """
+    connector = "opencti-export-file-stix-connector"
+    charm = opencti_connector_charms[connector]
+    image = opencti_connector_images[connector]
+    connector_charm = await model.deploy(
+        f"./{charm}",
+        resources={
+            f"{connector}-image": image,
+        },
+        config={"connector-scope": "application/json"},
+    )
+    await model.integrate(connector_charm.name, "opencti")
+    await model.wait_for_idle(status="active")
+    query = {
+        "id": "WorkersStatusQuery",
+        "query": textwrap.dedent(
+            """\
+                query ConnectorsStatusQuery {
+                  ...ConnectorsStatus_data
+                }
+                fragment ConnectorsStatus_data on Query {
+                  connectors {
+                    name
+                    active
+                  }
+                }
+            """
+        ),
+        "variables": {},
+    }
+    _, stdout, _ = await ops_test.juju(
+        "ssh", "--container", "opencti", "opencti/0", "pebble", "plan"
+    )
+    plan = yaml.safe_load(stdout)
+    api_token = plan["services"]["platform"]["environment"]["APP__ADMIN__TOKEN"]
+    resp = requests.post(
+        f"http://{(await get_unit_ips('opencti'))[0]}:8080/graphql",
+        json=query,
+        headers={"Authorization": f"Bearer {api_token}"},
+        timeout=5,
+    )
+    connectors = {c["name"]: c for c in resp.json()["data"]["connectors"]}
+    assert connector in connectors
+    assert connectors[connector]["active"]

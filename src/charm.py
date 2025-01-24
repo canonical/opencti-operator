@@ -25,6 +25,8 @@ from charms.rabbitmq_k8s.v0.rabbitmq import RabbitMQRequires
 from charms.redis_k8s.v0.redis import RedisRelationCharmEvents, RedisRequires
 from charms.traefik_k8s.v2.ingress import IngressPerAppRequirer
 
+import opencti
+
 logger = logging.getLogger(__name__)
 
 
@@ -63,6 +65,7 @@ _PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD = "admin-token"  # nosec
 _PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD = "health-access-key"  # nosec
 _CHARM_CALLBACK_SCRIPT_PATH = pathlib.Path("/opt/opencti/charm-callback.sh")
 _OPENSEARCH_CERT_PATH = pathlib.Path("/opt/opencti/config/opensearch.pem")
+_OPENCTI_CONNECTOR_USER_PREFIX = "charm-connector-"
 
 
 # caused by charm libraries
@@ -113,6 +116,8 @@ class OpenCTICharm(ops.CharmBase):
         )
         self.framework.observe(self.on.opencti_peer_relation_broken, self._cleanup_secrets)
         self.framework.observe(self.on.stop, self._cleanup_secrets)
+        self.framework.observe(self.on.opencti_connector_relation_joined, self._reconcile)
+        self.framework.observe(self.on.opencti_connector_relation_changed, self._reconcile)
 
     def _register_opensearch(self) -> OpenSearchRequires:
         """Create OpenSearchRequires instance and register related event handlers.
@@ -236,6 +241,7 @@ class OpenCTICharm(ops.CharmBase):
         """Run charm reconcile function and catch all exceptions."""
         try:
             self._reconcile_platform()
+            self._reconcile_connector()
             self.unit.status = ops.ActiveStatus()
         except (MissingIntegration, MissingConfig, InvalidIntegration, InvalidConfig) as exc:
             self.unit.status = ops.BlockedStatus(str(exc))
@@ -243,7 +249,7 @@ class OpenCTICharm(ops.CharmBase):
             self.unit.status = ops.WaitingStatus(str(exc))
 
     def _reconcile_platform(self) -> None:
-        """Run charm reconcile function.
+        """Run charm reconcile function for OpenCTI platform and workers.
 
         Raises:
             PlatformNotReady: failed to start the OpenCTI platform at this moment
@@ -671,6 +677,113 @@ class OpenCTICharm(ops.CharmBase):
         else:
             dump["unit-data"] = {unit.name: dict(integration.data[unit]) for unit in units}
         return json.dumps(dump)
+
+    def _reconcile_connector(self) -> None:
+        """Run charm reconcile function for OpenCTI connectors."""
+        client = opencti.OpenctiClient(
+            url="http://localhost:8080",
+            api_token=self._get_peer_secret(_PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD),
+        )
+        integrations = self.model.relations["opencti-connector"]
+        active_connector_users = set()
+        for integration in integrations:
+            if integration.app is None:
+                continue
+            user = self._setup_connector_integration_and_user(client, integration)
+            if user:
+                active_connector_users.add(user)
+        for opencti_user in client.list_users(name_starts_with=_OPENCTI_CONNECTOR_USER_PREFIX):
+            if opencti_user.name not in active_connector_users:
+                client.set_account_status(opencti_user.id, "Inactive")
+
+    def _setup_connector_integration_and_user(
+        self, client: opencti.OpenctiClient, integration: ops.Relation
+    ) -> str | None:
+        """Set up the connector integration and connector user.
+
+        Args:
+            client: the OpenCTI client.
+            integration: the opencti-connector integration object.
+
+        Returns:
+            name of the opencti user created for this integration, None if no user is needed.
+        """
+        integration_data = integration.data[integration.app]
+        connector_charm_name = integration_data.get("connector_charm_name")
+        connector_type = integration_data.get("connector_type")
+        if not connector_charm_name or not connector_type:
+            return None
+        opencti_url = f"http://{self.app.name}-endpoints.{self.model.name}.svc:8080"
+        integration.data[self.app]["opencti_url"] = opencti_url
+        connector_user_name = f"charm-connector-{connector_charm_name.replace('_', '-').lower()}"
+        connector_user = self._get_opencti_user(client, connector_user_name)
+        if connector_user is None:
+            connector_user = self._create_opencti_user(
+                client, connector_user_name, self._get_connector_group(connector_type)
+            )
+        if connector_user.account_status == "Inactive":
+            client.set_account_status(connector_user.id, "Active")
+
+        api_token = connector_user.api_token
+        opencti_token_id = integration.data[self.app].get("opencti_token")
+        if not opencti_token_id:
+            secret = self.app.add_secret(content={"token": api_token})
+            secret.grant(integration)
+            integration.data[self.app]["opencti_token"] = typing.cast(str, secret.id)
+        else:
+            secret = self.model.get_secret(id=opencti_token_id)
+            if secret.get_content(refresh=True)["token"] != api_token:
+                secret.set_content({"token": api_token})
+        return connector_user_name
+
+    def _get_connector_group(self, connector_type: str) -> str:
+        """Get the connector group for the given connector type.
+
+        Args:
+            connector_type: the connector type.
+
+        Returns:
+            connector group name for the given connector type.
+        """
+        return (
+            "Administrators"
+            if connector_type.replace("-", "_").upper() == "INTERNAL_EXPORT_FILE"
+            else "Connectors"
+        )
+
+    def _create_opencti_user(
+        self, client: opencti.OpenctiClient, name: str, group_name: str
+    ) -> opencti.OpenctiUser:
+        """Create a new OpenCTI user.
+
+        Args:
+            client: the OpenCTI client.
+            name: the name of the user.
+            group_name: the name of the group.
+
+        Returns:
+            The new OpenCTI user.
+        """
+        groups = {g.name: g for g in client.list_groups()}
+        group_id = groups[group_name].id
+        return client.create_user(name=name, groups=[group_id])
+
+    def _get_opencti_user(
+        self, client: opencti.OpenctiClient, name: str
+    ) -> opencti.OpenctiUser | None:
+        """Get the OpenCTI user by name.
+
+        Args:
+            client: the OpenCTI client.
+            name: the name of the user.
+
+        Returns:
+            The OpenCTI user.
+        """
+        users = users = {
+            u.name: u for u in client.list_users(name_starts_with=_OPENCTI_CONNECTOR_USER_PREFIX)
+        }
+        return users.get(name)
 
 
 if __name__ == "__main__":  # pragma: nocover

@@ -348,3 +348,37 @@ def test_redis_library_workaround():
     state_out = ctx.run(ctx.on.config_changed(), state_in)
     assert state_out.unit_status.name == "blocked"
     assert state_out.unit_status.message == "invalid redis integration"
+
+
+def test_opencti_connector(patch_opencti_client):
+    """
+    arrange: provide the charm with the required integrations and configurations.
+    act: simulate a config-changed event.
+    assert: opencti charm should configure opencti users properly for the connector.
+    """
+    ctx = ops.testing.Context(OpenCTICharm)
+    opencti_connector_integration = ops.testing.Relation(
+        endpoint="opencti-connector",
+        remote_app_data={
+            "connector_type": "INTERNAL_EXPORT_FILE",
+            "connector_charm_name": "test",
+        },
+    )
+    state_in = (
+        StateBuilder()
+        .add_required_integrations()
+        .add_required_configs()
+        .add_integration(opencti_connector_integration)
+        .build()
+    )
+    state_out = ctx.run(ctx.on.config_changed(), state_in)
+    users = {u.name: u for u in patch_opencti_client.list_users()}
+    assert "charm-connector-test" in users
+    integration_out = state_out.get_relation(opencti_connector_integration.id)
+    assert (
+        integration_out.local_app_data["opencti_url"]  # type: ignore
+        == "http://opencti-endpoints.test-opencti.svc:8080"
+    )
+    secret_id = integration_out.local_app_data["opencti_token"]  # type: ignore
+    secret = state_out.get_secret(id=secret_id)
+    assert secret.tracked_content == {"token": "00000000-0000-0000-0000-000000000000"}

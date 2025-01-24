@@ -5,11 +5,13 @@ on:
 
 jobs:
   unit-tests:
+    name: Unit Tests
     uses: canonical/operator-workflows/.github/workflows/test.yaml@main
     secrets: inherit
     with:
       self-hosted-runner: false
   integration-tests:
+    name: Integration Tests
     uses: canonical/operator-workflows/.github/workflows/integration_test.yaml@main
     secrets: inherit
     with:
@@ -19,3 +21,14 @@ jobs:
       microk8s-addons: "dns ingress rbac storage"
       pre-run-script: tests/integration/prepare.sh
       self-hosted-runner: false
+  check-connector-sync:
+    name: Check Connectors
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install tox
+      - run: tox -e generate-connectors
+      - run: git diff --exit-code

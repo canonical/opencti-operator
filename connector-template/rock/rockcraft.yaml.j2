@@ -1,0 +1,41 @@
+# Copyright 2025 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-{{ name }}-connector
+base: ubuntu@24.04
+version: &version '{{ version }}'
+summary: OpenCTI {{ display_name }} Connector
+description: >-
+  OpenCTI connectors are the cornerstone of the OpenCTI platform and
+  allow organizations to easily ingest, enrich or export data.
+platforms:
+  amd64:
+
+parts:
+  {{ name }}-connector:
+    source: https://github.com/OpenCTI-Platform/connectors.git
+    source-type: git
+    source-tag: *version
+    source-depth: 1
+    plugin: nil
+    build-packages:
+      - python3-pip
+    stage-packages:
+      - python3
+      - libmagic1
+      - libffi8
+      - libxslt1.1
+      - libxml2
+      - python-is-python3
+    override-build: |
+      craftctl default
+      mkdir -p $CRAFT_PART_INSTALL/opt
+      cd {{ constant_to_kebab(connector_type) }}/{{ connector_name }}
+      cp -rp src $CRAFT_PART_INSTALL/opt/{{ install_location }}
+      {{ generate_entrypoint }}
+      cat entrypoint.sh | grep {{ install_location }}
+      mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
+      pip install \
+        --target $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages \
+        -r $(find -name requirements.txt)
+      cp entrypoint.sh $CRAFT_PART_INSTALL/

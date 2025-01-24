@@ -1,0 +1,100 @@
+# Copyright 2025 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-urlscan-connector
+title: OpenCTI Urlscan.io Charm
+summary: OpenCTI Urlscan.io connector charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI Connectors](https://docs.opencti.io/latest/deployment/connectors/)
+  for the OpenCTI charm.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI Connectors
+  across a  range of environments, organize your cyber threat intelligence to
+  enhance and disseminate actionable insights.
+
+config:
+  options:
+    connector-confidence-level:
+      description: The default confidence level for created relationships (0 -> 100).
+      type: int
+      optional: false
+    connector-log-level:
+      description: The log level for this connector, could be `debug`, `info`, `warn` or `error` (less verbose).
+      type: string
+      optional: false
+    connector-update-existing-data:
+      description: If an entity already exists, update its attributes with information provided by this connector.
+      type: boolean
+      optional: false
+    urlscan-api-key:
+      description: The Urlscan client secret.
+      type: string
+      optional: false
+    urlscan-url:
+      description: The Urlscan URL.
+      type: string
+      optional: false
+    connector-create-indicators:
+      description: (optional) Create indicators for each observable processed.
+      type: boolean
+      optional: true
+    connector-interval:
+      description: (optional) An interval (in seconds) for data gathering from Urlscan.
+      type: int
+      optional: true
+    connector-labels:
+      description: (optional) Comma delimited list of labels to apply to each observable.
+      type: string
+      optional: true
+    connector-lookback:
+      description: (optional) How far to look back in days if the connector has never run or the last run is older than this value. Default is 3. You should not go above 7.
+      type: int
+      optional: true
+    connector-tlp:
+      description: (optional) The TLP to apply to any indicators and observables, this could be `white`,`green`,`amber` or `red`
+      type: string
+      optional: true
+    urlscan-default-x-opencti-score:
+      description: (optional) The default x_opencti_score to use across observable/indicator types. Default is 50.
+      type: int
+      optional: true
+    urlscan-x-opencti-score-domain:
+      description: (optional) The x_opencti_score to use across Domain-Name observable and indicators. Defaults to default score.
+      type: int
+      optional: true
+    urlscan-x-opencti-score-url:
+      description: (optional) The x_opencti_score to use across Url observable and indicators. Defaults to default score.
+      type: integer
+      optional: true
+
+
+provides:
+  opencti-connector:
+    interface: opencti_connector
+    limit: 1
+
+type: charm
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm: {}
+
+containers:
+  opencti-urlscan-connector:
+    resource: opencti-urlscan-connector-image
+resources:
+  opencti-urlscan-connector-image:
+    type: oci-image
+    description: OCI image for the OpenCTI Urlscan.io connector.
+
+assumes:
+  - juju >= 3.4

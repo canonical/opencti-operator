@@ -1,0 +1,69 @@
+# Copyright 2025 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-import-file-stix-connector
+title: OpenCTI Import File Stix Charm
+summary: OpenCTI Import File Stix connector charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI Connectors](https://docs.opencti.io/latest/deployment/connectors/)
+  for the OpenCTI charm.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI Connectors
+  across a  range of environments, organize your cyber threat intelligence to
+  enhance and disseminate actionable insights.
+
+config:
+  options:
+    connector-auto:
+      description: enable/disable auto-import of file
+      type: boolean
+      optional: false
+    connector-confidence-level:
+      description: from 0 (Unknown) to 100 (Fully trusted)
+      type: int
+      optional: false
+    connector-scope:
+      description: connector scope
+      type: string
+      optional: false
+    connector-validate-before-import:
+      description: validate any bundle before import
+      type: boolean
+      optional: false
+    connector-log-level:
+      description: logging level of the connector
+      type: string
+      default: info
+      optional: false
+
+
+provides:
+  opencti-connector:
+    interface: opencti_connector
+    limit: 1
+
+type: charm
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm: {}
+
+containers:
+  opencti-import-file-stix-connector:
+    resource: opencti-import-file-stix-connector-image
+resources:
+  opencti-import-file-stix-connector-image:
+    type: oci-image
+    description: OCI image for the OpenCTI Import File Stix connector.
+
+assumes:
+  - juju >= 3.4

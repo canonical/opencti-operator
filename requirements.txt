@@ -1,2 +1,2 @@
-ops >= 2.2.0
-requests == 2.32.3
+ops == 2.17.0
+gql[requests] == 3.5.0
