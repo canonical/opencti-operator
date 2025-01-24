@@ -730,7 +730,7 @@ class OpenCTICharm(ops.CharmBase):
             secret = self.app.add_secret(content={"token": api_token})
             secret.grant(integration)
             integration.data[self.app]["opencti_token"] = typing.cast(str, secret.id)
-        if opencti_token_id:
+        else:
             secret = self.model.get_secret(id=opencti_token_id)
             if secret.get_content(refresh=True)["token"] != api_token:
                 secret.set_content({"token": api_token})
