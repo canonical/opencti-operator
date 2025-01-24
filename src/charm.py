@@ -723,6 +723,7 @@ class OpenCTICharm(ops.CharmBase):
             )
         if connector_user.account_status == "Inactive":
             client.set_account_status(connector_user.id, "Active")
+
         api_token = connector_user.api_token
         opencti_token_id = integration.data[self.app].get("opencti_token")
         if not opencti_token_id:
