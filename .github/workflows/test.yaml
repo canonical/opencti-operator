@@ -19,3 +19,13 @@ jobs:
       microk8s-addons: "dns ingress rbac storage"
       pre-run-script: tests/integration/prepare.sh
       self-hosted-runner: false
+  check-connector-sync:
+    name: Check Connectors
+    uses: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install tox
+      - run: tox -e generate-connectors
+      - run: git diff --exit-code
