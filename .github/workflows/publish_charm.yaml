@@ -56,7 +56,6 @@ jobs:
           cd ${{ steps.rock-dir.outputs.rock-dir }}
           docker run -d -p 5000:5000 --name registry registry:latest
           rockcraft.skopeo --insecure-policy copy --dest-tls-verify=false oci-archive:${{ steps.rockcraft.outputs.rock }} docker://localhost:5000/rock:latest
-          docker pull localhost:5000/rock:latest
       - name: build charm
         id: charmcraft
         run: |
