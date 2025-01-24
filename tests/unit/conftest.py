@@ -82,13 +82,16 @@ class OpenctiClientMock:
         name: str,
         user_email: str | None = None,
         groups: list[str] | None = None,  # pylint: disable=unused-argument
-    ) -> None:
+    ) -> OpenctiUser | None:
         """Create a user.
 
         Args:
             name: The name of the user.
             user_email: The email address of the user.
             groups: The groups associated with the user.
+
+        Returns:
+            The created user.
         """
         new_user = {
             "name": name,
@@ -98,6 +101,7 @@ class OpenctiClientMock:
             "api_token": "00000000-0000-0000-0000-000000000000",
         }
         self._users.append(new_user)
+        return OpenctiUser(**new_user)
 
     def set_account_status(
         self,

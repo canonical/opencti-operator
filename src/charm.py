@@ -709,34 +709,21 @@ class OpenCTICharm(ops.CharmBase):
             name of the opencti user created for this integration, None if no user is needed.
         """
         integration_data = integration.data[integration.app]
-        connector_charm_name, connector_type = (
-            integration_data.get("connector_charm_name"),
-            integration_data.get("connector_type"),
-        )
+        connector_charm_name = integration_data.get("connector_charm_name")
+        connector_type = integration_data.get("connector_type")
         if not connector_charm_name or not connector_type:
             return None
         opencti_url = f"http://{self.app.name}-endpoints.{self.model.name}.svc:8080"
         integration.data[self.app]["opencti_url"] = opencti_url
-        connector_user = f"charm-connector-{connector_charm_name.replace('_', '-').lower()}"
-        users = {
-            u.name: u for u in client.list_users(name_starts_with=_OPENCTI_CONNECTOR_USER_PREFIX)
-        }
-        groups = {g.name: g for g in client.list_groups()}
-        if connector_user not in users:
-            group_id = (
-                groups["Administrators"]
-                if connector_type.replace("-", "_").upper() == "INTERNAL_EXPORT_FILE"
-                else groups["Connectors"]
-            ).id
-            client.create_user(name=connector_user, groups=[group_id])
-            users = {
-                u.name: u
-                for u in client.list_users(name_starts_with=_OPENCTI_CONNECTOR_USER_PREFIX)
-            }
-        else:
-            if users[connector_user].account_status == "Inactive":
-                client.set_account_status(users[connector_user].id, "Active")
-        api_token = users[connector_user].api_token
+        connector_user_name = f"charm-connector-{connector_charm_name.replace('_', '-').lower()}"
+        connector_user = self._get_opencti_user(client, connector_user_name)
+        if connector_user is None:
+            connector_user = self._create_opencti_user(
+                client, connector_user_name, self._get_connector_group(connector_type)
+            )
+        if connector_user.account_status == "Inactive":
+            client.set_account_status(connector_user.id, "Active")
+        api_token = connector_user.api_token
         opencti_token_id = integration.data[self.app].get("opencti_token")
         if not opencti_token_id:
             secret = self.app.add_secret(content={"token": api_token})
@@ -746,7 +733,56 @@ class OpenCTICharm(ops.CharmBase):
             secret = self.model.get_secret(id=opencti_token_id)
             if secret.get_content(refresh=True)["token"] != api_token:
                 secret.set_content({"token": api_token})
-        return connector_user
+        return connector_user_name
+
+    def _get_connector_group(self, connector_type: str) -> str:
+        """Get the connector group for the given connector type.
+
+        Args:
+            connector_type: the connector type.
+
+        Returns:
+            connector group name for the given connector type.
+        """
+        return (
+            "Administrators"
+            if connector_type.replace("-", "_").upper() == "INTERNAL_EXPORT_FILE"
+            else "Connectors"
+        )
+
+    def _create_opencti_user(
+        self, client: opencti.OpenctiClient, name: str, group_name: str
+    ) -> opencti.OpenctiUser:
+        """Create a new OpenCTI user.
+
+        Args:
+            client: the OpenCTI client.
+            name: the name of the user.
+            group_name: the name of the group.
+
+        Returns:
+            The new OpenCTI user.
+        """
+        groups = {g.name: g for g in client.list_groups()}
+        group_id = groups[group_name].id
+        return client.create_user(name=name, groups=[group_id])
+
+    def _get_opencti_user(
+        self, client: opencti.OpenctiClient, name: str
+    ) -> opencti.OpenctiUser | None:
+        """Get the OpenCTI user by name.
+
+        Args:
+            client: the OpenCTI client.
+            name: the name of the user.
+
+        Returns:
+            The OpenCTI user.
+        """
+        users = users = {
+            u.name: u for u in client.list_users(name_starts_with=_OPENCTI_CONNECTOR_USER_PREFIX)
+        }
+        return users.get(name)
 
 
 if __name__ == "__main__":  # pragma: nocover
