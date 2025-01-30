@@ -85,7 +85,7 @@ jobs:
           cat charmcraft.yaml
       - if: github.event_name == 'push'
         name: publish charm
-        uses: canonical/charming-actions/upload-charm@2.6.3
+        uses: canonical/charming-actions/upload-charm@2.7.0
         with:
           credentials: ${{ secrets.CHARMHUB_TOKEN }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
