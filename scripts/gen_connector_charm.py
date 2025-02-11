@@ -750,7 +750,7 @@ def gen_sekoia_connector(location: pathlib.Path, version: str) -> None:
             "sekoia-collection": {
                 "description": "Sekoia collection",
                 "type": "string",
-                "optional": False,
+                "optional": True,
             },
             "sekoia-start-date": {
                 "description": "(optional) the date to start consuming data from. Maybe in the formats YYYY-MM-DD or YYYY-MM-DDT00:00:00",

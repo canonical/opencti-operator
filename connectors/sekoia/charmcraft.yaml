@@ -29,10 +29,6 @@ config:
       description: Sekoia API key
       type: string
       optional: false
-    sekoia-collection:
-      description: Sekoia collection
-      type: string
-      optional: false
     sekoia-create-observables:
       description: create observables from indicators
       type: boolean
@@ -47,6 +43,10 @@ config:
       type: string
       default: https://api.sekoia.io
       optional: false
+    sekoia-collection:
+      description: Sekoia collection
+      type: string
+      optional: true
     sekoia-start-date:
       description: (optional) the date to start consuming data from. Maybe in the formats YYYY-MM-DD or YYYY-MM-DDT00:00:00
       type: string
