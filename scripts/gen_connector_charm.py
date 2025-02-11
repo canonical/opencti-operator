@@ -758,7 +758,7 @@ def gen_sekoia_connector(location: pathlib.Path, version: str) -> None:
                 "optional": True,
             },
             "sekoia-create-observables": {
-                "description": "create observables from indicators",
+                "description": "(optional) create observables from indicators",
                 "type": "boolean",
                 "optional": False,
             },

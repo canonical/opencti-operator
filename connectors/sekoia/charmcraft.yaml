@@ -30,7 +30,7 @@ config:
       type: string
       optional: false
     sekoia-create-observables:
-      description: create observables from indicators
+      description: (optional) create observables from indicators
       type: boolean
       optional: false
     connector-log-level:

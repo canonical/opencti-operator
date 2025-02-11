@@ -11,7 +11,7 @@ LIBAPI = 0
 
 # Increment this PATCH version before using `charmcraft publish-lib` or reset
 # to 0 if you are raising the major API version
-LIBPATCH = 1
+LIBPATCH = 2
 
 import abc
 import os
@@ -102,7 +102,7 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
         missing = []
         for config, config_meta in self._config_metadata().items():
             value = self.config.get(config)
-            if value is None and not config_meta["description"].strip().startswith("(optional)"):
+            if value is None and config_meta.get("optional") is False:
                 missing.append(config)
         if missing:
             raise NotReady("missing configurations: {}".format(", ".join(missing)))
