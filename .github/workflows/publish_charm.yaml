@@ -91,3 +91,14 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           built-charm-path: ${{ steps.charmcraft.outputs.charms }}
           tag-prefix: ${{ steps.charm-name.outputs.charm-name }}
+  publish-charm-libs:
+    name: Release charm libs
+    runs-on: ubuntu-24.04
+    needs: [ publish-charm ]
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: canonical/charming-actions/release-libraries@2.7.0
+        name: Release libs
+        with:
+          credentials: ${{ secrets.CHARMHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
