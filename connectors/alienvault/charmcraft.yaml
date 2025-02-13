@@ -21,6 +21,10 @@ description: |
 
 config:
   options:
+    alienvault-api-key:
+      description: The OTX Key.
+      type: string
+      optional: false
     alienvault-base-url:
       description: The base URL for the OTX DirectConnect API.
       type: string
@@ -66,10 +70,6 @@ config:
       description: determines the verbosity of the logs. Options are debug, info, warn, or error
       default: info
       optional: false
-    alienvault-api-key:
-      description: (optional) The OTX Key.
-      type: string
-      optional: true
     alienvault-create-indicators:
       description: (optional) If true then indicators will be created from Pulse indicators and added to the report.
       type: boolean

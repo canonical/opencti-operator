@@ -380,6 +380,34 @@ _add_connector_test_params(
 )
 
 _add_connector_test_params(
+    name="ipinfo",
+    connector_name="ipinfo",
+    charm_config={
+        "connector-scope": "IPv4-Addr,IPv6-Addr",
+        "connector-auto": False,
+        "connector-confidence-level": 75,
+        "connector-log-level": "error",
+        "ipinfo-token": "abcd",
+        "ipinfo-max-tlp": "TLP:AMBER",
+        "ipinfo-use-asn-name": True,
+    },
+    environment={
+        "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
+        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "CONNECTOR_NAME": "opencti-ipinfo-connector",
+        "CONNECTOR_SCOPE": "IPv4-Addr,IPv6-Addr",
+        "CONNECTOR_AUTO": "false",
+        "CONNECTOR_CONFIDENCE_LEVEL": "75",
+        "CONNECTOR_TYPE": "INTERNAL_ENRICHMENT",
+        "CONNECTOR_LOG_LEVEL": "error",
+        "IPINFO_TOKEN": "abcd",
+        "IPINFO_MAX_TLP": "TLP:AMBER",
+        "IPINFO_USE_ASN_NAME": "true",
+    },
+)
+
+
+_add_connector_test_params(
     name="malwarebazaar",
     connector_name="malwarebazaar",
     charm_config={
@@ -524,6 +552,30 @@ _add_connector_test_params(
         "SEKOIA_CREATE_OBSERVABLES": "true",
     },
 )
+
+_add_connector_test_params(
+    name="urlhaus",
+    connector_name="urlhaus",
+    charm_config={
+        "connector-log-level": "error",
+        "connector-confidence-level": 40,
+        "urlhaus-interval": 3,
+    },
+    environment={
+        "CONNECTOR_CONFIDENCE_LEVEL": "40",
+        "CONNECTOR_LOG_LEVEL": "error",
+        "CONNECTOR_NAME": "opencti-urlhaus-connector",
+        "CONNECTOR_SCOPE": "urlhaus",
+        "CONNECTOR_TYPE": "EXTERNAL_IMPORT",
+        "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
+        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "URLHAUS_CSV_URL": "https://urlhaus.abuse.ch/downloads/csv_recent/",
+        "URLHAUS_IMPORT_OFFLINE": "true",
+        "URLHAUS_INTERVAL": "3",
+        "URLHAUS_THREATS_FROM_LABELS": "true",
+    },
+)
+
 
 _add_connector_test_params(
     name="urlscan",
