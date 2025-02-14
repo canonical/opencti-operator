@@ -1,0 +1,81 @@
+# Copyright 2025 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-urlhaus-connector
+title: OpenCTI Abuse.ch URLhaus Charm
+summary: OpenCTI Abuse.ch URLhaus connector charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI Connectors](https://docs.opencti.io/latest/deployment/connectors/)
+  for the OpenCTI charm.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI Connectors
+  across a  range of environments, organize your cyber threat intelligence to
+  enhance and disseminate actionable insights.
+
+config:
+  options:
+    connector-confidence-level:
+      type: int
+      optional: false
+      description: From 0 (Unknown) to 100 (Fully trusted)
+    urlhaus-interval:
+      type: int
+      optional: false
+      description: urlhaus interval.
+    connector-log-level:
+      type: string
+      description: determines the verbosity of the logs. Options are debug, info, warn, or error
+      default: info
+      optional: false
+    connector-scope:
+      type: string
+      optional: false
+      default: urlhaus
+      description: The connector scope.
+    urlhaus-csv-url:
+      type: string
+      optional: false
+      default: https://urlhaus.abuse.ch/downloads/csv_recent/
+      description: urlhaus csv url.
+    urlhaus-import-offline:
+      type: boolean
+      optional: false
+      default: true
+      description: urlhaus import offline.
+    urlhaus-threats-from-labels:
+      type: boolean
+      optional: false
+      default: true
+      description: urlhaus threats from labels.
+
+
+provides:
+  opencti-connector:
+    interface: opencti_connector
+    limit: 1
+
+type: charm
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm: {}
+
+containers:
+  opencti-urlhaus-connector:
+    resource: opencti-urlhaus-connector-image
+resources:
+  opencti-urlhaus-connector-image:
+    type: oci-image
+    description: OCI image for the OpenCTI Abuse.ch URLhaus connector.
+
+assumes:
+  - juju >= 3.4

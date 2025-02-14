@@ -271,6 +271,8 @@ def generate_alienvault_connector(location: pathlib.Path, version: str) -> None:
         "type": "int",
         "optional": False,
     }
+    config["alienvault-api-key"]["optional"] = False
+    config["alienvault-api-key"]["description"] = "The OTX Key."
     render_template(
         name="alienvault",
         connector_type="EXTERNAL_IMPORT",
@@ -575,6 +577,55 @@ def gen_import_file_stix_connector(location: pathlib.Path, version: str) -> None
     )
 
 
+@connector_generator("ipinfo")
+def gen_ipinfo_connector(location: pathlib.Path, version: str) -> None:
+    render_template(
+        name="ipinfo",
+        connector_type="INTERNAL_ENRICHMENT",
+        version=version,
+        display_name="IpInfo",
+        output_dir=location,
+        config={
+            "connector-scope": {
+                "description": "connector scope",
+                "type": "string",
+                "optional": False,
+            },
+            "connector-auto": {
+                "description": "enable/disable auto-import of file",
+                "type": "boolean",
+                "optional": False,
+            },
+            "connector-confidence-level": {
+                "description": "from 0 (Unknown) to 100 (Fully trusted)",
+                "type": "int",
+                "optional": False,
+            },
+            "connector-log-level": {
+                "description": "logging level of the connector",
+                "type": "string",
+                "default": "info",
+                "optional": False,
+            },
+            "ipinfo-token": {
+                "type": "string",
+                "optional": False,
+                "description": "ipinfo token",
+            },
+            "ipinfo-max-tlp": {
+                "type": "string",
+                "optional": False,
+                "description": "ipinfo max TLP",
+            },
+            "ipinfo-use-asn-name": {
+                "type": "boolean",
+                "optional": False,
+                "description": "Set false if you want ASN name to be just the number e.g. AS8075",
+            },
+        },
+    )
+
+
 @connector_generator("malwarebazaar")
 def gen_malwarebazaar_recent_additions_connector(location: pathlib.Path, version: str) -> None:
     """Generate opencti malwarebazaar-recent-additions (malwarebazaar) connector.
@@ -764,6 +815,54 @@ def gen_sekoia_connector(location: pathlib.Path, version: str) -> None:
             },
         },
         generate_entrypoint="echo 'cd /opt/opencti-connector-sekoia; python3 sekoia.py' > entrypoint.sh",
+    )
+
+
+@connector_generator("urlhaus")
+def gen_urlhaus_connector(location: pathlib.Path, version: str) -> None:
+    render_template(
+        name="urlhaus",
+        connector_type="EXTERNAL_IMPORT",
+        version=version,
+        display_name="Abuse.ch URLhaus",
+        output_dir=location,
+        config={
+            **DEFAULT_CONFIG,
+            "connector-confidence-level": {
+                "type": "int",
+                "optional": False,
+                "description": "From 0 (Unknown) to 100 (Fully trusted)",
+            },
+            "connector-scope": {
+                "type": "string",
+                "optional": False,
+                "default": "urlhaus",
+                "description": "The connector scope.",
+            },
+            "urlhaus-csv-url": {
+                "type": "string",
+                "optional": False,
+                "default": "https://urlhaus.abuse.ch/downloads/csv_recent/",
+                "description": "urlhaus csv url.",
+            },
+            "urlhaus-import-offline": {
+                "type": "boolean",
+                "optional": False,
+                "default": True,
+                "description": "urlhaus import offline.",
+            },
+            "urlhaus-threats-from-labels": {
+                "type": "boolean",
+                "optional": False,
+                "default": True,
+                "description": "urlhaus threats from labels.",
+            },
+            "urlhaus-interval": {
+                "type": "int",
+                "optional": False,
+                "description": "urlhaus interval.",
+            },
+        },
     )
 
 

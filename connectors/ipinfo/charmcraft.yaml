@@ -1,0 +1,77 @@
+# Copyright 2025 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-ipinfo-connector
+title: OpenCTI IpInfo Charm
+summary: OpenCTI IpInfo connector charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI Connectors](https://docs.opencti.io/latest/deployment/connectors/)
+  for the OpenCTI charm.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI Connectors
+  across a  range of environments, organize your cyber threat intelligence to
+  enhance and disseminate actionable insights.
+
+config:
+  options:
+    connector-auto:
+      description: enable/disable auto-import of file
+      type: boolean
+      optional: false
+    connector-confidence-level:
+      description: from 0 (Unknown) to 100 (Fully trusted)
+      type: int
+      optional: false
+    connector-scope:
+      description: connector scope
+      type: string
+      optional: false
+    ipinfo-max-tlp:
+      type: string
+      optional: false
+      description: ipinfo max TLP
+    ipinfo-token:
+      type: string
+      optional: false
+      description: ipinfo token
+    ipinfo-use-asn-name:
+      type: boolean
+      optional: false
+      description: Set false if you want ASN name to be just the number e.g. AS8075
+    connector-log-level:
+      description: logging level of the connector
+      type: string
+      default: info
+      optional: false
+
+
+provides:
+  opencti-connector:
+    interface: opencti_connector
+    limit: 1
+
+type: charm
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm: {}
+
+containers:
+  opencti-ipinfo-connector:
+    resource: opencti-ipinfo-connector-image
+resources:
+  opencti-ipinfo-connector-image:
+    type: oci-image
+    description: OCI image for the OpenCTI IpInfo connector.
+
+assumes:
+  - juju >= 3.4
