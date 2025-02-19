@@ -22,8 +22,8 @@ This charm will make operating <charm-software> simple and straightforward for D
 
 | | |
 |--|--|
-|  [Tutorials](link to tutorial)</br>  Get started - a hands-on introduction to using the charm for new users </br> |  [How-to guides](link to how-to guide) </br> Step-by-step guides covering key operations and common tasks |
-| [Reference](link to reference) </br> Technical information - specifications, APIs, architecture | [Explanation](link to explanation) </br> Concepts - discussion and clarification of key topics  |
+| [Tutorials](./tutorial)</br>  Get started - a hands-on introduction to using the charm for new users </br> |  [How-to guides](./how-to) </br> Step-by-step guides covering key operations and common tasks |
+| [Reference](./reference) </br> Technical information - specifications, APIs, architecture | [Explanation](./explanation) </br> Concepts - discussion and clarification of key topics  |
 
 ## Contributing to this documentation
 
@@ -45,14 +45,14 @@ projects, contributions, suggestions, fixes, and constructive feedback.
 - [Code of conduct](https://ubuntu.com/community/code-of-conduct)
 - [Get support](https://discourse.charmhub.io/)
 - [Join our online chat](https://matrix.to/#/#charmhub-charmdev:ubuntu.com)
-- [Contribute](link to Contribute page)
+- [Contribute](how-to/contribute.md)
 
 Thinking about using the <charm-name> Operator for your next project? 
 [Get in touch](https://matrix.to/#/#charmhub-charmdev:ubuntu.com)!
 
 # Contents
 
-1. [Tutorial](link to tutorial)
-1. [How-to](link to how-to)
-1. [Reference](link to reference)
-1. [Explanation](link to explanation)
+1. [Tutorial](./tutorial)
+1. [How-to](./how-to)
+1. [Reference](./reference)
+1. [Explanation](./explanation)

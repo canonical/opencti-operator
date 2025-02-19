@@ -1,10 +1,8 @@
-<!-- Remember to update this file for your charm -- replace <charm-name> with the appropriate name. -->
-
 # Contributing
 
 ## Overview
 
-This document explains the processes and practices recommended for contributing enhancements to the <charm-name> charm.
+This document explains the processes and practices recommended for contributing enhancements to the OpenCTI charm.
 
 - Generally, before developing enhancements to this charm, you should consider [opening an issue
   ](link to issues page) explaining your use case.
@@ -28,7 +26,7 @@ To make contributions to this charm, you'll need a working [development setup](h
 The code for this charm can be downloaded as follows:
 
 ```
-git clone https://github.com/canonical/<charm-name>
+git clone https://github.com/canonical/opencti-operator
 ```
 
 You can use the environments created by `tox` for development:
@@ -37,9 +35,6 @@ You can use the environments created by `tox` for development:
 tox --notest -e unit
 source .tox/unit/bin/activate
 ```
-
-<!-- TODO: Check whether these instructions are more appropriate:
-You can create an environment for development with `tox`:
 
 ```shell
 tox devenv -e integration
@@ -59,15 +54,6 @@ that can be used for linting and formatting code when you're preparing contribut
 * `tox -e unit`: Runs the unit tests.
 * `tox -e integration`: Runs the integration tests.
 
-### Generating src docs for every commit
-
-Run the following command:
-
-```bash
-echo -e "tox -e src-docs\ngit add src-docs\n" >> .git/hooks/pre-commit
-chmod +x .git/hooks/pre-commit
-```
-
 ### Building the charm
 
 Build the charm in this git repository using:
@@ -76,25 +62,7 @@ Build the charm in this git repository using:
 charmcraft pack
 ```
 
-<!-- TODO: Determine if there is a generic way to write these instructions
-For the integration tests (and also to deploy the charm locally), the indico
-and indico-nginx images are required in the microk8s registry. To enable it:
-
-    microk8s enable registry
-
-The following commands import the images in the Docker daemon and push them into the registry:
-
-    cd [project_dir]/indico_rock && rockcraft pack rockcraft.yaml
-    skopeo --insecure-policy copy oci-archive:indico_1.0_amd64.rock docker-daemon:localhost:32000/indico:latest
-    docker push localhost:32000/indico:latest
-    cd [project_dir]/nginx_rock && rockcraft pack rockcraft.yaml
-    skopeo --insecure-policy copy oci-archive:indico_nginx_1.0_amd64.rock docker-daemon:localhost:32000/indico-nginx:latest
-    docker push localhost:32000/indico-nginx:latest
--->
-
 ### Deploying
-
-<!-- TODO: Determine if the juju deploy command should be updated -->
 
 ```bash
 # Create a model
@@ -102,9 +70,9 @@ juju add-model charm-dev
 # Enable DEBUG logging
 juju model-config logging-config="<root>=INFO;unit=DEBUG"
 # Deploy the charm (assuming you're on amd64)
-juju deploy ./<charm-name>.charm 
+juju deploy ./opencti_amd64.charm --resource opencti-image=<test-opencti-image-resource>
 ```
 
 ## Canonical Contributor Agreement
 
-Canonical welcomes contributions to the <charm-name> charm. Please check out our [contributor agreement](https://ubuntu.com/legal/contributors) if you're interested in contributing to the solution.
+Canonical welcomes contributions to the OpenCTI charm. Please check out our [contributor agreement](https://ubuntu.com/legal/contributors) if you're interested in contributing to the solution.
