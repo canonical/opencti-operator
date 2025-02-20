@@ -118,7 +118,6 @@ juju grant-secret opencti-admin-user opencti
 juju config opencti admin-user=$OPENCTI_ADMIN_USER_SECRET_ID
 ```
 
-### Basic operations
 When the OpenCTI charm has completed deployment and installation, you can 
 access OpenCTI from a browser. First, we need to modify the `/etc/hosts` file 
 to point the `opencti.local` domain to the IP address of the virtual machine.  

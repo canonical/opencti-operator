@@ -1,9 +1,6 @@
 # Copyright 2025 Canonical Ltd.
 # See LICENSE file for licensing details.
 
-# Copyright 2024 Canonical Ltd.
-# See LICENSE file for licensing details.
-
 variable "app_name" {
   description = "Name of the application in the Juju model."
   type        = string
@@ -50,9 +47,4 @@ variable "units" {
   description = "Number of units to deploy"
   type        = number
   default     = 1
-
-  validation {
-    condition     = var.units == 1
-    error_message = "Scaling is not supported for this charm."
-  }
 }

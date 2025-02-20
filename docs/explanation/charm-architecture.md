@@ -34,7 +34,13 @@ And if you run `kubectl describe pod opencti-0`, all the containers will have
 as Command ```/charm/bin/pebble```. That's because Pebble is responsible for
 the processes startup as explained above.
 
-## Charm architecture diagram
+## High-level overview of a OpenCTI deployment
+
+Below is a diagram of a basic OpenCTI deployment. It consists of two Juju models
+one VM model for deploying OpenSearch and RabbitMQ, and a k8s model for 
+deploying OpenCTI along with the rest of the dependencies. With the base OpenCTI
+charm deployed, users can choose from several OpenCTI connector charms to 
+integrate with the OpenCTI charm.
 
 ```mermaid
 C4Container
@@ -45,13 +51,11 @@ C4Container
         Container(s3-integrator, "S3 Integrator")
         Container(redis, "Redis")
         Container(opencti, "OpenCTI")
-        Container(opencti-connector-1, "OpenCTI Connectors")
-        Container(opencti-connector-2, "OpenCTI Connectors")
+        Container(opencti-connector, "OpenCTI Connector(s)")
         Rel(redis, opencti, "redis")
         Rel(ingress, opencti, "ingress")
         Rel(s3-integrator, opencti , "s3")
-        BiRel(opencti, opencti-connector-1, "opencti-connector")
-        BiRel(opencti, opencti-connector-2, "opencti-connector")
+        BiRel(opencti, opencti-connector, "opencti-connector")
     }
     Container_Boundary(vm_model, "VM Model") {
         Container(rabbitmq, "RabbitMQ")
@@ -61,6 +65,61 @@ C4Container
     Rel(rabbitmq, opencti, "amqp")
     Rel(ingress, k8s-ingress, "control")
     Rel(s3, s3-integrator, "obtain information")
+```
+
+## Charm architecture diagram
+
+```mermaid
+C4Component
+    System_Boundary(integrations, "Charm Integrations") {
+        System_Ext(opensearch-client, "opensearch-client Integration")
+        System_Ext(s3, "s3 Integration")
+        System_Ext(grafana-dashboard, "grafana-dashboard Integration")
+        System_Ext(logging, "logging Integration")
+        System_Ext(metrics-endpoint, "metrics-endpoint Integration")
+        System_Ext(amqp, "amqp Integration")
+        System_Ext(redis, "redis Integration")
+        System_Ext(ingress, "ingress Integration")
+    }
+    Container_Boundary(opencti-charm, "OpenCTI charm") {
+        Container_Boundary(charm-lib, "charm libraries") {
+            Component(opensearch-lib, "data_platform_libs.v0.data_interface")
+            Component(s3-lib, "data_platform_libs.v0.s3")
+            Component(grafana-lib, "grafana_k8s.v0.grafana_dashboard")
+            Component(loki-lib, "loki_k8s.v1.loki_push_api")
+            Component(prometheus-lib, "prometheus_k8s.v0.prometheus_scrape")
+            Component(rabbitmq-lib, "rabbitmq_k8s.v0.rabbitmq")
+            Component(redis-lib, "redis_k8s.v0.redis")
+            Component(ingress-lib, "traefik_l8s.v2.ingress")
+        }
+        Rel(opensearch-client, opensearch-lib, "")
+        Rel(s3, s3-lib, "")
+        Rel(grafana-dashboard, grafana-lib, "")
+        Rel(logging, loki-lib, "")
+        Rel(metrics-endpoint, prometheus-lib, "")
+        Rel(amqp, rabbitmq-lib, "")
+        Rel(redis, redis-lib, "")
+        Rel(ingress, ingress-lib, "")
+        Container_Boundary(charm-container, "OpenCTI Container") {
+            Component(opencti, "OpenCTI charm")
+            Component(opencti-lib, "OpenCTI client")
+        }
+        Container_Boundary(opencti-container, "OpenCTI Container") {
+            Component(opencti-platform, "OpenCTI platform")
+            Component(opencti-worker, "OpenCTI workers")
+        }
+        Rel(opensearch-lib, opencti, "OpenSearch connection info")
+        Rel(s3-lib, opencti, "S3 compatible storage credential")
+        Rel(opencti, grafana-lib, "OpenCTI Grafana dashboard")
+        Rel(loki-lib, opencti, "Loki connection info")
+        Rel(opencti, prometheus-lib, "Prometheus scrape endpoints")
+        Rel(rabbitmq-lib, opencti, "RabbitMQ connection info")
+        Rel(redis-lib, opencti, "Redis connection info")
+        Rel(opencti, ingress-lib, "OpenCTI ingress request")
+        Rel(opencti, opencti-platform, "Config")
+        Rel(opencti, opencti-worker, "Config")
+        UpdateLayoutConfig($c4ShapeInRow="1", $c4BoundaryInRow="4")
+    }
 ```
 
 ## OCI images
@@ -93,19 +152,19 @@ OpenCTI platform in the OpenCTI charm is [configured to expose prometheus on por
 
 For this charm, the following Juju events are observed:
 
-1. `config-changed`
-2. `upgrade-charm`
-3. `update-status`
-4. `secret-changed`
-5. `opencti-pebble-ready`
-6. `opencti-peer-relation-created`
-7. `opencti-peer-relation-changed`
-8. `opencti-peer-relation-departed`
-9. `opencti-peer-relation-broken`
-10. `opencti-pebble-custom-notice`
-11. `opencti-connector-relation-joined`
-12. `opencti-connector-relation-changed`
-13. `stop`
+1. [`config-changed`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#config-changed)
+2. [`upgrade-charm`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#upgrade-charm)
+3. [`update-status`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#update-status)
+4. [`secret-changed`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#secret-changed)
+5. [`opencti-pebble-ready`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#container-pebble-ready)
+6. [`opencti-peer-relation-created`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-created)
+7. [`opencti-peer-relation-changed`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-changed)
+8. [`opencti-peer-relation-departed`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-departed)
+9. [`opencti-peer-relation-broken`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-broken)
+10. [`opencti-pebble-custom-notice`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#container-pebble-custom-notice)
+11. [`opencti-connector-relation-joined`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-joined)
+12. [`opencti-connector-relation-changed`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-changed)
+13. [`stop`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#stop)
 
 And many events observed by charm libraries.
 
