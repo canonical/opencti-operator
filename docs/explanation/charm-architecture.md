@@ -100,7 +100,7 @@ C4Component
         Rel(amqp, rabbitmq-lib, "")
         Rel(redis, redis-lib, "")
         Rel(ingress, ingress-lib, "")
-        Container_Boundary(charm-container, "OpenCTI Container") {
+        Container_Boundary(charm-container, "Charm Container") {
             Component(opencti, "OpenCTI charm")
             Component(opencti-lib, "OpenCTI client")
         }
