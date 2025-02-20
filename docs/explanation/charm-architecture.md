@@ -34,7 +34,7 @@ And if you run `kubectl describe pod opencti-0`, all the containers will have
 as Command ```/charm/bin/pebble```. That's because Pebble is responsible for
 the processes startup as explained above.
 
-## Charm Architecture Diagrams
+## Charm architecture diagram
 
 ```mermaid
 C4Container
@@ -65,8 +65,8 @@ C4Container
 
 ## OCI images
 
-We use [Rockcraft](https://canonical-rockcraft.readthedocs-hosted.com/en/latest/) to build OCI Images for <charm-name>. 
-The images are defined in [opencti rock](https://github.com/canonical/opencti-operator/blob/main/opencti_rock/rockcraft.yaml).
+We use [Rockcraft](https://canonical-rockcraft.readthedocs-hosted.com/en/latest/) to build OCI Images for the OpenCTI charm. 
+The images are defined in the [opencti rock](https://github.com/canonical/opencti-operator/blob/main/opencti_rock/rockcraft.yaml).
 They are published to [Charmhub](https://charmhub.io/), the official repository of charms.
 
 > See more: [How to publish your charm on Charmhub](https://juju.is/docs/sdk/publishing)
@@ -109,7 +109,7 @@ For this charm, the following Juju events are observed:
 
 And many events observed by charm libraries.
 
-> See more in the Juju docs: [Event](https://juju.is/docs/sdk/event)
+> See more in the Juju docs: [Hook](https://juju.is/docs/sdk/event)
 
 ## Charm code overview
 
@@ -118,7 +118,7 @@ The `src/charm.py` is the default entry point for a charm and has the
 base class from which all Charms are formed, defined by [Ops](https://juju.is/docs/sdk/ops) 
 (Python framework for developing charms).
 
-> See more in the Juju docs: [Charm](https://juju.is/docs/sdk/constructs#heading--charm)
+> See more in the Juju docs: [Charm](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/charm/)
 
 The `__init__` method guarantees that the charm observes all events relevant to its operation and handles them.
 

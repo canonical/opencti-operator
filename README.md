@@ -15,7 +15,7 @@ Use links instead.
 [![Promote charm](https://github.com/canonical/opencti-operator/actions/workflows/promote_charm.yaml/badge.svg)](https://github.com/canonical/opencti-operator/actions/workflows/promote_charm.yaml)
 [![Discourse Status](https://img.shields.io/discourse/status?server=https%3A%2F%2Fdiscourse.charmhub.io&style=flat&label=CharmHub%20Discourse)](https://discourse.charmhub.io)
 
-A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators)
+A [Juju](https://juju.is/) [charm](https://canonical-juju.readthedocs-hosted.com/en/3.6/user/reference/charm/)
 for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
 open source threat intelligence platform in your systems.
 
@@ -25,7 +25,7 @@ to collect, correlate, and leverage threat data at strategic, operational and
 tactical levels.
 
 For information about how to deploy, integrate, and manage this charm, see the
-Official [OpenCTI Charm Documentation](external link).
+Official [OpenCTI Charm Documentation](https://charmhub.io/opencti).
 
 ## Get started
 In this section, we will deploy the base OpenCTI charm.
@@ -127,7 +127,6 @@ After that, we can access the OpenCTI instance in the browser using the address
 password `test`.  
 
 ## Integrations
-### `opencti-connector` Integration
 
 The `opencti-connector` integration integrates the OpenCTI charm and OpenCTI 
 connector charms. OpenCTI connectors are add-ons used by OpenCTI for platform 
@@ -137,7 +136,7 @@ connectors.
 
 Existing OpenCTI connector charms can be found [here](connectors).
 
-For deploying and integrating a OpenCTI connector charm.
+Deploy and integrate an OpenCTI connector charm with:
 
 ```bash
 juju deploy opencti-export-file-stix-connector --channel latest/edge
