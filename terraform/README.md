@@ -5,9 +5,6 @@ This folder contains a base [Terraform][Terraform] module for the OpenCTI charm.
 The module uses the [Terraform Juju provider][Terraform Juju provider] to model the charm
 deployment onto any Kubernetes environment managed by [Juju][Juju].
 
-The base module is not intended to be deployed in separation (it is possible though), but should
-rather serve as a building block for higher level modules.
-
 ## Module structure
 
 - **main.tf** - Defines the Juju application to be deployed.

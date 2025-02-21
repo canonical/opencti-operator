@@ -69,20 +69,15 @@ C4Container
 
 ## Charm architecture diagram
 
+The OpenCTI charm utilizes many charm libraries provided by the charm community
+to handle Juju integrations with all the dependencies of OpenCTI. It uses the 
+Pebble API and an OpenCTI GraphQL client to set up and configure the OpenCTI 
+platform and workers inside the OpenCTI container.
+
 ```mermaid
 C4Component
-    System_Boundary(integrations, "Charm Integrations") {
-        System_Ext(opensearch-client, "opensearch-client Integration")
-        System_Ext(s3, "s3 Integration")
-        System_Ext(grafana-dashboard, "grafana-dashboard Integration")
-        System_Ext(logging, "logging Integration")
-        System_Ext(metrics-endpoint, "metrics-endpoint Integration")
-        System_Ext(amqp, "amqp Integration")
-        System_Ext(redis, "redis Integration")
-        System_Ext(ingress, "ingress Integration")
-    }
     Container_Boundary(opencti-charm, "OpenCTI charm") {
-        Container_Boundary(charm-lib, "charm libraries") {
+        Container_Boundary(charm-lib, "Charm Libraries") {
             Component(opensearch-lib, "data_platform_libs.v0.data_interface")
             Component(s3-lib, "data_platform_libs.v0.s3")
             Component(grafana-lib, "grafana_k8s.v0.grafana_dashboard")
@@ -92,17 +87,10 @@ C4Component
             Component(redis-lib, "redis_k8s.v0.redis")
             Component(ingress-lib, "traefik_l8s.v2.ingress")
         }
-        Rel(opensearch-client, opensearch-lib, "")
-        Rel(s3, s3-lib, "")
-        Rel(grafana-dashboard, grafana-lib, "")
-        Rel(logging, loki-lib, "")
-        Rel(metrics-endpoint, prometheus-lib, "")
-        Rel(amqp, rabbitmq-lib, "")
-        Rel(redis, redis-lib, "")
-        Rel(ingress, ingress-lib, "")
         Container_Boundary(charm-container, "Charm Container") {
+            Component(opencti-client, "OpenCTI client")
             Component(opencti, "OpenCTI charm")
-            Component(opencti-lib, "OpenCTI client")
+            BiRel(opencti, opencti-client, "")
         }
         Container_Boundary(opencti-container, "OpenCTI Container") {
             Component(opencti-platform, "OpenCTI platform")
