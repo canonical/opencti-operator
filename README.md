@@ -37,8 +37,7 @@ a virtual machine with 4 CPUs, 8 GB RAM, and 50 GB disk space.
 You can follow the tutorial [here](https://canonical-juju.readthedocs-hosted.com/en/latest/user/howto/manage-your-deployment/manage-your-deployment-environment/#manage-your-deployment-environment) 
 to set up a test environment for Juju.
 
-### Deploy
-#### Deploy databases on the VM model
+### Deploy databases on the VM model
 
 First, deploy the OpenSearch and RabbitMQ databases on the VM model. However, 
 before deploying the OpenSearch database, we need to configure certain kernel 
@@ -67,7 +66,7 @@ juju deploy rabbitmq-server --channel 3.9/stable
 
 juju integrate self-signed-certificates opensearch
 ```
-
+### Create Juju offers
 Next, we will create some [offers](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/offer/)
 for cross-model integrations.
 
@@ -75,7 +74,7 @@ for cross-model integrations.
 juju offer opensearch:opensearch-client opensearch-client
 juju offer rabbitmq-server:amqp amqp
 ```
-
+### Deploy the OpenCTI charm
 In the Kubernetes model, deploy the OpenCTI charm along with the rest of 
 dependencies.
 
@@ -88,7 +87,7 @@ juju deploy redis-k8s --channel latest/edge
 juju deploy nginx-ingress-integrator --trust --revision 109 --channel latest/edge --config path-routes=/ --config service-hostname=opencti.local
 juju deploy opencti --channel latest/edge
 ```
-
+### Configure and integrate
 Configure minio to provide a S3 compatible storage for the OpenCTI charm.
 
 ```bash
@@ -108,7 +107,7 @@ juju integrate opencti redis-k8s
 juju integrate opencti s3-integrator
 juju integrate opencti nginx-ingress-integrator
 ```
-
+### Create an admin user and access OpenCTI
 Create the initial admin user for the OpenCTI deployment and provide it to the 
 OpenCTI charm.
 

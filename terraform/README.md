@@ -11,13 +11,12 @@ rather serve as a building block for higher level modules.
 ## Module structure
 
 - **main.tf** - Defines the Juju application to be deployed.
-- **variables.tf** - Allows customization of the deployment. Except for exposing the deployment
-  options (Juju model name, channel or application name) also models the charm configuration.
-- **output.tf** - Responsible for integrating the module with other Terraform modules, primarily
+- **variables.tf** - Allows customization of the deployment. Also models the charm configuration, 
+  except for exposing the deployment options (Juju model name, channel or application name).
+- **output.tf** - Integrates the module with other Terraform modules, primarily
   by defining potential integration endpoints (charm integrations), but also by exposing
-  the application name.
+  the Juju application name.
 - **versions.tf** - Defines the Terraform provider version.
-- 
 ## Using opencti base module in higher level modules
 
 If you want to use `opencti` base module as part of your Terraform module, import it
@@ -32,7 +31,7 @@ module "amf" {
   source = "git::https://github.com/canonical/opencti-operator//terraform"
   
   model = juju_model.my_model.name
-  (Customize configuration variables here if needed)
+  # (Customize configuration variables here if needed)
 }
 ```
 
@@ -52,7 +51,7 @@ resource "juju_integration" "amf-nrf" {
 }
 ```
 
-The complete list of available integrations can be found [here][opencti-integrations].
+The complete list of available integrations can be found [in the Integrations tab][opencti-integrations].
 
 [Terraform]: https://www.terraform.io/
 [Terraform Juju provider]: https://registry.terraform.io/providers/juju/juju/latest

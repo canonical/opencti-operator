@@ -18,7 +18,7 @@ Pebble `services` are configured through [layers](https://github.com/canonical/p
 and the following containers represent each one a layer forming the effective 
 Pebble configuration, or `plan`:
 
-1. A `charm` container, which contains the charm code that interact with the juju system.
+1. A `charm` container, which contains the charm code that interact with the Juju system.
 2. The [`opencti`](https://filigran.io/solutions/open-cti/) container itself, which runs the OpenCTI platform and OpenCTI workers.
 
 As a result, if you run a `kubectl get pods` on a namespace named for the Juju 
@@ -34,11 +34,11 @@ And if you run `kubectl describe pod opencti-0`, all the containers will have
 as Command ```/charm/bin/pebble```. That's because Pebble is responsible for
 the processes startup as explained above.
 
-## High-level overview of a OpenCTI deployment
+## High-level overview of an OpenCTI deployment
 
-Below is a diagram of a basic OpenCTI deployment. It consists of two Juju models
-one VM model for deploying OpenSearch and RabbitMQ, and a k8s model for 
-deploying OpenCTI along with the rest of the dependencies. With the base OpenCTI
+Below is a diagram of a basic OpenCTI deployment. It consists of two Juju models:
+one VM model for deploying OpenSearch and RabbitMQ, and a K8s model for 
+deploying OpenCTI along with the rest of its dependencies. With the base OpenCTI
 charm deployed, users can choose from several OpenCTI connector charms to 
 integrate with the OpenCTI charm.
 
@@ -134,7 +134,7 @@ They are published to [Charmhub](https://charmhub.io/), the official repository 
 
 Configuration files for the containers can be found in the respective directories that define the rocks.
 
-### `opencti` Container
+### `opencti` container
 
 The `opencti` container runs the OpenCTI platform and OpenCTI workers.
 In every container, one instance of OpenCTI platform and three instances of 
