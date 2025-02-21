@@ -3,6 +3,7 @@
 
 """OpenCTI API client."""
 import functools
+import logging
 import pathlib
 import secrets
 import typing
@@ -12,6 +13,8 @@ import gql
 import gql.dsl
 import gql.transport.requests
 import graphql
+
+gql.transport.requests.log.setLevel(logging.WARNING)
 
 
 class OpenctiUser(typing.NamedTuple):
