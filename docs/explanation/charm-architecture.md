@@ -154,7 +154,8 @@ For this charm, the following Juju events are observed:
 12. [`opencti-connector-relation-changed`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-changed)
 13. [`stop`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#stop)
 
-And many events observed by charm libraries.
+In addition, the charm libraries can observe many other events. For more 
+details, see the documentation for the charm libraries.
 
 > See more in the Juju docs: [Hook](https://juju.is/docs/sdk/event)
 
