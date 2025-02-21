@@ -428,11 +428,12 @@ class OpenCTICharm(ops.CharmBase):
             return
         if _PEER_SECRET_FIELD in peer_integration.data[self.app]:
             # bypass a strange Juju issue where secrets go missing without reason during an upgrade
+            secret_id = peer_integration.data[self.app][_PEER_SECRET_FIELD]
             try:
-                self.model.get_secret(id=peer_integration.data[self.app][_PEER_SECRET_FIELD])
+                self.model.get_secret(id=secret_id)
                 return
             except ops.SecretNotFoundError:
-                pass
+                logger.error("secret %s removed unexpectedly", secret_id)
         secret = self.app.add_secret(
             {
                 _PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD: str(
