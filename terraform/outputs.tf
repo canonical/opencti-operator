@@ -11,8 +11,8 @@ output "requires" {
     amqp              = "amqp"
     ingress           = "ingress"
     logging           = "logging"
-    opencti-connector = "opencti-connector"
-    opensearch-client = "opensearch-client"
+    opencti_connector = "opencti-connector"
+    opensearch_client = "opensearch-client"
     redis             = "redis"
     s3                = "s3"
   }
@@ -20,7 +20,7 @@ output "requires" {
 
 output "provides" {
   value = {
-    grafana-dashboard = "grafana-dashboard"
-    metrics-endpoint  = "metrics-endpoint"
+    grafana_dashboard = "grafana-dashboard"
+    metrics_endpoint  = "metrics-endpoint"
   }
 }
