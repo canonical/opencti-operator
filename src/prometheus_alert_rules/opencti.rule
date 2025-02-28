@@ -1,0 +1,19 @@
+groups:
+- name: opencti
+  rules:
+  - alert: OpenCTITargetMissing
+    expr: up == 0
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: Prometheus target missing (instance {{ $labels.instance }})
+      description: "OpenCTI target has disappeared. An exporter might be crashed.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
+  - alert: OpenCTINodeEventloopLag
+    expr: nodejs_eventloop_lag_p90_seconds > 0.5
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: OpenCTI NodeJS Eventloop Lag (instance {{ $labels.instance }})
+      description: "OpenCTI NodeJS Eventloop Lag is above 500 milliseconds for 2 minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"

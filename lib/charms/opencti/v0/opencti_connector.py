@@ -22,6 +22,8 @@ import uuid
 import ops
 import yaml
 
+from charms.loki_k8s.v1.loki_push_api import LogForwarder
+
 
 class NotReady(Exception):
     """The OpenCTI connector is not ready."""
@@ -49,6 +51,9 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
 
     def __init__(self, *args):
         super().__init__(*args)
+
+        self._log_forwarder = LogForwarder(self)
+
         self.framework.observe(self.on.config_changed, self._reconcile)
         self.framework.observe(self.on["opencti-connector"].relation_changed, self._reconcile)
         self.framework.observe(self.on.secret_changed, self._reconcile)

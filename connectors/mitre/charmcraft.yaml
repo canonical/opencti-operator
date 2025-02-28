@@ -60,6 +60,11 @@ config:
       optional: true
 
 
+requires:
+  logging:
+    interface: loki_push_api
+    optional: true
+
 provides:
   opencti-connector:
     interface: opencti_connector
