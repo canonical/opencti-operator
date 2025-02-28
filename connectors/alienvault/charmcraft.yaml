@@ -156,7 +156,16 @@ build-base: ubuntu@24.04
 platforms:
   amd64:
 parts:
-  charm: {}
+  charm:
+    build-snaps:
+      - rustup
+    override-build: |
+      rustup default stable
+      craftctl default
+    build-packages:
+      - libffi-dev
+      - libssl-dev
+      - pkg-config
 
 containers:
   opencti-alienvault-connector:

@@ -34,5 +34,6 @@ header:
     - 'trivy.yaml'
     - 'zap_rules.tsv'
     - 'lib/**'
+    - 'connectors/*/lib/**'
     - 'src/opencti.graphql'
   comment: on-failure
