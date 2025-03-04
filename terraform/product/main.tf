@@ -12,7 +12,7 @@ data "juju_model" "opencti_db" {
 }
 
 module "opencti" {
-  source      = "git::https://github.com/canonical/opencti-operator//terraform/charm"
+  source      = "../charm"
   app_name    = var.opencti.app_name
   channel     = var.opencti.channel
   config      = var.opencti.config
