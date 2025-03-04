@@ -1,4 +1,4 @@
-# How-to backup OpenCTI charm
+# How to back up the OpenCTI charm
 
 OpenCTI charms store data inside the OpenSearch instance and S3-compatible 
 storage. Refer to the documentation of the respective charms for instructions 
