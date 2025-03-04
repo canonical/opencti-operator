@@ -205,8 +205,12 @@ def render_template(
         )
 
     (output_dir / "lib/charms/opencti/v0").mkdir(parents=True, exist_ok=True)
+    (output_dir / "lib/charms/loki_k8s/v1").mkdir(parents=True, exist_ok=True)
     (output_dir / "lib/charms/opencti/v0/opencti_connector.py").write_bytes(
         pathlib.Path("lib/charms/opencti/v0/opencti_connector.py").read_bytes()
+    )
+    (output_dir / "lib/charms/loki_k8s/v1/loki_push_api.py").write_bytes(
+        pathlib.Path("lib/charms/loki_k8s/v1/loki_push_api.py").read_bytes()
     )
     (output_dir / "src/charm.py").chmod(0o755)
 

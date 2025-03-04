@@ -21,6 +21,11 @@ description: |
 
 {{ config | safe }}
 
+requires:
+  logging:
+    interface: loki_push_api
+    optional: true
+
 provides:
   opencti-connector:
     interface: opencti_connector
@@ -32,7 +37,16 @@ build-base: ubuntu@24.04
 platforms:
   amd64:
 parts:
-  charm: {}
+  charm:
+    build-snaps:
+      - rustup
+    override-build: |
+      rustup default stable
+      craftctl default
+    build-packages:
+      - libffi-dev
+      - libssl-dev
+      - pkg-config
 
 containers:
   opencti-{{ name }}-connector:
