@@ -3,3 +3,4 @@ ignore_files:
   - connectors/**
   - scripts/**
   - tests/unit/test_connectors.py
+  - terraform/product/modules/rabbitmq-server
