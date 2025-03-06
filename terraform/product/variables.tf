@@ -55,6 +55,11 @@ variable "rabbitmq_server" {
     base        = optional(string, "ubuntu@22.04")
     units       = optional(number, 1)
   })
+
+  validation {
+    condition = var.units == 1
+    error_message = "OpenCTI doesn't support multi-unit RabbitMQ charm deployment"
+  }
 }
 
 variable "redis_k8s" {
@@ -68,6 +73,11 @@ variable "redis_k8s" {
     units       = optional(number, 1)
     storage     = optional(map(string), {})
   })
+
+  validation {
+    condition = var.units == 1
+    error_message = "OpenCTI Charm doesn't support multi-unit Redis deployment"
+  }
 }
 
 variable "s3_integrator" {
