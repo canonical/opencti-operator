@@ -57,7 +57,7 @@ variable "rabbitmq_server" {
   })
 
   validation {
-    condition = var.units == 1
+    condition = var.rabbitmq_server.units == 1
     error_message = "OpenCTI doesn't support multi-unit RabbitMQ charm deployment"
   }
 }
@@ -75,7 +75,7 @@ variable "redis_k8s" {
   })
 
   validation {
-    condition = var.units == 1
+    condition = var.redis_k8s.units == 1
     error_message = "OpenCTI Charm doesn't support multi-unit Redis deployment"
   }
 }
