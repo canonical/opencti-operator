@@ -9,3 +9,6 @@ CVE-2024-34156
 CVE-2024-45338
 # axios (package.json)
 CVE-2025-27152
+# xml-crypto (package.json)
+CVE-2025-29774
+CVE-2025-29775
