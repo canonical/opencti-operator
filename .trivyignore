@@ -7,3 +7,5 @@ CVE-2023-45288
 CVE-2024-34156
 # pebble
 CVE-2024-45338
+# axios (package.json)
+CVE-2025-27152
