@@ -686,6 +686,8 @@ class OpenCTICharm(ops.CharmBase):
 
     def _reconcile_connector(self) -> None:
         """Run charm reconcile function for OpenCTI connectors."""
+        if not self.unit.is_leader():
+            return
         client = opencti.OpenctiClient(
             url="http://localhost:8080",
             api_token=self._get_peer_secret(_PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD),

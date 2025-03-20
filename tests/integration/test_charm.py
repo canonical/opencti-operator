@@ -70,6 +70,7 @@ async def test_deploy_charm(
         resources={
             "opencti-image": pytestconfig.getoption("--opencti-image"),
         },
+        num_units=2,
     )
     redis_k8s = await model.deploy("redis-k8s", channel="latest/edge")
     nginx_ingress_integrator = await model.deploy(
@@ -130,7 +131,7 @@ async def test_opencti_workers(get_unit_ips, ops_test):
         timeout=5,
     )
     worker_count = resp.json()["data"]["rabbitMQMetrics"]["consumers"]
-    assert worker_count == str(3)
+    assert worker_count == str(6)
 
 
 async def test_opencti_client(get_unit_ips, ops_test):
