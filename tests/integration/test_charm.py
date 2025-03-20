@@ -70,6 +70,7 @@ async def test_deploy_charm(
         resources={
             "opencti-image": pytestconfig.getoption("--opencti-image"),
         },
+        num_units=2,
     )
     redis_k8s = await model.deploy("redis-k8s", channel="latest/edge")
     nginx_ingress_integrator = await model.deploy(
