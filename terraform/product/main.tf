@@ -80,6 +80,22 @@ module "s3_integrator" {
   units       = var.s3_integrator.units
 }
 
+module "s3_integrator_opensearch" {
+  source      = "./modules/s3-integrator"
+  app_name    = var.s3_integrator_opensearch.app_name
+  channel     = var.s3_integrator_opensearch.channel
+  config      = var.s3_integrator_opensearch.config
+  constraints = var.s3_integrator_opensearch.constraints
+  model       = data.juju_model.opencti_db.name
+  revision    = var.s3_integrator_opensearch.revision
+  base        = var.s3_integrator_opensearch.base
+  units       = var.s3_integrator_opensearch.units
+
+  providers = {
+    juju = juju.opencti_db
+  }
+}
+
 resource "juju_access_offer" "opensearch" {
   offer_url = juju_offer.opensearch.url
   admin     = [var.db_model_user]
@@ -152,7 +168,7 @@ resource "juju_integration" "s3" {
 
 resource "juju_offer" "opensearch" {
   model            = data.juju_model.opencti_db.name
-  application_name = module.opensearch.app_name
+  application_name = module.opensearch.app_names.opensearch
   endpoint         = module.opensearch.provides.opensearch_client
 
   provider = juju.opencti_db
@@ -162,6 +178,23 @@ resource "juju_offer" "rabbitmq_server" {
   model            = data.juju_model.opencti_db.name
   application_name = module.rabbitmq_server.app_name
   endpoint         = module.rabbitmq_server.provides.amqp
+
+  provider = juju.opencti_db
+}
+
+
+resource "juju_integration" "s3_opensearch" {
+  model = data.juju_model.opencti_db.name
+
+  application {
+    name     = module.opensearch.app_names.opensearch
+    endpoint = module.opensearch.requires.s3_credentials
+  }
+
+  application {
+    name     = module.s3_integrator_opensearch.app_name
+    endpoint = module.s3_integrator_opensearch.provides.s3_credentials
+  }
 
   provider = juju.opencti_db
 }
