@@ -27,6 +27,18 @@ def test_pebble_plan():
     state_out = ctx.run(ctx.on.config_changed(), state_in)
     container = state_out.get_container("opencti")
     assert container.plan.to_dict() == {
+        "checks": {
+            "platform": {
+                "http": {
+                    "url": "http://localhost:8080/health?health_access_key=opencti-health-access-key"
+                },
+                "level": "ready",
+                "override": "replace",
+                "period": "1m",
+                "threshold": 5,
+                "timeout": "5s",
+            }
+        },
         "services": {
             "charm-callback": {
                 "command": "bash /opt/opencti/charm-callback.sh",
@@ -113,7 +125,7 @@ def test_pebble_plan():
                 "requires": ["platform"],
                 "working-dir": "/opt/opencti-worker",
             },
-        }
+        },
     }
     assert (container.get_filesystem(ctx) / "opt/opencti/config/opensearch.pem").exists()
 
