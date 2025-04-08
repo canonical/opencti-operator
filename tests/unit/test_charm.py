@@ -30,7 +30,8 @@ def test_pebble_plan():
         "checks": {
             "platform": {
                 "http": {
-                    "url": "http://localhost:8080/health?health_access_key=opencti-health-access-key"
+                    "url": "http://localhost:8080/health"
+                    "?health_access_key=opencti-health-access-key"
                 },
                 "level": "ready",
                 "override": "replace",
