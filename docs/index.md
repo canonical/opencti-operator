@@ -49,7 +49,6 @@ Thinking about using the <charm-name> Operator for your next project?
 
 # Contents
 
-1. [Tutorial](./tutorial)
 1. [How-to](./how-to)
 1. [Reference](./reference)
 1. [Explanation](./explanation)

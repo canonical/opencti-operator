@@ -5,7 +5,6 @@ name: opencti
 title: OpenCTI Charm
 summary: OpenCTI charm.
 links:
-  documentation: https://github.com/canonical/opencti-operator/blob/main/README.md
   issues: https://github.com/canonical/opencti-operator/issues
   source: https://github.com/canonical/opencti-operator
   contact: https://launchpad.net/~canonical-is-devops
