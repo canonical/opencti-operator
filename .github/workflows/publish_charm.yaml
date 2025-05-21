@@ -36,7 +36,7 @@ jobs:
           cp -rp $TEMP_DIR/. .
           rm -rf $TEMP_DIR
       - name: setup lxd
-        uses: canonical/setup-lxd@v0.1.2
+        uses: canonical/setup-lxd@v0.1.3
       - name: find rock
         id: rock-dir
         run: |
