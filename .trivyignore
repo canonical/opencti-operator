@@ -12,3 +12,6 @@ CVE-2025-27152
 # xml-crypto (package.json)
 CVE-2025-29774
 CVE-2025-29775
+# setuptools
+CVE-2025-47273
+
