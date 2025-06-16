@@ -45,13 +45,9 @@ parameters on the host as required by the OpenSearch charm.
 The [sysconfig charm](https://charmhub.io/sysconfig) will be used for this.
 
 ```bash
+
 juju switch lxd:welcome-lxd
 
-juju model-config --file=./cloudinit-userdata.yaml
-```
-
-Now, deploy the OpenSearch, sysconfig and RabbitMQ database using charms.
-```bash
 juju deploy self-signed-certificates
 juju deploy opensearch --channel 2/stable --num-units 3
 juju deploy sysconfig --channel latest/stable --config sysctl="{vm.max_map_count: 262144, vm.swappiness: 0, net.ipv4.tcp_retries2: 5, fs.file-max: 1048576}"
