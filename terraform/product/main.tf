@@ -198,3 +198,31 @@ resource "juju_integration" "s3_opensearch" {
 
   provider = juju.opencti_db
 }
+
+resource "juju_application" "sysconfig" {
+  name  = var.sysconfig.app_name
+  model = data.juju_model.opencti_db.name
+
+  charm {
+    name     = "sysconfig"
+    revision = var.sysconfig.revision
+    channel  = var.sysconfig.channel
+  }
+
+  config = {
+    sysctl = "{vm.max_map_count: 262144, vm.swappiness: 0, net.ipv4.tcp_retries2: 5, fs.file-max: 1048576}"
+  }
+}
+
+resource "juju_integration" "opensearch_sysconfig" {
+  model = data.juju_model.opencti_db.name
+
+  application {
+    name     = module.opensearch.app_names.opensearch
+    endpoint = "juju-info"
+  }
+  application {
+    name     = juju_application.sysconfig.name
+    endpoint = "juju-info"
+  }
+}
