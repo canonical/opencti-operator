@@ -10,7 +10,7 @@ Each revision is versioned by the date of the revision.
 
 ### Changed
 
-- Add the sysconfig charm with the appropiate parameters to automate the kernel settings changes.
+- Add the sysconfig charm with the appropriate parameters to automate the kernel settings changes.
 
 ### Added
 
