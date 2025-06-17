@@ -212,6 +212,8 @@ resource "juju_application" "sysconfig" {
   config = {
     sysctl = "{vm.max_map_count: 262144, vm.swappiness: 0, net.ipv4.tcp_retries2: 5, fs.file-max: 1048576}"
   }
+
+  provider = juju.opencti_db
 }
 
 resource "juju_integration" "opensearch_sysconfig" {
