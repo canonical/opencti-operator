@@ -8,6 +8,10 @@ Each revision is versioned by the date of the revision.
 
 ## 2025-03-04
 
+### Changed
+
+- Add the sysconfig charm with the appropriate parameters to automate the kernel settings changes.
+
 ### Added
 
 - Changelog added for tracking changes.

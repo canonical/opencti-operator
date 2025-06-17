@@ -39,39 +39,20 @@ to set up a test environment for Juju.
 
 ### Deploy databases on the VM model
 
-First, deploy the OpenSearch and RabbitMQ databases on the VM model. However, 
-before deploying the OpenSearch database, we need to configure certain kernel 
+First, deploy the OpenSearch and RabbitMQ databases on the VM model. Note that 
+deploying the OpenSearch database requires you to configure certain kernel 
 parameters on the host as required by the OpenSearch charm.
+The [sysconfig charm](https://charmhub.io/sysconfig) will be used for this.
 
 ```bash
-cat <<EOF > cloudinit-userdata.yaml
-cloudinit-userdata: |
-  postruncmd:
-    - [ 'echo', 'vm.max_map_count=262144', '>>', '/etc/sysctl.conf' ]
-    - [ 'echo', 'vm.swappiness=0', '>>', '/etc/sysctl.conf' ]
-    - [ 'echo', 'net.ipv4.tcp_retries2=5', '>>', '/etc/sysctl.conf' ]
-    - [ 'echo', 'fs.file-max=1048576', '>>', '/etc/sysctl.conf' ]
-    - [ 'sysctl', '-p' ]
-EOF
-
-sudo tee -a /etc/sysctl.conf > /dev/null <<EOT
-vm.max_map_count=262144
-vm.swappiness=0
-net.ipv4.tcp_retries2=5
-fs.file-max=1048576
-EOT
-
-sudo sysctl -p
 
 juju switch lxd:welcome-lxd
 
-juju model-config --file=./cloudinit-userdata.yaml
-```
-
-Now, deploy the OpenSearch and RabbitMQ database using charms.
-```bash
 juju deploy self-signed-certificates
 juju deploy opensearch --channel 2/stable --num-units 3
+juju deploy sysconfig --channel latest/stable --config sysctl="{vm.max_map_count: 262144, vm.swappiness: 0, net.ipv4.tcp_retries2: 5, fs.file-max: 1048576}"
+juju integrate sysconfig opensearch
+
 juju deploy rabbitmq-server --channel 3.9/stable
 
 juju integrate self-signed-certificates opensearch

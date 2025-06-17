@@ -57,7 +57,7 @@ variable "rabbitmq_server" {
   })
 
   validation {
-    condition = var.rabbitmq_server.units == 1
+    condition     = var.rabbitmq_server.units == 1
     error_message = "OpenCTI doesn't support multi-unit RabbitMQ charm deployment"
   }
 }
@@ -75,7 +75,7 @@ variable "redis_k8s" {
   })
 
   validation {
-    condition = var.redis_k8s.units == 1
+    condition     = var.redis_k8s.units == 1
     error_message = "OpenCTI Charm doesn't support multi-unit Redis deployment"
   }
 }
@@ -101,5 +101,13 @@ variable "s3_integrator_opensearch" {
     revision    = optional(number)
     base        = optional(string, "ubuntu@22.04")
     units       = optional(number, 1)
+  })
+}
+
+variable "sysconfig" {
+  type = object({
+    app_name = optional(string, "sysconfig")
+    channel  = optional(string, "latest/stable")
+    revision = optional(number)
   })
 }
