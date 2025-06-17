@@ -227,4 +227,6 @@ resource "juju_integration" "opensearch_sysconfig" {
     name     = juju_application.sysconfig.name
     endpoint = "juju-info"
   }
+
+  provider = juju.opencti_db
 }
