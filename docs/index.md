@@ -3,7 +3,6 @@
 A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
 open source threat intelligence platform in your systems. 
 
-
 This charm simplifies the configuration and maintenance of OpenCTI system and 
 commonly used OpenCTI connectors across a range of environments, enabling users
 to collect, correlate, and leverage threat data at strategic, operational and 
