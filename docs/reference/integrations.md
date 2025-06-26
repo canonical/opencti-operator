@@ -2,7 +2,7 @@
 
 ### `opensearch-client`
 
-_Interface_: opensearch_client
+_Interface_: `opensearch_client`
 
 _Supported charms_: opensearch
 
@@ -81,7 +81,7 @@ juju integrate opencti:ingress nginx-ingress-integrator
 
 ### `opencti-connector`
 
-_Interface_: opencti_connector
+_Interface_: `opencti_connector`
 
 _Supported charms_: OpenCTI connector charms
 
@@ -96,11 +96,11 @@ juju integrate opencti:opencti-connector opencti-export-file-stix-connector
 
 ### `logging`
 
-_Interface_: loki_push_api
+_Interface_: `loki_push_api`
 
 _Supported charms_: loki-k8s
 
-Push OpenCTI logs to loki log aggregation services.
+Push OpenCTI logs to Loki log aggregation services.
 
 Example `logging` integrate command: 
 
@@ -111,7 +111,7 @@ juju integrate opencti:logging loki-k8s
 
 ### `metrics-endpoint`
 
-_Interface_: prometheus_scrape
+_Interface_: `prometheus_scrape`
 
 _Supported charms_: prometheus-k8s
 
@@ -126,7 +126,7 @@ juju integrate opencti:metrics-endpoint prometheus-k8s
 
 ### `grafana-dashboard`
 
-_Interface_: grafana_dashboard
+_Interface_: `grafana_dashboard`
 
 _Supported charms_: grafana-k8s
 
