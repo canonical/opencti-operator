@@ -1,4 +1,4 @@
-# OpenCTI Operator
+# OpenCTI operator
 
 A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
 open source threat intelligence platform in your systems. 

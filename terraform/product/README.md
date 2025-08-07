@@ -1,4 +1,6 @@
+<!-- vale Canonical.007-Headings-sentence-case = NO -->
 # SD-Core Terraform Modules
+<!-- vale Canonical.007-Headings-sentence-case = YES -->
 
 This project contains the [Terraform][Terraform] modules to deploy the 
 [OpenCTI charm][OpenCTI charm] with its dependencies.
