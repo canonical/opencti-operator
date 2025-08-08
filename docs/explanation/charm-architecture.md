@@ -132,8 +132,6 @@ The workload that this container is running is defined in the [OpenCTI rock](htt
 
 ## Metrics
 
-### OpenCTI metrics
-
 OpenCTI platform in the OpenCTI charm is [configured to expose prometheus on port `14269`](https://docs.opencti.io/latest/deployment/configuration/#telemetry). 
  
 ## Juju events

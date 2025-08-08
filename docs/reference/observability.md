@@ -210,7 +210,7 @@ OpenCTI target has disappeared. An exporter might be crashed.
 
 _severity_: critical
 
-OpenCTI NodeJS Event loop lag is above 500 milliseconds for 2 minutes.
+OpenCTI NodeJS Event loop lag is above 500 milliseconds for two minutes.
 
 ## Logging
 

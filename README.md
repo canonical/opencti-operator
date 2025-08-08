@@ -8,7 +8,9 @@ Avoid using this README file for information that is maintained or published els
 Use links instead.
 -->
 
-# OpenCTI Operator
+<!-- vale Canonical.007-Headings-sentence-case = NO -->
+# OpenCTI operator
+<!-- vale Canonical.007-Headings-sentence-case = YES -->
 
 [![CharmHub Badge](https://charmhub.io/opencti/badge.svg)](https://charmhub.io/opencti)
 [![Publish to edge](https://github.com/canonical/opencti-operator/actions/workflows/publish_charm.yaml/badge.svg)](https://github.com/canonical/opencti-operator/actions/workflows/publish_charm.yaml)
@@ -65,7 +67,10 @@ for cross-model integrations.
 juju offer opensearch:opensearch-client opensearch-client
 juju offer rabbitmq-server:amqp amqp
 ```
+
+<!-- vale Canonical.007-Headings-sentence-case = NO -->
 ### Deploy the OpenCTI charm
+<!-- vale Canonical.007-Headings-sentence-case = YES -->
 In the Kubernetes model, deploy the OpenCTI charm along with the rest of 
 dependencies.
 
