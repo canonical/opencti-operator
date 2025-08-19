@@ -62,7 +62,7 @@ async def machine_model_fixture(
 
 
 @pytest_asyncio.fixture(name="get_unit_ips", scope="module")
-async def get_unit_ips_fixture(ops_test: OpsTest):
+async def get_unit_ips_fixture(ops_test: OpsTest, model: Model):
     """A function to get unit ips of a charm application."""
 
     async def _get_unit_ips(name: str):
@@ -74,7 +74,7 @@ async def get_unit_ips_fixture(ops_test: OpsTest):
         Returns:
             A list of unit ips.
         """
-        _, status, _ = await ops_test.juju("status", "--format", "json")
+        _, status, _ = await ops_test.juju("status", "-m", model.name, "--format", "json")
         status = json.loads(status)
         units = status["applications"][name]["units"]
         ip_list = []
