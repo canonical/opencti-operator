@@ -10,7 +10,7 @@ Each revision is versioned by the date of the revision.
 
 ### Changed
 
-- Switched from microk8s to Canonical Kubernetes.
+- Switched from MicroK8s to Canonical Kubernetes.
 
 ## 2025-06-26
 
