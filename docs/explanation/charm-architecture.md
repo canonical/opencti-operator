@@ -113,7 +113,7 @@ C4Component
 ## OCI images
 
 We use [Rockcraft](https://canonical-rockcraft.readthedocs-hosted.com/en/latest/) to build OCI Images for the OpenCTI charm. 
-The images are defined in the [opencti rock](https://github.com/canonical/opencti-operator/blob/main/opencti_rock/rockcraft.yaml).
+The images are defined in the [OpenCTI rock](https://github.com/canonical/opencti-operator/blob/main/opencti_rock/rockcraft.yaml).
 They are published to [Charmhub](https://charmhub.io/), the official repository of charms.
 
 > See more: [How to publish your charm on Charmhub](https://juju.is/docs/sdk/publishing)
@@ -128,11 +128,9 @@ The `opencti` container runs the OpenCTI platform and OpenCTI workers.
 In every container, one instance of OpenCTI platform and three instances of 
 OpenCTI workers are running. The ratio is recommended by the [OpenCTI deployment guide](https://docs.opencti.io/latest/deployment/clustering/).
 
-The workload that this container is running is defined in the [opencti rock](https://github.com/canonical/opencti-operator/blob/main/opencti_rock/rockcraft.yaml).
+The workload that this container is running is defined in the [OpenCTI rock](https://github.com/canonical/opencti-operator/blob/main/opencti_rock/rockcraft.yaml).
 
 ## Metrics
-
-### OpenCTI metrics
 
 OpenCTI platform in the OpenCTI charm is [configured to expose prometheus on port `14269`](https://docs.opencti.io/latest/deployment/configuration/#telemetry). 
  

@@ -32,7 +32,7 @@ Node.js version info.
  
 _type_: gauge
 
-Start time of the process since unix epoch in seconds.
+Start time of the process since Unix epoch in seconds.
 
 ### `nodejs_eventloop_lag_seconds`
  
@@ -86,7 +86,7 @@ The 99th percentile of the recorded event loop delays.
  
 _type_: histogram
 
-Garbage collection duration by kind, one of major, minor, incremental or weakcb.
+Garbage collection duration by kind, one of `major`, `minor`, `incremental` or `weakcb`.
 
 ### `nodejs_heap_size_total_bytes`
  
@@ -164,7 +164,7 @@ Total user and system CPU time spent in seconds.
  
 _type_: gauge
 
-Number of active libuv handles grouped by handle type. Every handle type is C++ class name.
+Number of active `libuv` handles grouped by handle type. Every handle type is C++ class name.
 
 ### `nodejs_active_handles_total`
  
@@ -188,7 +188,7 @@ Number of open file descriptors.
  
 _type_: gauge
 
-Number of active libuv requests grouped by request type. Every request type is C++ class name.
+Number of active `libuv` requests grouped by request type. Every request type is C++ class name.
 
 ### `nodejs_active_requests_total`
  gauge
@@ -210,7 +210,7 @@ OpenCTI target has disappeared. An exporter might be crashed.
 
 _severity_: critical
 
-OpenCTI NodeJS Eventloop Lag is above 500 milliseconds for 2 minutes
+OpenCTI NodeJS Event loop lag is above 500 milliseconds for two minutes.
 
 ## Logging
 

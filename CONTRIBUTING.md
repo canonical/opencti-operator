@@ -17,7 +17,6 @@ This document explains the processes and practices recommended for contributing 
   - user experience for Juju operators of this charm.
 - Please help us out in ensuring easy to review branches by rebasing your pull request branch onto the `main` branch. This 
   also avoids merge commits and creates a linear Git commit history.
-- Please generate src documentation for every commit. See the section below for more details.
 
 ## Developing
 
@@ -73,6 +72,6 @@ juju model-config logging-config="<root>=INFO;unit=DEBUG"
 juju deploy ./opencti_amd64.charm --resource opencti-image=<test-opencti-image-resource>
 ```
 
-## Canonical Contributor Agreement
+## Canonical contributor agreement
 
 Canonical welcomes contributions to the OpenCTI charm. Please check out our [contributor agreement](https://ubuntu.com/legal/contributors) if you're interested in contributing to the solution.

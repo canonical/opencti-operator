@@ -461,7 +461,7 @@ class OpenCTICharm(ops.CharmBase):
         except ops.ModelError as exc:
             raise InvalidConfig(
                 "charm doesn't have access to the admin-user secret, "
-                "run `juju grant` command to grant the secret to the charm"
+                "run `juju grant-secret` command to grant the secret to the charm"
             ) from exc
         admin_user_secret_content = admin_user_secret.get_content(refresh=True)
         try:

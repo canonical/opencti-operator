@@ -8,7 +8,9 @@ Avoid using this README file for information that is maintained or published els
 Use links instead.
 -->
 
-# OpenCTI Operator
+<!-- vale Canonical.007-Headings-sentence-case = NO -->
+# OpenCTI operator
+<!-- vale Canonical.007-Headings-sentence-case = YES -->
 
 [![CharmHub Badge](https://charmhub.io/opencti/badge.svg)](https://charmhub.io/opencti)
 [![Publish to edge](https://github.com/canonical/opencti-operator/actions/workflows/publish_charm.yaml/badge.svg)](https://github.com/canonical/opencti-operator/actions/workflows/publish_charm.yaml)
@@ -39,29 +41,20 @@ to set up a test environment for Juju.
 
 ### Deploy databases on the VM model
 
-First, deploy the OpenSearch and RabbitMQ databases on the VM model. However, 
-before deploying the OpenSearch database, we need to configure certain kernel 
+First, deploy the OpenSearch and RabbitMQ databases on the VM model. Note that 
+deploying the OpenSearch database requires you to configure certain kernel 
 parameters on the host as required by the OpenSearch charm.
+The [sysconfig charm](https://charmhub.io/sysconfig) will be used for this.
 
 ```bash
-sudo tee -a /etc/sysctl.conf > /dev/null <<EOT
-vm.max_map_count=262144
-vm.swappiness=0
-net.ipv4.tcp_retries2=5
-fs.file-max=1048576
-EOT
 
-sudo sysctl -p
-
-juju model-config --file=./cloudinit-userdata.yaml
-```
-
-Now, deploy the OpenSearch and RabbitMQ database using charms.
-```bash
 juju switch lxd:welcome-lxd
 
 juju deploy self-signed-certificates
 juju deploy opensearch --channel 2/stable --num-units 3
+juju deploy sysconfig --channel latest/stable --config sysctl="{vm.max_map_count: 262144, vm.swappiness: 0, net.ipv4.tcp_retries2: 5, fs.file-max: 1048576}"
+juju integrate sysconfig opensearch
+
 juju deploy rabbitmq-server --channel 3.9/stable
 
 juju integrate self-signed-certificates opensearch
@@ -74,7 +67,10 @@ for cross-model integrations.
 juju offer opensearch:opensearch-client opensearch-client
 juju offer rabbitmq-server:amqp amqp
 ```
+
+<!-- vale Canonical.007-Headings-sentence-case = NO -->
 ### Deploy the OpenCTI charm
+<!-- vale Canonical.007-Headings-sentence-case = YES -->
 In the Kubernetes model, deploy the OpenCTI charm along with the rest of 
 dependencies.
 
