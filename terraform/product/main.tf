@@ -169,7 +169,7 @@ resource "juju_integration" "s3" {
 resource "juju_offer" "opensearch" {
   model            = data.juju_model.opencti_db.name
   application_name = module.opensearch.app_names.opensearch
-  endpoint         = module.opensearch.provides.opensearch_client
+  endpoints        = [module.opensearch.provides.opensearch_client]
 
   provider = juju.opencti_db
 }
@@ -177,7 +177,7 @@ resource "juju_offer" "opensearch" {
 resource "juju_offer" "rabbitmq_server" {
   model            = data.juju_model.opencti_db.name
   application_name = module.rabbitmq_server.app_name
-  endpoint         = module.rabbitmq_server.provides.amqp
+  endpoints        = [module.rabbitmq_server.provides.amqp]
 
   provider = juju.opencti_db
 }
