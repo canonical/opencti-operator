@@ -77,7 +77,7 @@ dependencies.
 ```bash
 juju switch lxd:welcome
 
-juju deploy minio --channel ckf-1.9/stable --config access-key=minioadmin --config secret-key=minioadmin
+juju deploy minio --channel ckf-1.10/stable --config access-key=minioadmin --config secret-key=minioadmin
 juju deploy s3-integrator --config "endpoint=http://minio-endpoints.welcome.svc.cluster.local:9000" --config bucket=opencti
 juju deploy redis-k8s --channel latest/edge
 juju deploy nginx-ingress-integrator --trust --revision 109 --channel latest/edge --config path-routes=/ --config service-hostname=opencti.local
