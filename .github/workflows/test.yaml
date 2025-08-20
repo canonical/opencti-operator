@@ -6,11 +6,10 @@ on:
 jobs:
   unit-tests:
     name: Unit Tests
-    uses: canonical/operator-workflows/.github/workflows/test.yaml@bug/vale
+    uses: canonical/operator-workflows/.github/workflows/test.yaml@main
     secrets: inherit
     with:
       self-hosted-runner: false
-      vale-style-check: true
   integration-tests:
     name: Integration Tests
     uses: canonical/operator-workflows/.github/workflows/integration_test.yaml@main
