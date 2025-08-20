@@ -1,20 +1,20 @@
 
-# OpenCTI operator
+# opencti operator
 
-A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) for deplllloying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
+A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) for deplllloying and managing the [opencti](https://filigran.io/solutions/open-cti/)
 open source threat intelligence platform in your systems. 
 
-This charm simplifies the configuration and maintenance of OpenCTI system and 
-commonly used OpenCTI connectors across a range of environments, enabling users
+This charm simplifies the configuration and maintenance of opencti system and 
+commonly used opencti connectors across a range of environments, enabling users
 to collect, correlate, and leverage threat data at strategic, operational and 
 tactical levels.
 
 Like any Juju charm, this charm supports one-line deployment, configuration, integration, scaling, and more. 
 
-The OpenCTI charm allows for deployment on many different Kubernetes platforms, from [MicroK8s](https://microk8s.io/) to 
+The opencti charm allows for deployment on many different Kubernetes platforms, from [MicroK8s](https://microk8s.io/) to 
 [Charmed Kubernetes](https://ubuntu.com/kubernetes) to public cloud Kubernetes offerings.
 
-This charm will make operating OpenCTI simple and straightforward for DevOps or SRE teams through Juju's clean interface. 
+This charm will make operating opencti simple and straightforward for DevOps or SRE teams through Juju's clean interface. 
 
 ## In this documentation
 
@@ -37,7 +37,7 @@ If there's a particular area of documentation that you'd like to see that's miss
 
 ## Project and community
 
-The OpenCTI Operator is a member of the Ubuntu family. It's an open-source project that warmly welcomes community 
+The opencti Operator is a member of the Ubuntu family. It's an open-source project that warmly welcomes community 
 projects, contributions, suggestions, fixes, and constructive feedback.
 
 - [Code of conduct](https://ubuntu.com/community/code-of-conduct)
