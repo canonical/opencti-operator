@@ -76,7 +76,6 @@ async def get_unit_ips_fixture(ops_test: OpsTest, model: Model):
         """
         _, status, _ = await ops_test.juju("status", "-m", model.name, "--format", "json")
         status = json.loads(status)
-        logger.error(status)
         units = status["applications"][name]["units"]
         ip_list = []
         for key in sorted(units.keys(), key=lambda n: int(n.split("/")[-1])):
