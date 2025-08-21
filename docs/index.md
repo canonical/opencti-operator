@@ -1,5 +1,6 @@
-
+<!-- vale off -->
 # opencti operator
+<!-- vale on -->
 
 A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) for deplllloying and managing the [opencti](https://filigran.io/solutions/open-cti/)
 open source threat intelligence platform in your systems. 
