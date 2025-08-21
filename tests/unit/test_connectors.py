@@ -522,7 +522,7 @@ _add_connector_test_params(
 _add_connector_test_params(
     name="nti",
     connector_name="nti",
-    charm_config = {
+    charm_config={
         "connector-log-level": "info",
         "connector-duration-period": "P1D",
         "nti-base-url": "https://nti.nsfocusglobal.com/api/v2/",
