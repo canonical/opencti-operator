@@ -29,7 +29,7 @@ class OpenctiNtiConnectorCharm(OpenctiConnectorCharm):
         # Force nti
         env["CONNECTOR_SCOPE"] = "nti"
 
-        # Check log level value, logging and setting to default if there is a missconfiguration
+        # Check log level value, logging and setting to default if there is a misconfiguration
         log_level = env.get("CONNECTOR_LOG_LEVEL", "info")
         if log_level not in self.VALID_LOG_LEVELS:
             logging.warning(
