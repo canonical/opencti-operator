@@ -75,7 +75,7 @@ In the Kubernetes model, deploy the OpenCTI charm along with the rest of
 dependencies.
 
 ```bash
-juju switch lxd:welcome-microk8s
+juju switch microk8s:welcome-microk8s
 
 juju deploy minio --channel ckf-1.9/stable --config access-key=minioadmin --config secret-key=minioadmin
 juju deploy s3-integrator --config "endpoint=http://minio-endpoints.welcome-microk8s.svc.cluster.local:9000" --config bucket=opencti
