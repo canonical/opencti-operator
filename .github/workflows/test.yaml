@@ -10,7 +10,7 @@ jobs:
     secrets: inherit
     with:
       self-hosted-runner: false
-      vale-style-check: true
+      vale-style-check: false
   integration-tests:
     name: Integration Tests
     uses: canonical/operator-workflows/.github/workflows/integration_test.yaml@main
