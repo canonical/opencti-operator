@@ -7,6 +7,7 @@ CVE-2023-45288
 CVE-2024-34156
 # pebble
 CVE-2024-45338
+CVE-2025-47907
 # axios (package.json)
 CVE-2025-27152
 # xml-crypto (package.json)
@@ -16,4 +17,8 @@ CVE-2025-29775
 CVE-2025-47273
 # stdlib
 CVE-2025-22874
-
+# node
+CVE-2025-54419
+CVE-2025-9288
+# form-data
+CVE-2025-7783
