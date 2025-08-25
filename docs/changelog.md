@@ -6,11 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Each revision is versioned by the date of the revision.
 
-## 2025-08-19
+## 2025-08-25
 
 ### Changed
 
 - Switched from MicroK8s to Canonical Kubernetes.
+
+## 2025-08-20
+
+### Changed
+
+- Update Juju TF provider minimum version to 0.21.1.
 
 ## 2025-06-26
 
