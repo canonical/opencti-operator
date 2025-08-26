@@ -203,7 +203,7 @@ class OpenCTICharm(ops.CharmBase):
         # relation data to become stale, resulting in ingress failures.
         # As a workaround, force refresh the ingress relation data
         # (especially the ip field) on every event.
-        ingress._publish_auto_data()
+        ingress._publish_auto_data()  # pylint: disable=protected-access
         self.framework.observe(ingress.on.ready, self._reconcile)
         self.framework.observe(ingress.on.revoked, self._reconcile)
         return ingress
