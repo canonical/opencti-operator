@@ -36,7 +36,7 @@ async def test_deploy_charm(
     """
     minio = await model.deploy(
         "minio",
-        channel="ckf-1.10/stable",
+        channel="latest/edge",
         config={"access-key": "minioadmin", "secret-key": "minioadmin"},
     )
     await model.wait_for_idle(apps=[minio.name])
