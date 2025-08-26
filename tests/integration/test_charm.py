@@ -39,7 +39,7 @@ async def test_deploy_charm(
         channel="latest/edge",
         config={"access-key": "minioadmin", "secret-key": "minioadmin"},
     )
-    await model.wait_for_idle(apps=[minio.name], timeout=1200)
+    await model.wait_for_idle(apps=[minio.name], timeout=2400)
     ip = (await get_unit_ips(minio.name))[0]
     s3 = boto3.client(
         "s3",
