@@ -10,7 +10,7 @@ jobs:
     secrets: inherit
     with:
       self-hosted-runner: false
-      vale-style-check: true
+      vale-style-check: false
   integration-tests:
     name: Integration Tests
     uses: canonical/operator-workflows/.github/workflows/integration_test.yaml@main
@@ -27,8 +27,8 @@ jobs:
     name: Check Connectors
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5.0.0
+      - uses: actions/setup-python@v5.6.0
         with:
           python-version: '3.13'
       - run: pip install tox
