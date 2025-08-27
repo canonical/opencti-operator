@@ -24,7 +24,7 @@ module "opencti" {
 }
 
 module "opensearch" {
-  source      = "git::https://github.com/weiiwang01/opensearch-operator//terraform/charm/simple_deployment?ref=2/edge"
+  source      = "git::https://github.com/canonical/opensearch-operator//terraform/charm/simple_deployment?ref=2/edge"
   app_name    = var.opensearch.app_name
   channel     = var.opensearch.channel
   config      = var.opensearch.config
