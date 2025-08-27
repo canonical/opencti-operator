@@ -21,6 +21,7 @@ jobs:
       juju-channel: 3.6/stable
       pre-run-script: tests/integration/prepare.sh
       self-hosted-runner: true
+      self-hosted-runner-label: xlarge
       use-canonical-k8s: true
       provider: 'k8s'
       tmate-debug: true
