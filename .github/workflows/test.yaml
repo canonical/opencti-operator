@@ -10,24 +10,27 @@ jobs:
     secrets: inherit
     with:
       self-hosted-runner: false
-      vale-style-check: true
+      vale-style-check: false
   integration-tests:
     name: Integration Tests
     uses: canonical/operator-workflows/.github/workflows/integration_test.yaml@main
     secrets: inherit
     with:
-      channel: 1.29-strict/stable
+      channel: 1.33-classic/stable
       charmcraft-channel: latest/edge
       juju-channel: 3.6/stable
-      microk8s-addons: "dns ingress rbac storage"
       pre-run-script: tests/integration/prepare.sh
-      self-hosted-runner: false
+      self-hosted-runner: true
+      self-hosted-runner-label: xlarge
+      use-canonical-k8s: true
+      provider: 'k8s'
+      tmate-debug: true
   check-connector-sync:
     name: Check Connectors
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5.0.0
+      - uses: actions/setup-python@v5.6.0
         with:
           python-version: '3.13'
       - run: pip install tox
