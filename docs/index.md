@@ -12,8 +12,8 @@ tactical levels.
 
 Like any Juju charm, this charm supports one-line deployment, configuration, integration, scaling, and more. 
 
-The OpenCTI charm allows for deployment on many different Kubernetes platforms, from [MicroK8s](https://microk8s.io/) to 
-[Charmed Kubernetes](https://ubuntu.com/kubernetes) to public cloud Kubernetes offerings.
+The OpenCTI charm allows for deployment on many different Kubernetes platforms, from 
+[Canonical Kubernetes](https://ubuntu.com/kubernetes) to public cloud Kubernetes offerings.
 
 This charm will make operating OpenCTI simple and straightforward for DevOps or SRE teams through Juju's clean interface. 
 

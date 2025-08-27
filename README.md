@@ -75,10 +75,10 @@ In the Kubernetes model, deploy the OpenCTI charm along with the rest of
 dependencies.
 
 ```bash
-juju switch lxd:welcome-microk8s
+juju switch lxd:welcome
 
-juju deploy minio --channel ckf-1.9/stable --config access-key=minioadmin --config secret-key=minioadmin
-juju deploy s3-integrator --config "endpoint=http://minio-endpoints.welcome-microk8s.svc.cluster.local:9000" --config bucket=opencti
+juju deploy minio --channel ckf-1.10/stable --config access-key=minioadmin --config secret-key=minioadmin
+juju deploy s3-integrator --config "endpoint=http://minio-endpoints.welcome.svc.cluster.local:9000" --config bucket=opencti
 juju deploy redis-k8s --channel latest/edge
 juju deploy nginx-ingress-integrator --trust --revision 109 --channel latest/edge --config path-routes=/ --config service-hostname=opencti.local
 juju deploy opencti --channel latest/edge
