@@ -130,6 +130,10 @@ config:
       description: (optional) Indicators to be excluded from import based on the labels affixed to them.
       type: string
       optional: true
+    crowdstrike-no-file-trigger-import:
+      description: (optional) Specify whether the file can trigger its import by other document import connectors or not.
+      type: string
+      optional: true
     crowdstrike-tlp:
       description: (optional) The TLP marking used for the imported objects in the OpenCTI.
       type: string

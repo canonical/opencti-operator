@@ -3,7 +3,7 @@
 
 name: opencti-urlscan-enrichment-connector
 base: ubuntu@24.04
-version: &version '6.4.5'
+version: &version '6.7.12'
 summary: OpenCTI URLScan Enrichment Connector
 description: >-
   OpenCTI connectors are the cornerstone of the OpenCTI platform and
