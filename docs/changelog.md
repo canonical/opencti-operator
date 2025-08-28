@@ -16,7 +16,7 @@ Each revision is versioned by the date of the revision.
 
 ### Changed
 
-- Pin CI pendencies.
+- Pin CI dependencies.
 
 ## 2025-08-20
 
