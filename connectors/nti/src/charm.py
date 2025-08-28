@@ -9,6 +9,9 @@ import pathlib
 
 import ops
 
+import logging
+logger = logging.getLogger(__name__)
+
 from charms.opencti.v0.opencti_connector import OpenctiConnectorCharm
 
 
@@ -22,8 +25,6 @@ class OpenctiNtiConnectorCharm(OpenctiConnectorCharm):
     VALID_LOG_LEVELS = {"debug", "info", "warn", "error"}
 
     def _gen_env(self) -> dict[str, str]:
-        import logging
-        logger = logging.getLogger(__name__)
         env = super()._gen_env()
 
         # Force nti
