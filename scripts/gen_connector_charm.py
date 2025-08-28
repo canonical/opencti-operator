@@ -872,7 +872,7 @@ def gen_nti_connector(location: pathlib, version: str) -> None:
                 return env
             """
         ),
-        generate_entrypoint="echo ' #opencti-connector-nti' >> entrypoint.sh",
+        install_location="NTI-connector",
     )
 
 @connector_generator("sekoia")
