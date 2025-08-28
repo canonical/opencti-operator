@@ -848,6 +848,31 @@ def gen_nti_connector(location: pathlib, version: str) -> None:
                 "optional": True,
             },
         },
+        charm_override=textwrap.dedent(
+            """\
+            VALID_LOG_LEVELS = {"debug", "info", "warn", "error"}
+    
+            def _gen_env(self) -> dict[str, str]:
+                import logging
+                logger = logging.getLogger(__name__)
+                env = super()._gen_env()
+
+                # Force nti
+                env["CONNECTOR_SCOPE"] = "nti"
+
+                # Check log level value, logging and setting to default if there is a misconfiguration
+                log_level = env.get("CONNECTOR_LOG_LEVEL", "info")
+                if log_level not in self.VALID_LOG_LEVELS:
+                    logger.warning(
+                        f"CONNECTOR_LOG_LEVEL '{log_level}' is invalid, using 'info' instead."
+                    )
+                    log_level = "info"
+                env["CONNECTOR_LOG_LEVEL"] = log_level
+
+                return env
+            """
+        ),
+        generate_entrypoint="echo ' #opencti-connector-nti' >> entrypoint.sh",
     )
 
 @connector_generator("sekoia")
