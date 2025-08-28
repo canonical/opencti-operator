@@ -853,8 +853,6 @@ def gen_nti_connector(location: pathlib, version: str) -> None:
             VALID_LOG_LEVELS = {"debug", "info", "warn", "error"}
     
             def _gen_env(self) -> dict[str, str]:
-                import logging
-                logger = logging.getLogger(__name__)
                 env = super()._gen_env()
 
                 # Force nti
