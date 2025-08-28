@@ -31,9 +31,9 @@ parts:
       craftctl default
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd external-import/nti
-      cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-nti
-      echo ' #opencti-connector-nti' >> entrypoint.sh
-      cat entrypoint.sh | grep opencti-connector-nti
+      cp -rp src $CRAFT_PART_INSTALL/opt/NTI-connector
+      
+      cat entrypoint.sh | grep NTI-connector
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \
         --target $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages \
