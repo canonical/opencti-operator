@@ -2,7 +2,7 @@
 # OpenCTI operator
 <!-- vale Canonical.007-Headings-sentence-case = YES -->
 
-A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
+A [Juju](https://juju.is/) [charm](https://documentation.ubuntu.com/juju/3.6/reference/charm/) for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
 open source threat intelligence platform in your systems. 
 
 This charm simplifies the configuration and maintenance of OpenCTI system and 
@@ -21,7 +21,7 @@ This charm will make operating OpenCTI simple and straightforward for DevOps or 
 
 | | |
 |--|--|
-| [Tutorials](./tutorial)</br>  Get started - a hands-on introduction to using the charm for new users </br> |  [How-to guides](./how-to) </br> Step-by-step guides covering key operations and common tasks |
+|  |  [How-to guides](./how-to) </br> Step-by-step guides covering key operations and common tasks |
 | [Reference](./reference) </br> Technical information - specifications, APIs, architecture | [Explanation](./explanation) </br> Concepts - discussion and clarification of key topics  |
 
 ## Contributing to this documentation

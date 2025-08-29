@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Each revision is versioned by the date of the revision.
 
+## 2025-08-28
+
+- Updated the documentation workflow to be fully integrated with the Vale GitHub Action.
+
 ## 2025-08-26
 
 ### Changed
@@ -16,7 +20,7 @@ Each revision is versioned by the date of the revision.
 
 ### Changed
 
-- Pin CI pendencies.
+- Pin CI dependencies.
 
 ## 2025-08-20
 
