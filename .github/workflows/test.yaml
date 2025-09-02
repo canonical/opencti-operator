@@ -22,8 +22,8 @@ jobs:
       pre-run-script: tests/integration/prepare.sh
       self-hosted-runner: true
       self-hosted-runner-label: xlarge
-      use-canonical-k8s: true
-      provider: 'k8s'
+      use-canonical-k8s: false
+      provider: 'microk8s'
       tmate-debug: true
       microk8s-addons: "dns registry:size=40Gi rbac storage"
   check-connector-sync:
