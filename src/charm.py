@@ -532,7 +532,8 @@ class OpenCTICharm(ops.CharmBase):
             env["ELASTICSEARCH__USERNAME"] = username
         if password:
             env["ELASTICSEARCH__PASSWORD"] = password
-        return env
+        env["ELASTICSEARCH__URL"] = "bad-url-this-will-crash"
+	return env
 
     def _extract_opensearch_info(self) -> dict:
         """Extract opensearch connection information from the opensearch integration.
