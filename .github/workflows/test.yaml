@@ -16,7 +16,7 @@ jobs:
     uses: canonical/operator-workflows/.github/workflows/integration_test.yaml@main
     secrets: inherit
     with:
-      channel: 1.33-classic/stable
+      channel: 1.33-strict/stable
       charmcraft-channel: latest/edge
       juju-channel: 3.6/stable
       pre-run-script: tests/integration/prepare.sh
