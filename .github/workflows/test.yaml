@@ -24,7 +24,8 @@ jobs:
       self-hosted-runner-label: xlarge
       use-canonical-k8s: false
       provider: microk8s
-      tmate-debug: true
+      tmate-debug: false
+      self-hosted-runner-image: jammy
       microk8s-addons: "dns registry:size=40Gi rbac storage"
   check-connector-sync:
     name: Check Connectors
