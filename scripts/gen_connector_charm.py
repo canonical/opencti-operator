@@ -776,6 +776,102 @@ def gen_mitre_connector(location: pathlib.Path, version: str) -> None:
         generate_entrypoint="echo 'cd /opt/opencti-connector-mitre; python3 connector.py' > entrypoint.sh",
     )
 
+@connector_generator("nti")
+def gen_nti_connector(location: pathlib, version: str) -> None:
+    """Generate opencti nti connector.
+
+    https://github.com/OpenCTI-Platform/connectors/tree/master/external-import/nti
+    """
+    render_template(
+        name="nti",
+        connector_type="EXTERNAL_IMPORT",
+        version=version,
+        display_name="NSFocus",
+        output_dir=location,
+        config={
+            "connector-log-level": {
+                "description": "Determines the verbosity of the logs. Options are debug, info, warn, or error.",
+                "type": "string",
+                "default": "info",
+                "optional": False,
+            },
+            "connector-duration-period": {
+                "description": "Determines the time interval between each launch of the connector in ISO 8601, ex- PT24H or P1D.",
+                "type": "string",
+                "default": "P1D",
+                "optional": False,
+            },
+            "nti-base-url": {
+                "description": "The base URL for NTI Connector to pull data.",
+                "type": "string",
+                "optional": False,
+            },
+            "nti-api-key": {
+                "description": "The NTI API key.",
+                "type": "string",
+                "optional": False,
+            },
+            "nti-tlp": {
+                "description": "TLP Marking for all data imported from NTI, possible values- white, green, amber, amber+strict, red.",
+                "type": "string",
+                "optional": False,
+            },
+            "connector-queue-threshold": {
+                "description": "(optional) Used to determine the limit (RabbitMQ) in MB at which the connector must go into buffering mode.",
+                "type": "int",
+                "default": 500,
+                "optional": True,
+            },
+            "nti-create-ioc": {
+                "description": "(optional) If true then indicators will be created for each import.",
+                "type": "boolean",
+                "optional": True,
+            },
+            "nti-create-ip": {
+                "description": "(optional) If true then IP observables will be created for each import.",
+                "type": "boolean",
+                "optional": True,
+            },
+            "nti-create-domain": {
+                "description": "(optional) If true then Domain observables will be created for each import.",
+                "type": "boolean",
+                "optional": True,
+            },
+            "nti-create-file": {
+                "description": "(optional) If true then File observables will be created for each import.",
+                "type": "boolean",
+                "optional": True,
+            },
+            "nti-create-url": {
+                "description": "(optional) If true then URL observables will be created for each import.",
+                "type": "boolean",
+                "optional": True,
+            },
+        },
+        charm_override=textwrap.dedent(
+            """\
+            VALID_LOG_LEVELS = {"debug", "info", "warn", "error"}
+    
+            def _gen_env(self) -> dict[str, str]:
+                env = super()._gen_env()
+
+                # Force nti
+                env["CONNECTOR_SCOPE"] = "nti"
+
+                # Check log level value, logging and setting to default if there is a misconfiguration
+                log_level = env.get("CONNECTOR_LOG_LEVEL", "info")
+                if log_level not in self.VALID_LOG_LEVELS:
+                    logger.warning(
+                        f"CONNECTOR_LOG_LEVEL '{log_level}' is invalid, using 'info' instead."
+                    )
+                    log_level = "info"
+                env["CONNECTOR_LOG_LEVEL"] = log_level
+
+                return env
+            """
+        ),
+        install_location="NTI-connector",
+    )
 
 @connector_generator("sekoia")
 def gen_sekoia_connector(location: pathlib.Path, version: str) -> None:
@@ -1138,4 +1234,4 @@ def render(version: str) -> None:
 
 
 if __name__ == "__main__":
-    render("6.4.5")
+    render("6.7.12")

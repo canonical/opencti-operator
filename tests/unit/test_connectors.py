@@ -520,6 +520,41 @@ _add_connector_test_params(
 )
 
 _add_connector_test_params(
+    name="nti",
+    connector_name="nti",
+    charm_config={
+        "connector-log-level": "info",
+        "connector-duration-period": "P1D",
+        "nti-base-url": "https://nti.nsfocusglobal.com/api/v2/",
+        "nti-api-key": "ChangeMe",
+        "nti-tlp": "white",
+        "nti-create-ioc": True,
+        "nti-create-ip": True,
+        "nti-create-domain": True,
+        "nti-create-file": True,
+        "nti-create-url": True,
+    },
+    environment={
+        "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
+        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "CONNECTOR_NAME": "opencti-nti-connector",
+        "CONNECTOR_TYPE": "EXTERNAL_IMPORT",
+        "CONNECTOR_LOG_LEVEL": "info",
+        "CONNECTOR_QUEUE_THRESHOLD": "500",
+        "CONNECTOR_SCOPE": "nti",
+        "CONNECTOR_DURATION_PERIOD": "P1D",
+        "NTI_BASE_URL": "https://nti.nsfocusglobal.com/api/v2/",
+        "NTI_API_KEY": "ChangeMe",
+        "NTI_TLP": "white",
+        "NTI_CREATE_IOC": "true",
+        "NTI_CREATE_IP": "true",
+        "NTI_CREATE_DOMAIN": "true",
+        "NTI_CREATE_FILE": "true",
+        "NTI_CREATE_URL": "true",
+    },
+)
+
+_add_connector_test_params(
     name="sekoia",
     connector_name="sekoia",
     charm_config={

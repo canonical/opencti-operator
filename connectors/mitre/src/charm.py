@@ -9,6 +9,9 @@ import pathlib
 
 import ops
 
+import logging
+logger = logging.getLogger(__name__)
+
 from charms.opencti.v0.opencti_connector import OpenctiConnectorCharm
 
 

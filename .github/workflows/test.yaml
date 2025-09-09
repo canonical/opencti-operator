@@ -16,15 +16,17 @@ jobs:
     uses: canonical/operator-workflows/.github/workflows/integration_test.yaml@main
     secrets: inherit
     with:
-      channel: 1.33-classic/stable
+      channel: 1.33-strict/stable
       charmcraft-channel: latest/edge
       juju-channel: 3.6/stable
       pre-run-script: tests/integration/prepare.sh
       self-hosted-runner: true
       self-hosted-runner-label: xlarge
-      use-canonical-k8s: true
-      provider: 'k8s'
-      tmate-debug: true
+      use-canonical-k8s: false
+      provider: microk8s
+      tmate-debug: false
+      self-hosted-runner-image: jammy
+      microk8s-addons: "dns registry:size=40Gi rbac storage"
   check-connector-sync:
     name: Check Connectors
     runs-on: ubuntu-latest
