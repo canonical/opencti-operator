@@ -25,7 +25,6 @@ jobs:
       use-canonical-k8s: false
       provider: microk8s
       tmate-debug: true
-      microk8s-addons: "dns registry:size=40Gi rbac storage"
   check-connector-sync:
     name: Check Connectors
     runs-on: ubuntu-latest
