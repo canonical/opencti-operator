@@ -3,7 +3,7 @@
 
 name: opencti
 base: ubuntu@24.04
-version: &version '6.4.5'
+version: &version '6.7.12'
 summary: Open Cyber Threat Intelligence Platform
 description: >-
   OpenCTI is an open source platform allowing organizations to manage their 

@@ -62,6 +62,10 @@ config:
       description: (optional) Launch the connector once if set to True. Takes 2 available values:TrueorFalse
       type: boolean
       optional: true
+    urlscan-enrichment-create-indicator:
+      description: (optional) Decide whether or not to create an indicator based on this observable
+      type: boolean
+      optional: true
 
 
 requires:
