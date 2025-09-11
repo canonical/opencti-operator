@@ -32,7 +32,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd external-import/nti
       cp -rp src $CRAFT_PART_INSTALL/opt/NTI-connector
-      
+      echo 'cd /opt/NTI-connector; python3 main.py' > entrypoint.sh
       cat entrypoint.sh | grep NTI-connector
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \

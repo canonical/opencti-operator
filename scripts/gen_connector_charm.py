@@ -871,6 +871,7 @@ def gen_nti_connector(location: pathlib, version: str) -> None:
             """
         ),
         install_location="NTI-connector",
+        generate_entrypoint="echo 'cd /opt/NTI-connector; python3 main.py' > entrypoint.sh",
     )
 
 @connector_generator("sekoia")
