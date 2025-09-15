@@ -43,6 +43,11 @@ config:
       type: string
       default: info
       optional: false
+    nti-package-type:
+      description: Determines the package type of the requests to NSFocus
+      type: string
+      default: updated
+      optional: false
     connector-queue-threshold:
       description: (optional) Used to determine the limit (RabbitMQ) in MB at which the connector must go into buffering mode.
       type: int
