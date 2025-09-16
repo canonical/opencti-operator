@@ -551,6 +551,7 @@ _add_connector_test_params(
         "NTI_CREATE_DOMAIN": "true",
         "NTI_CREATE_FILE": "true",
         "NTI_CREATE_URL": "true",
+        "NTI_PACKAGE_TYPE": "updated",
     },
 )
 

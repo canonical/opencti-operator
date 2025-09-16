@@ -68,6 +68,11 @@ config:
       description: (optional) If true then URL observables will be created for each import.
       type: boolean
       optional: true
+    nti-package-type:
+      description: Determines the package type of the requests to NSFocus
+      type: string
+      default: updated
+      optional: true
 
 
 requires:
