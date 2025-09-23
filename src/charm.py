@@ -197,7 +197,6 @@ class OpenCTICharm(ops.CharmBase):
             self,
             relation_name="ingress",
             port=8080,
-            strip_prefix=True,
         )
         # Sometimes the ingress library doesn't properly handle pod
         # restarts,which can cause the IP field inside the ingress
@@ -664,7 +663,10 @@ class OpenCTICharm(ops.CharmBase):
         public_url = self._ingress.url
         if not public_url:
             raise IntegrationNotReady("waiting for ingress integration")
-        return {"APP__BASE_URL": public_url}
+        return {
+            "APP__BASE_URL": public_url,
+            "APP__BASE_PATH": urllib.parse.urlparse(public_url).path,
+        }
 
     def _dump_integration(self, name: str) -> str:
         """Create a debug string representation of the give integration.

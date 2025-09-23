@@ -53,6 +53,7 @@ def test_pebble_plan():
                     "APP__ADMIN__TOKEN": "opencti-admin-token",
                     "APP__APP_LOGS__LOGS_LEVEL": "info",
                     "APP__BASE_URL": "http://opencti/",
+                    "APP__BASE_PATH": "/",
                     "APP__HEALTH_ACCESS_KEY": "opencti-health-access-key",
                     "APP__PORT": "8080",
                     "APP__TELEMETRY__METRICS__ENABLED": "true",

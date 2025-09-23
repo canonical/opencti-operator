@@ -11,7 +11,7 @@ LIBAPI = 0
 
 # Increment this PATCH version before using `charmcraft publish-lib` or reset
 # to 0 if you are raising the major API version
-LIBPATCH = 2
+LIBPATCH = 3
 
 import abc
 import os
@@ -27,6 +27,10 @@ from charms.loki_k8s.v1.loki_push_api import LogForwarder
 
 class NotReady(Exception):
     """The OpenCTI connector is not ready."""
+
+
+class Blocked(Exception):
+    """The OpenCTI connector is blocked."""
 
 
 class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
@@ -59,6 +63,7 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
         self.framework.observe(self.on.secret_changed, self._reconcile)
         self.framework.observe(self.on.upgrade_charm, self._reconcile)
         self.framework.observe(self.on[self.meta.name].pebble_ready, self._reconcile)
+        self.framework.observe(self.on.update_status, self._reconcile)
 
     @property
     def boolean_style(self) -> str:
@@ -138,6 +143,8 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
             self.unit.status = ops.ActiveStatus()
         except NotReady as exc:
             self.unit.status = ops.WaitingStatus(str(exc))
+        except Blocked as exc:
+            self.unit.status = ops.BlockedStatus(str(exc))
 
     def _reconcile_integration(self) -> None:
         """Reconcile the charm integrations."""
@@ -238,4 +245,8 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
             ),
             combine=True,
         )
-        container.replan()
+        try:
+            container.replan()
+            container.start("connector")
+        except ops.pebble.ChangeError as exc:
+            raise Blocked("failed to start connector, will retry") from exc
