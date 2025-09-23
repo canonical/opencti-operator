@@ -197,7 +197,6 @@ class OpenCTICharm(ops.CharmBase):
             self,
             relation_name="ingress",
             port=8080,
-            strip_prefix=True,
         )
         # Sometimes the ingress library doesn't properly handle pod
         # restarts,which can cause the IP field inside the ingress

@@ -14,7 +14,7 @@ variable "channel" {
 }
 
 variable "config" {
-  description = "Application config. Details about available options can be found at https://charmhub.io/opencti/configurations."
+  description = "Application config. Details about available options can be found at https://charmhub.io/opencti-operator/configure."
   type        = map(string)
   default     = {}
 }
