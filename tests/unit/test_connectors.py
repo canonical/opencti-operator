@@ -51,7 +51,7 @@ _add_connector_test_params(
         "abuseipdb-interval": 2,
     },
     environment={
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
         "CONNECTOR_NAME": "opencti-abuseipdb-ipblacklist-connector",
         "CONNECTOR_SCOPE": "abuseipdb",
@@ -97,7 +97,7 @@ _add_connector_test_params(
         "alienvault-x-opencti-score-cryptocurrency-wallet": 80,
     },
     environment={
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
         "CONNECTOR_NAME": "opencti-alienvault-connector",
         "CONNECTOR_SCOPE": "alienvault",
@@ -146,7 +146,7 @@ _add_connector_test_params(
         "cisa-tlp": "TLP:CLEAR",
     },
     environment={
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
         "CONNECTOR_NAME": "opencti-cisa-kev-connector",
         "CONNECTOR_SCOPE": "cisa",
@@ -196,7 +196,7 @@ _add_connector_test_params(
         "crowdstrike-indicator-unwanted-labels": "",
     },
     environment={
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
         "CONNECTOR_NAME": "opencti-crowdstrike-connector",
         "CONNECTOR_SCOPE": "crowdstrike",
@@ -243,7 +243,7 @@ _add_connector_test_params(
         "cyber-monitor-interval": 4,
     },
     environment={
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
         "CONNECTOR_NAME": "opencti-cyber-campaign-connector",
         "CONNECTOR_SCOPE": "report",
@@ -266,7 +266,7 @@ _add_connector_test_params(
         "export-file-csv-delimiter": ";",
     },
     environment={
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
         "CONNECTOR_NAME": "opencti-export-file-csv-connector",
         "CONNECTOR_SCOPE": "text/csv",
@@ -287,7 +287,7 @@ _add_connector_test_params(
     },
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "CONNECTOR_NAME": "opencti-export-file-stix-connector",
         "CONNECTOR_SCOPE": "application/vnd.oasis.stix+json",
         "CONNECTOR_CONFIDENCE_LEVEL": "100",
@@ -306,7 +306,7 @@ _add_connector_test_params(
         "CONNECTOR_SCOPE": "application/json",
         "CONNECTOR_TYPE": "INTERNAL_EXPORT_FILE",
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
     },
 )
 
@@ -320,7 +320,7 @@ _add_connector_test_params(
     },
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "CONNECTOR_NAME": "opencti-export-file-txt-connector",
         "CONNECTOR_TYPE": "INTERNAL_EXPORT_FILE",
         "CONNECTOR_SCOPE": "text/plain",
@@ -343,7 +343,7 @@ _add_connector_test_params(
     },
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "CONNECTOR_NAME": "opencti-import-document-connector",
         "CONNECTOR_VALIDATE_BEFORE_IMPORT": "true",
         "CONNECTOR_SCOPE": "application/pdf,text/plain,text/html,text/markdown",
@@ -368,7 +368,7 @@ _add_connector_test_params(
     },
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "CONNECTOR_NAME": "opencti-import-file-stix-connector",
         "CONNECTOR_VALIDATE_BEFORE_IMPORT": "true",
         "CONNECTOR_SCOPE": "application/json,application/xml",
@@ -393,7 +393,7 @@ _add_connector_test_params(
     },
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "CONNECTOR_NAME": "opencti-ipinfo-connector",
         "CONNECTOR_SCOPE": "IPv4-Addr,IPv6-Addr",
         "CONNECTOR_AUTO": "false",
@@ -421,7 +421,7 @@ _add_connector_test_params(
     },
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "CONNECTOR_NAME": "opencti-malwarebazaar-connector",
         "CONNECTOR_LOG_LEVEL": "error",
         "CONNECTOR_TYPE": "EXTERNAL_IMPORT",
@@ -461,7 +461,7 @@ _add_connector_test_params(
     },
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "CONNECTOR_NAME": "opencti-misp-feed-connector",
         "CONNECTOR_SCOPE": "misp-feed",
         "CONNECTOR_RUN_AND_TERMINATE": "false",
@@ -504,7 +504,7 @@ _add_connector_test_params(
     },
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "CONNECTOR_NAME": "opencti-mitre-connector",
         "CONNECTOR_SCOPE": (
             "tool,report,malware,identity,campaign,intrusion-set,"
@@ -536,7 +536,7 @@ _add_connector_test_params(
     },
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "CONNECTOR_NAME": "opencti-nti-connector",
         "CONNECTOR_TYPE": "EXTERNAL_IMPORT",
         "CONNECTOR_LOG_LEVEL": "info",
@@ -572,7 +572,7 @@ _add_connector_test_params(
     },
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "CONNECTOR_NAME": "opencti-sekoia-connector",
         "CONNECTOR_SCOPE": (
             "identity,attack-pattern,course-of-action,intrusion-set,"
@@ -604,7 +604,7 @@ _add_connector_test_params(
         "CONNECTOR_SCOPE": "urlhaus",
         "CONNECTOR_TYPE": "EXTERNAL_IMPORT",
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "URLHAUS_CSV_URL": "https://urlhaus.abuse.ch/downloads/csv_recent/",
         "URLHAUS_IMPORT_OFFLINE": "true",
         "URLHAUS_INTERVAL": "3",
@@ -631,7 +631,7 @@ _add_connector_test_params(
     },
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "CONNECTOR_NAME": "opencti-urlscan-connector",
         "CONNECTOR_SCOPE": "threatmatch",
         "CONNECTOR_LOG_LEVEL": "error",
@@ -665,7 +665,7 @@ _add_connector_test_params(
     },
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "CONNECTOR_NAME": "opencti-urlscan-enrichment-connector",
         "CONNECTOR_SCOPE": "url,ipv4-addr,ipv6-addr",
         "CONNECTOR_AUTO": "false",
@@ -702,7 +702,7 @@ _add_connector_test_params(
     },
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "CONNECTOR_NAME": "opencti-virustotal-livehunt-connector",
         "CONNECTOR_SCOPE": "StixFile,Indicator,Incident",
         "CONNECTOR_LOG_LEVEL": "error",
@@ -737,7 +737,7 @@ _add_connector_test_params(
     },
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-        "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+        "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
         "CONNECTOR_NAME": "opencti-vxvault-connector",
         "CONNECTOR_SCOPE": "vxvault",
         "CONNECTOR_LOG_LEVEL": "error",
@@ -817,7 +817,7 @@ def test_proxy_environment(monkeypatch):
                     "HTTP_PROXY": "http://example.com",
                     "NO_PROXY": "localhost,127.0.0.1,opencti-endpoints.test-opencti-connector.svc",
                     "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
-                    "OPENCTI_URL": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+                    "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
                     "http_proxy": "http://example.com",
                     "https_proxy": "https://example.com",
                     "no_proxy": "localhost,127.0.0.1,opencti-endpoints.test-opencti-connector.svc",
