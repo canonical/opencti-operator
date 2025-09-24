@@ -203,7 +203,7 @@ async def test_opencti_connectors(
     api_token = plan["services"]["platform"]["environment"]["APP__ADMIN__TOKEN"]
     url = plan["services"]["platform"]["environment"]["APP__BASE_URL"]
     resp = requests.post(
-        f"http://127.0.0.1/graphql",
+        "http://127.0.0.1/graphql",
         json=query,
         headers={
             "Authorization": f"Bearer {api_token}",
