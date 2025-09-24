@@ -148,7 +148,11 @@ class StateBuilder:
             ops.testing.Relation(
                 remote_app_name="nginx-ingress-integrator",
                 endpoint="ingress",
-                remote_app_data={"ingress": json.dumps({"url": "http://opencti"})},
+                remote_app_data={
+                    "ingress": json.dumps(
+                        {"url": "https://opencti-endpoints.test-opencti.svc/opencti"}
+                    )
+                },
             )
         )
         return self
@@ -297,7 +301,7 @@ class ConnectorStateBuilder:
             endpoint="opencti-connector",
             remote_app_data={
                 "opencti_token": secret.id,
-                "opencti_url": "http://opencti-endpoints.test-opencti-connector.svc:8080",
+                "opencti_url": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
             },
         )
         self._secrets.append(secret)
