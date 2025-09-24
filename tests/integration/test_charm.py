@@ -8,6 +8,7 @@
 """Integration tests."""
 
 import textwrap
+import urllib.parse
 
 import boto3
 import botocore.client
@@ -202,9 +203,12 @@ async def test_opencti_connectors(
     api_token = plan["services"]["platform"]["environment"]["APP__ADMIN__TOKEN"]
     url = plan["services"]["platform"]["environment"]["APP__BASE_URL"]
     resp = requests.post(
-        f"{url}/graphql",
+        f"http://127.0.0.1/graphql",
         json=query,
-        headers={"Authorization": f"Bearer {api_token}"},
+        headers={
+            "Authorization": f"Bearer {api_token}",
+            "Host": urllib.parse.urlparse(url).netloc,
+        },
         timeout=5,
         verify=False,
     )
