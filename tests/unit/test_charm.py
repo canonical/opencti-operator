@@ -52,8 +52,8 @@ def test_pebble_plan():
                     "APP__ADMIN__PASSWORD": "admin-password",
                     "APP__ADMIN__TOKEN": "opencti-admin-token",
                     "APP__APP_LOGS__LOGS_LEVEL": "info",
-                    "APP__BASE_URL": "https://opencti-endpoints.test-opencti.svc/opencti",
-                    "APP__BASE_PATH": "/opencti",
+                    "APP__BASE_URL": "http://opencti/",
+                    "APP__BASE_PATH": "/",
                     "APP__HEALTH_ACCESS_KEY": "opencti-health-access-key",
                     "APP__PORT": "8080",
                     "APP__TELEMETRY__METRICS__ENABLED": "true",
@@ -391,7 +391,7 @@ def test_opencti_connector(patch_opencti_client):
     integration_out = state_out.get_relation(opencti_connector_integration.id)
     assert (
         integration_out.local_app_data["opencti_url"]  # type: ignore
-        == "https://opencti-endpoints.test-opencti.svc/opencti"
+        == "http://opencti-endpoints.test-opencti.svc:8080"
     )
     secret_id = integration_out.local_app_data["opencti_token"]  # type: ignore
     secret = state_out.get_secret(id=secret_id)
