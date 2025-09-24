@@ -76,7 +76,7 @@ async def test_deploy_charm(
     nginx_ingress_integrator = await model.deploy(
         "nginx-ingress-integrator",
         channel="edge",
-        config={"path-routes": "/", "service-hostname": "penpot.local"},
+        config={"path-routes": "/", "service-hostname": "opencti.local"},
         trust=True,
         revision=109,
     )

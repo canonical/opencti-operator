@@ -35,3 +35,6 @@ sudo sysctl -p
   /usr/local/share/chromium \
   /usr/local/share/vcpkg \
   /opt/hostedtoolcache
+
+  echo "127.0.0.1 opencti.local" >> /etc/hosts
+  
