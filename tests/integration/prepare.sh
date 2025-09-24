@@ -36,5 +36,20 @@ sudo sysctl -p
   /usr/local/share/vcpkg \
   /opt/hostedtoolcache
 
-  echo "127.0.0.1 opencti.local" >> /etc/hosts
-  
+sudo microk8s kubectl apply -f - << EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ingress-microk8s-controller
+  namespace: ingress
+spec:
+  selector:
+    name: nginx-ingress-microk8s
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
+    - name: https
+      port: 443
+      targetPort: 443
+EOF
