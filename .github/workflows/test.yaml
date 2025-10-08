@@ -26,15 +26,15 @@ jobs:
       provider: microk8s
       tmate-debug: false
       self-hosted-runner-image: jammy
-      microk8s-addons: "dns registry:size=40Gi rbac storage"
+      microk8s-addons: "dns registry:size=40Gi rbac storage ingress"
   check-connector-sync:
     name: Check Connectors
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5.0.0
-      - uses: actions/setup-python@v5.6.0
+      - uses: actions/setup-python@v6.0.0
         with:
-          python-version: '3.13'
+          python-version: '3.14'
       - run: pip install tox
       - run: tox -e generate-connectors
       - run: git diff --exit-code

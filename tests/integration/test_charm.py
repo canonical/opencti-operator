@@ -8,6 +8,7 @@
 """Integration tests."""
 
 import textwrap
+import urllib.parse
 
 import boto3
 import botocore.client
@@ -76,7 +77,10 @@ async def test_deploy_charm(
     nginx_ingress_integrator = await model.deploy(
         "nginx-ingress-integrator",
         channel="edge",
-        config={"path-routes": "/", "service-hostname": "penpot.local"},
+        config={
+            "path-routes": "/",
+            "service-hostname": "nginx-ingress-microk8s-controller.ingress.svc.cluster.local",
+        },
         trust=True,
         revision=109,
     )
@@ -158,7 +162,7 @@ async def test_opencti_client(get_unit_ips, ops_test):
 
 
 async def test_opencti_connectors(
-    get_unit_ips, ops_test, model, opencti_connector_charms, opencti_connector_images
+    ops_test, model, opencti_connector_charms, opencti_connector_images
 ):
     """
     arrange: deploy the OpenCTI charm and OpenCTI connector charm.
@@ -166,12 +170,10 @@ async def test_opencti_connectors(
     assert: OpenCTI connector should register itself inside the OpenCTI platform
     """
     connector = "opencti-export-file-stix-connector"
-    charm = opencti_connector_charms[connector]
-    image = opencti_connector_images[connector]
     connector_charm = await model.deploy(
-        f"./{charm}",
+        f"./{opencti_connector_charms[connector]}",
         resources={
-            f"{connector}-image": image,
+            f"{connector}-image": opencti_connector_images[connector],
         },
         config={"connector-scope": "application/json"},
     )
@@ -199,11 +201,16 @@ async def test_opencti_connectors(
     )
     plan = yaml.safe_load(stdout)
     api_token = plan["services"]["platform"]["environment"]["APP__ADMIN__TOKEN"]
+    url = plan["services"]["platform"]["environment"]["APP__BASE_URL"]
     resp = requests.post(
-        f"http://{(await get_unit_ips('opencti'))[0]}:8080/graphql",
+        "http://127.0.0.1/graphql",
         json=query,
-        headers={"Authorization": f"Bearer {api_token}"},
+        headers={
+            "Authorization": f"Bearer {api_token}",
+            "Host": urllib.parse.urlparse(url).netloc,
+        },
         timeout=5,
+        verify=False,
     )
     connectors = {c["name"]: c for c in resp.json()["data"]["connectors"]}
     assert connector in connectors

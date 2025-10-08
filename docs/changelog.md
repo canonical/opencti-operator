@@ -6,7 +6,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Each revision is versioned by the date of the revision.
 
+## 2025-09-23
+
+### Changed
+
+- Require ingresses without stripped path prefix.
+- Add support for path prefixed URLs.
+- Pass ingress URL in the relation databag
+
+### Changed
+
+- Require ingresses with stripped path prefix.
+
 ## 2025-08-28
+
+### Changed
 
 - Updated the documentation workflow to be fully integrated with the Vale GitHub Action.
 

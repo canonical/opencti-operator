@@ -663,7 +663,10 @@ class OpenCTICharm(ops.CharmBase):
         public_url = self._ingress.url
         if not public_url:
             raise IntegrationNotReady("waiting for ingress integration")
-        return {"APP__BASE_URL": public_url}
+        return {
+            "APP__BASE_URL": public_url,
+            "APP__BASE_PATH": urllib.parse.urlparse(public_url).path,
+        }
 
     def _dump_integration(self, name: str) -> str:
         """Create a debug string representation of the give integration.
@@ -727,7 +730,7 @@ class OpenCTICharm(ops.CharmBase):
         connector_type = integration_data.get("connector_type")
         if not connector_charm_name or not connector_type:
             return None
-        opencti_url = f"http://{self.app.name}-endpoints.{self.model.name}.svc:8080"
+        opencti_url = self._ingress.url
         integration.data[self.app]["opencti_url"] = opencti_url
         connector_user_name = f"charm-connector-{connector_charm_name.replace('_', '-').lower()}"
         connector_user = self._get_opencti_user(client, connector_user_name)

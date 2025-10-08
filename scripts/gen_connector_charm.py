@@ -822,6 +822,12 @@ def gen_nti_connector(location: pathlib, version: str) -> None:
                 "default": 500,
                 "optional": True,
             },
+            "nti-package-type": {
+                "description": "Determines the package type of the requests to NSFocus",
+                "type": "string",
+                "default": "updated",
+                "optional": True,
+            },
             "nti-create-ioc": {
                 "description": "(optional) If true then indicators will be created for each import.",
                 "type": "boolean",
