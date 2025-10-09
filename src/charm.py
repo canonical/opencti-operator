@@ -103,6 +103,15 @@ class OpenCTICharm(ops.CharmBase):
                 }
             ],
         )
+
+        base_url = "http://localhost:8080"
+        app_path = urllib.parse.urlparse(self._ingress.url).path
+        if len(app_path) > 0 and app_path[0] == "/":
+            app_path = app_path[1:]
+        if len(app_path) > 0 and app_path[-1] != "/":
+            app_path += "/"  # trailing '/' is required
+        self._base_url = f"{base_url}/{app_path}"
+
         self.framework.observe(self.on.config_changed, self._reconcile)
         self.framework.observe(self.on.upgrade_charm, self._reconcile)
         self.framework.observe(self.on.update_status, self._reconcile)
@@ -263,7 +272,7 @@ class OpenCTICharm(ops.CharmBase):
         self._init_peer_relation()
         self._check_preconditions()
         health_check_token = self._get_peer_secret(_PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD)
-        health_check_url = f"http://localhost:8080/health?health_access_key={health_check_token}"
+        health_check_url = f"{self._base_url}health?health_access_key={health_check_token}"
         self._install_callback_script(health_check_url)
         self._install_opensearch_cert()
         self._container.add_layer(
@@ -300,7 +309,7 @@ class OpenCTICharm(ops.CharmBase):
             "command": "python3 worker.py",
             "working-dir": "/opt/opencti-worker",
             "environment": {
-                "OPENCTI_URL": "http://localhost:8080",
+                "OPENCTI_URL": self._base_url,
                 "OPENCTI_TOKEN": self._get_peer_secret(_PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD),
                 "WORKER_LOG_LEVEL": "info",
             },
@@ -698,7 +707,7 @@ class OpenCTICharm(ops.CharmBase):
         if not self.unit.is_leader():
             return
         client = opencti.OpenctiClient(
-            url="http://localhost:8080",
+            url=self._base_url,
             api_token=self._get_peer_secret(_PEER_SECRET_ADMIN_TOKEN_SECRET_FIELD),
         )
         integrations = self.model.relations["opencti-connector"]

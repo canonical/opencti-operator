@@ -30,7 +30,7 @@ def test_pebble_plan():
         "checks": {
             "platform": {
                 "http": {
-                    "url": "http://localhost:8080/health"
+                    "url": "http://localhost:8080/opencti/health"
                     "?health_access_key=opencti-health-access-key"
                 },
                 "level": "ready",
@@ -96,7 +96,7 @@ def test_pebble_plan():
                 "command": "python3 worker.py",
                 "environment": {
                     "OPENCTI_TOKEN": "opencti-admin-token",
-                    "OPENCTI_URL": "http://localhost:8080",
+                    "OPENCTI_URL": "http://localhost:8080/opencti/",
                     "WORKER_LOG_LEVEL": "info",
                 },
                 "override": "replace",
@@ -108,7 +108,7 @@ def test_pebble_plan():
                 "command": "python3 worker.py",
                 "environment": {
                     "OPENCTI_TOKEN": "opencti-admin-token",
-                    "OPENCTI_URL": "http://localhost:8080",
+                    "OPENCTI_URL": "http://localhost:8080/opencti/",
                     "WORKER_LOG_LEVEL": "info",
                 },
                 "override": "replace",
@@ -120,7 +120,7 @@ def test_pebble_plan():
                 "command": "python3 worker.py",
                 "environment": {
                     "OPENCTI_TOKEN": "opencti-admin-token",
-                    "OPENCTI_URL": "http://localhost:8080",
+                    "OPENCTI_URL": "http://localhost:8080/opencti/",
                     "WORKER_LOG_LEVEL": "info",
                 },
                 "override": "replace",
