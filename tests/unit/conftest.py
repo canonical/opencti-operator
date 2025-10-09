@@ -36,7 +36,13 @@ def patch_opencti_client():
 
 
 class OpenctiClientMock:
-    """A mock for OpenctiClient."""
+    """A mock for OpenctiClient.
+
+    Attributes:
+        last_instance (OpenctiClientMock): pointer to most-recently created instance
+    """
+
+    last_instance = None
 
     _users = [
         {
@@ -55,6 +61,9 @@ class OpenctiClientMock:
 
     def __init__(self, *_args, **_kwargs):
         """Initialize OpenctiClientMock."""
+        self.init_args = _args
+        self.init_kwargs = _kwargs
+        OpenctiClientMock.last_instance = self
 
     def list_users(self, name_starts_with: str | None = None) -> list[OpenctiUser]:
         """List OpenCTI users.
