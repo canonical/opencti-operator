@@ -30,7 +30,7 @@ def test_pebble_plan():
         "checks": {
             "platform": {
                 "http": {
-                    "url": "http://localhost:8080/health"
+                    "url": "http://localhost:8080/opencti/health"
                     "?health_access_key=opencti-health-access-key"
                 },
                 "level": "ready",
@@ -96,7 +96,7 @@ def test_pebble_plan():
                 "command": "python3 worker.py",
                 "environment": {
                     "OPENCTI_TOKEN": "opencti-admin-token",
-                    "OPENCTI_URL": "http://localhost:8080",
+                    "OPENCTI_URL": "http://localhost:8080/opencti/",
                     "WORKER_LOG_LEVEL": "info",
                 },
                 "override": "replace",
@@ -108,7 +108,7 @@ def test_pebble_plan():
                 "command": "python3 worker.py",
                 "environment": {
                     "OPENCTI_TOKEN": "opencti-admin-token",
-                    "OPENCTI_URL": "http://localhost:8080",
+                    "OPENCTI_URL": "http://localhost:8080/opencti/",
                     "WORKER_LOG_LEVEL": "info",
                 },
                 "override": "replace",
@@ -120,7 +120,7 @@ def test_pebble_plan():
                 "command": "python3 worker.py",
                 "environment": {
                     "OPENCTI_TOKEN": "opencti-admin-token",
-                    "OPENCTI_URL": "http://localhost:8080",
+                    "OPENCTI_URL": "http://localhost:8080/opencti/",
                     "WORKER_LOG_LEVEL": "info",
                 },
                 "override": "replace",
@@ -396,3 +396,16 @@ def test_opencti_connector(patch_opencti_client):
     secret_id = integration_out.local_app_data["opencti_token"]  # type: ignore
     secret = state_out.get_secret(id=secret_id)
     assert secret.tracked_content == {"token": "00000000-0000-0000-0000-000000000000"}
+
+
+def test_client_params(patch_opencti_client):
+    """
+    arrange: provide the charm with the required integrations and configurations.
+    act: simulate a config-changed event.
+    assert: gql client is created with proper URL and token.
+    """
+    ctx = ops.testing.Context(OpenCTICharm)
+    state_in = StateBuilder().add_required_integrations().add_required_configs().build()
+    ctx.run(ctx.on.config_changed(), state_in)
+    expected_kwargs = {"url": "http://localhost:8080/opencti/", "api_token": "opencti-admin-token"}
+    assert patch_opencti_client.last_instance.init_kwargs == expected_kwargs
