@@ -66,6 +66,7 @@ _PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD = "health-access-key"  # nosec
 _CHARM_CALLBACK_SCRIPT_PATH = pathlib.Path("/opt/opencti/charm-callback.sh")
 _OPENSEARCH_CERT_PATH = pathlib.Path("/opt/opencti/config/opensearch.pem")
 _OPENCTI_CONNECTOR_USER_PREFIX = "charm-connector-"
+_OPENCTI_BASE_URL = "http://localhost:8080/"
 
 
 # caused by charm libraries
@@ -86,6 +87,7 @@ class OpenCTICharm(ops.CharmBase):
             args: Arguments passed to the CharmBase parent constructor.
         """
         super().__init__(*args)
+        self._base_url = _OPENCTI_BASE_URL
         self._container = self.unit.get_container("opencti")
         self._opensearch = self._register_opensearch()
         self._redis = self._register_redis()
@@ -103,14 +105,6 @@ class OpenCTICharm(ops.CharmBase):
                 }
             ],
         )
-
-        base_url = "http://localhost:8080"
-        app_path = urllib.parse.urlparse(self._ingress.url).path
-        if len(app_path) > 0 and app_path[0] == "/":
-            app_path = app_path[1:]
-        if len(app_path) > 0 and app_path[-1] != "/":
-            app_path += "/"  # trailing '/' is required
-        self._base_url = f"{base_url}/{app_path}"
 
         self.framework.observe(self.on.config_changed, self._reconcile)
         self.framework.observe(self.on.upgrade_charm, self._reconcile)
@@ -254,6 +248,14 @@ class OpenCTICharm(ops.CharmBase):
 
     def _reconcile(self, _: ops.EventBase) -> None:
         """Run charm reconcile function and catch all exceptions."""
+        if isinstance(self._ingress.url, str) and len(self._ingress.url) > 0:
+            app_path = urllib.parse.urlparse(self._ingress.url).path
+            if len(app_path) > 0 and app_path[0] == "/":
+                app_path = app_path[1:]
+            if len(app_path) > 0 and app_path[-1] != "/":
+                app_path += "/"  # trailing '/' is required
+            self._base_url = _OPENCTI_BASE_URL + app_path
+
         try:
             self._reconcile_platform()
             self._reconcile_connector()
