@@ -171,23 +171,6 @@ resource "juju_offer" "rabbitmq_server" {
   provider = juju.opencti_db
 }
 
-
-resource "juju_integration" "s3_opensearch" {
-  model = data.juju_model.opencti_db.name
-
-  application {
-    name     = module.opensearch.app_names.opensearch
-    endpoint = module.opensearch.requires.s3_credentials
-  }
-
-  application {
-    name     = module.s3_integrator_opensearch.app_name
-    endpoint = module.s3_integrator_opensearch.provides.s3_credentials
-  }
-
-  provider = juju.opencti_db
-}
-
 resource "juju_application" "sysconfig" {
   name  = var.sysconfig.app_name
   model = data.juju_model.opencti_db.name
