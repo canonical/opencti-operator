@@ -24,15 +24,9 @@ module "opencti" {
 }
 
 module "opensearch" {
-  source      = "git::https://github.com/canonical/opensearch-operator//terraform/charm/simple_deployment?ref=2/edge"
-  app_name    = var.opensearch.app_name
-  channel     = var.opensearch.channel
-  config      = var.opensearch.config
-  constraints = var.opensearch.constraints
-  model       = data.juju_model.opencti_db.name
-  revision    = var.opensearch.revision
-  base        = var.opensearch.base
-  units       = var.opensearch.units
+  source                   = "git::https://github.com/canonical/opensearch-operator//terraform/product/simple_deployment?ref=2/edge"
+  opensearch               = var.opensearch
+  self-signed-certificates = var.self_signed_certificates
 
   providers = {
     juju = juju.opencti_db

@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Each revision is versioned by the date of the revision.
 
+## 2025-10-14
+
+### Changed
+
+- Use the upstream TF OpenSearch product
+
 ## 2025-09-23
 
 ### Changed
