@@ -28,6 +28,7 @@ module "opensearch" {
   opensearch               = var.opensearch
   self-signed-certificates = var.self_signed_certificates
   backups-integrator       = var.s3_integrator_opensearch
+  model                    = juju_model.opencti_db.name
 
   providers = {
     juju = juju.opencti_db
