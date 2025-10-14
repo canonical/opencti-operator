@@ -27,6 +27,7 @@ module "opensearch" {
   source                   = "git::https://github.com/canonical/opensearch-operator//terraform/product/simple_deployment?ref=2/edge"
   opensearch               = var.opensearch
   self-signed-certificates = var.self_signed_certificates
+  backups-integrator       = var.s3_integrator_opensearch
 
   providers = {
     juju = juju.opencti_db
@@ -74,21 +75,6 @@ module "s3_integrator" {
   units       = var.s3_integrator.units
 }
 
-module "s3_integrator_opensearch" {
-  source      = "./modules/s3-integrator"
-  app_name    = var.s3_integrator_opensearch.app_name
-  channel     = var.s3_integrator_opensearch.channel
-  config      = var.s3_integrator_opensearch.config
-  constraints = var.s3_integrator_opensearch.constraints
-  model       = data.juju_model.opencti_db.name
-  revision    = var.s3_integrator_opensearch.revision
-  base        = var.s3_integrator_opensearch.base
-  units       = var.s3_integrator_opensearch.units
-
-  providers = {
-    juju = juju.opencti_db
-  }
-}
 
 resource "juju_access_offer" "opensearch" {
   offer_url = juju_offer.opensearch.url
