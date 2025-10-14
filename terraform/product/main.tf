@@ -24,9 +24,19 @@ module "opencti" {
 }
 
 module "opensearch" {
-  source                   = "git::https://github.com/canonical/opensearch-operator//terraform/product/simple_deployment?ref=2/edge"
-  opensearch               = var.opensearch
+  source = "git::https://github.com/canonical/opensearch-operator//terraform/product/simple_deployment?ref=2/edge"
+  opensearch = {
+    app_name    = var.opensearch.app_name
+    channel     = var.opensearch.channel
+    config      = var.opensearch.config
+    constraints = var.opensearch.constraints
+    model       = data.juju_model.opencti_db.name
+    revision    = var.opensearch.revision
+    base        = var.opensearch.base
+    units       = var.opensearch.units
+  }
   self-signed-certificates = var.self_signed_certificates
+  backups-integrator       = var.s3_integrator_opensearch
 
   providers = {
     juju = juju.opencti_db
@@ -74,21 +84,6 @@ module "s3_integrator" {
   units       = var.s3_integrator.units
 }
 
-module "s3_integrator_opensearch" {
-  source      = "./modules/s3-integrator"
-  app_name    = var.s3_integrator_opensearch.app_name
-  channel     = var.s3_integrator_opensearch.channel
-  config      = var.s3_integrator_opensearch.config
-  constraints = var.s3_integrator_opensearch.constraints
-  model       = data.juju_model.opencti_db.name
-  revision    = var.s3_integrator_opensearch.revision
-  base        = var.s3_integrator_opensearch.base
-  units       = var.s3_integrator_opensearch.units
-
-  providers = {
-    juju = juju.opencti_db
-  }
-}
 
 resource "juju_access_offer" "opensearch" {
   offer_url = juju_offer.opensearch.url
@@ -172,23 +167,6 @@ resource "juju_offer" "rabbitmq_server" {
   model            = data.juju_model.opencti_db.name
   application_name = module.rabbitmq_server.app_name
   endpoints        = [module.rabbitmq_server.provides.amqp]
-
-  provider = juju.opencti_db
-}
-
-
-resource "juju_integration" "s3_opensearch" {
-  model = data.juju_model.opencti_db.name
-
-  application {
-    name     = module.opensearch.app_names.opensearch
-    endpoint = module.opensearch.requires.s3_credentials
-  }
-
-  application {
-    name     = module.s3_integrator_opensearch.app_name
-    endpoint = module.s3_integrator_opensearch.provides.s3_credentials
-  }
 
   provider = juju.opencti_db
 }

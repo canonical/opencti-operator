@@ -106,13 +106,13 @@ variable "s3_integrator" {
 
 variable "s3_integrator_opensearch" {
   type = object({
-    app_name    = optional(string, "s3-integrator")
-    channel     = optional(string, "latest/edge")
-    config      = optional(map(string), {})
-    constraints = optional(string, "arch=amd64")
-    revision    = optional(number)
-    base        = optional(string, "ubuntu@22.04")
-    units       = optional(number, 1)
+    storage_type = optional(string, "s3")
+    channel      = optional(string, "latest/edge")
+    config       = optional(map(string), {})
+    constraints  = optional(string, "arch=amd64")
+    revision     = optional(number)
+    base         = optional(string, "ubuntu@22.04")
+    units        = optional(number, 1)
   })
 }
 
