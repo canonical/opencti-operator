@@ -45,6 +45,18 @@ variable "opensearch" {
   })
 }
 
+variable "self_signed_certificates" {
+  type = object({
+    app_name    = optional(string, "self-signed-certificates")
+    channel     = optional(string, "latest/stable")
+    config      = optional(map(string), {})
+    constraints = optional(string, "arch=amd64")
+    revision    = optional(number)
+    base        = optional(string, "ubuntu@22.04")
+    units       = optional(number, 3)
+  })
+}
+
 variable "rabbitmq_server" {
   type = object({
     app_name    = optional(string, "rabbitmq-server")
