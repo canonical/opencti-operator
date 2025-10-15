@@ -39,11 +39,10 @@ the bundle deployment onto any Kubernetes environment managed by [Juju][Juju].
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_opencti"></a> [opencti](#module\_opencti) | ../charm | n/a |
-| <a name="module_opensearch"></a> [opensearch](#module\_opensearch) | git::https://github.com/canonical/opensearch-operator//terraform/charm/simple_deployment | 2/edge |
+| <a name="module_opensearch"></a> [opensearch](#module\_opensearch) | git::https://github.com/canonical/opensearch-operator//terraform/product/simple_deployment | 2/edge |
 | <a name="module_rabbitmq_server"></a> [rabbitmq\_server](#module\_rabbitmq\_server) | ./modules/rabbitmq-server | n/a |
 | <a name="module_redis_k8s"></a> [redis\_k8s](#module\_redis\_k8s) | ./modules/redis-k8s | n/a |
 | <a name="module_s3_integrator"></a> [s3\_integrator](#module\_s3\_integrator) | ./modules/s3-integrator | n/a |
-| <a name="module_s3_integrator_opensearch"></a> [s3\_integrator\_opensearch](#module\_s3\_integrator\_opensearch) | ./modules/s3-integrator | n/a |
 
 ## Resources
 
@@ -57,7 +56,6 @@ the bundle deployment onto any Kubernetes environment managed by [Juju][Juju].
 | [juju_integration.opensearch_sysconfig](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
 | [juju_integration.redis](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
 | [juju_integration.s3](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
-| [juju_integration.s3_opensearch](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
 | [juju_offer.opensearch](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
 | [juju_offer.rabbitmq_server](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
 | [juju_model.opencti](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/model) | data source |
@@ -76,7 +74,8 @@ the bundle deployment onto any Kubernetes environment managed by [Juju][Juju].
 | <a name="input_rabbitmq_server"></a> [rabbitmq\_server](#input\_rabbitmq\_server) | n/a | <pre>object({<br/>    app_name    = optional(string, "rabbitmq-server")<br/>    channel     = optional(string, "3.9/stable")<br/>    config      = optional(map(string), {})<br/>    constraints = optional(string, "arch=amd64")<br/>    revision    = optional(number)<br/>    base        = optional(string, "ubuntu@22.04")<br/>    units       = optional(number, 1)<br/>  })</pre> | n/a | yes |
 | <a name="input_redis_k8s"></a> [redis\_k8s](#input\_redis\_k8s) | n/a | <pre>object({<br/>    app_name    = optional(string, "redis-k8s")<br/>    channel     = optional(string, "latest/stable")<br/>    config      = optional(map(string), {})<br/>    constraints = optional(string, "arch=amd64")<br/>    revision    = optional(number)<br/>    base        = optional(string, "ubuntu@22.04")<br/>    units       = optional(number, 1)<br/>    storage     = optional(map(string), {})<br/>  })</pre> | n/a | yes |
 | <a name="input_s3_integrator"></a> [s3\_integrator](#input\_s3\_integrator) | n/a | <pre>object({<br/>    app_name    = optional(string, "s3-integrator")<br/>    channel     = optional(string, "latest/edge")<br/>    config      = optional(map(string), {})<br/>    constraints = optional(string, "arch=amd64")<br/>    revision    = optional(number)<br/>    base        = optional(string, "ubuntu@22.04")<br/>    units       = optional(number, 1)<br/>  })</pre> | n/a | yes |
-| <a name="input_s3_integrator_opensearch"></a> [s3\_integrator\_opensearch](#input\_s3\_integrator\_opensearch) | n/a | <pre>object({<br/>    app_name    = optional(string, "s3-integrator")<br/>    channel     = optional(string, "latest/edge")<br/>    config      = optional(map(string), {})<br/>    constraints = optional(string, "arch=amd64")<br/>    revision    = optional(number)<br/>    base        = optional(string, "ubuntu@22.04")<br/>    units       = optional(number, 1)<br/>  })</pre> | n/a | yes |
+| <a name="input_s3_integrator_opensearch"></a> [s3\_integrator\_opensearch](#input\_s3\_integrator\_opensearch) | n/a | <pre>object({<br/>    storage_type = optional(string, "s3")<br/>    channel      = optional(string, "latest/edge")<br/>    config       = optional(map(string), {})<br/>    constraints  = optional(string, "arch=amd64")<br/>    revision     = optional(number)<br/>    base         = optional(string, "ubuntu@22.04")<br/>    units        = optional(number, 1)<br/>  })</pre> | n/a | yes |
+| <a name="input_self_signed_certificates"></a> [self\_signed\_certificates](#input\_self\_signed\_certificates) | n/a | <pre>object({<br/>    app_name    = optional(string, "self-signed-certificates")<br/>    channel     = optional(string, "latest/stable")<br/>    config      = optional(map(string), {})<br/>    constraints = optional(string, "arch=amd64")<br/>    revision    = optional(number)<br/>    base        = optional(string, "ubuntu@22.04")<br/>    units       = optional(number, 3)<br/>  })</pre> | n/a | yes |
 | <a name="input_sysconfig"></a> [sysconfig](#input\_sysconfig) | n/a | <pre>object({<br/>    app_name = optional(string, "sysconfig")<br/>    channel  = optional(string, "latest/stable")<br/>    revision = optional(number)<br/>  })</pre> | n/a | yes |
 
 ## Outputs
