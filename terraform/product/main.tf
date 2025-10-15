@@ -34,9 +34,13 @@ module "opensearch" {
     revision    = var.opensearch.revision
     base        = var.opensearch.base
     units       = var.opensearch.units
+    expose      = true
   }
   self-signed-certificates = var.self_signed_certificates
   backups-integrator       = var.s3_integrator_opensearch
+  opensearch-dashboards = {
+    units = 0
+  }
 
   providers = {
     juju = juju.opencti_db
