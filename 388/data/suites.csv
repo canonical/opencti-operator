@@ -1,0 +1,21 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"
+    arrange: deploy the OpenCTI charm.
+    act: get the number of OpenCTI workers.
+    assert: the number of OpenCTI workers matches the expectation.
+    ","461","test_opencti_workers","tests.integration","2025-10-30","passed","2025-10-30","","test_charm","",""
+"
+    arrange: deploy the OpenCTI charm.
+    act: use the OpenCTI client to create some users.
+    assert: users are created normally.
+    ","2008","test_opencti_client","tests.integration","2025-10-30","passed","2025-10-30","","test_charm","",""
+"
+    arrange: deploy dependencies of the OpenCTI charm.
+    act: deploy the OpenCTI charm.
+    assert: deployment is successful.
+    ","229677","test_deploy_charm","tests.integration","2025-10-30","passed","2025-10-30","","test_charm","",""
+"
+    arrange: deploy the OpenCTI charm and OpenCTI connector charm.
+    act: integrate the OpenCTI connector charm with the OpenCTI charm.
+    assert: OpenCTI connector should register itself inside the OpenCTI platform
+    ","42931","test_opencti_connectors","tests.integration","2025-10-30","passed","2025-10-30","","test_charm","",""
