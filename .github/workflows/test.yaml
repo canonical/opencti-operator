@@ -38,3 +38,8 @@ jobs:
       - run: pip install tox
       - run: tox -e generate-connectors
       - run: git diff --exit-code
+  allure-report:
+    if: always() && !cancelled()
+    needs:
+      - integration-tests
+    uses: canonical/operator-workflows/.github/workflows/allure_report.yaml@main
