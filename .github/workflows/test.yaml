@@ -2,6 +2,8 @@ name: Tests
 
 on:
   pull_request:
+  schedule:
+  - cron: "0 15 * * SAT"
 
 jobs:
   unit-tests:
@@ -13,7 +15,8 @@ jobs:
       vale-style-check: false
   integration-tests:
     name: Integration Tests
-    uses: canonical/operator-workflows/.github/workflows/integration_test.yaml@main
+    uses: 
+      canonical/operator-workflows/.github/workflows/integration_test.yaml@main
     secrets: inherit
     with:
       channel: 1.33-strict/stable
@@ -31,15 +34,15 @@ jobs:
     name: Check Connectors
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5.0.0
-      - uses: actions/setup-python@v6.0.0
-        with:
-          python-version: '3.14'
-      - run: pip install tox
-      - run: tox -e generate-connectors
-      - run: git diff --exit-code
+    - uses: actions/checkout@v5.0.0
+    - uses: actions/setup-python@v6.0.0
+      with:
+        python-version: '3.14'
+    - run: pip install tox
+    - run: tox -e generate-connectors
+    - run: git diff --exit-code
   allure-report:
-    if: always() && !cancelled()
+    if: ${{ !cancelled() && github.event_name == 'schedule' }}
     needs:
-      - integration-tests
+    - integration-tests
     uses: canonical/operator-workflows/.github/workflows/allure_report.yaml@main
