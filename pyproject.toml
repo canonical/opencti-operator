@@ -130,7 +130,7 @@ lint.mccabe.max-complexity = 10
 lint.pydocstyle.convention = "google"
 
 [tool.codespell]
-skip = "build,lib,venv,icon.svg,.tox,.git,.mypy_cache,.ruff_cache,.coverage,htmlcov,uv.lock,grafana_dashboards"
+skip = "build,lib,venv,icon.svg,.tox,.git,.mypy_cache,.ruff_cache,.coverage,htmlcov,uv.lock,grafana_dashboards,*.graphql"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
