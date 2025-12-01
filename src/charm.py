@@ -30,31 +30,31 @@ import opencti
 logger = logging.getLogger(__name__)
 
 
-class MissingConfig(Exception):
+class MissingConfig(Exception):  # noqa: N818 - established exception name
     """Missing charm configuration."""
 
 
-class InvalidConfig(Exception):
+class InvalidConfig(Exception):  # noqa: N818 - established exception name
     """Invalid content in charm configurations."""
 
 
-class MissingIntegration(Exception):
+class MissingIntegration(Exception):  # noqa: N818 - established exception name
     """Missing charm integration."""
 
 
-class InvalidIntegration(Exception):
+class InvalidIntegration(Exception):  # noqa: N818 - established exception name
     """Invalid content in integrations."""
 
 
-class ContainerNotReady(Exception):
+class ContainerNotReady(Exception):  # noqa: N818 - established exception name
     """Container (pebble) not ready."""
 
 
-class IntegrationNotReady(Exception):
+class IntegrationNotReady(Exception):  # noqa: N818 - established exception name
     """Charm integration not ready."""
 
 
-class PlatformNotReady(Exception):
+class PlatformNotReady(Exception):  # noqa: N818 - established exception name
     """OpenCTI platform service not ready."""
 
 
@@ -621,7 +621,7 @@ class OpenCTICharm(ops.CharmBase):
             IntegrationNotReady: rabbitmq integration not ready.
         """
         integration = typing.cast(ops.Relation, self.model.get_relation("amqp"))
-        unit = sorted(list(integration.units), key=lambda u: int(u.name.split("/")[-1]))[0]
+        unit = sorted(integration.units, key=lambda u: int(u.name.split("/")[-1]))[0]
         data = integration.data[unit]
         hostname = data.get("hostname")
         username = self._rabbitmq.username

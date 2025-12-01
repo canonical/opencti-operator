@@ -42,9 +42,9 @@ class OpenctiClientMock:
         last_instance (OpenctiClientMock): pointer to most-recently created instance
     """
 
-    last_instance = None
+    last_instance: typing.ClassVar[typing.Any] = None
 
-    _users = [
+    _users: typing.ClassVar[list[dict[str, str]]] = [
         {
             "id": "88ec0c6a-13ce-5e39-b486-354fe4a7084f",
             "name": "admin",
@@ -53,7 +53,7 @@ class OpenctiClientMock:
             "api_token": "a614ebcb-d597-4011-a626-c5302959efa6",
         },
     ]
-    _groups = [
+    _groups: typing.ClassVar[list[dict[str, str]]] = [
         {"name": "Administrators", "id": "35c94569-bbdd-4535-9def-26b781359a5b"},
         {"name": "Connectors", "id": "f4fb5f8d-91f5-441e-8ef9-93c283476110"},
         {"name": "Default", "id": "1e257543-6bfb-46f2-a25f-5d50bb0819bd"},

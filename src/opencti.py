@@ -74,7 +74,7 @@ class OpenctiClient:
             typing.cast(graphql.GraphQLSchema, self._client.schema)
         )
 
-    @functools.lru_cache(maxsize=10)
+    @functools.lru_cache(maxsize=10)  # noqa: B019 - cache is intentional for performance
     def list_users(self, name_starts_with: str | None = None) -> list[OpenctiUser]:
         """List OpenCTI users.
 
@@ -180,7 +180,7 @@ class OpenctiClient:
             api_token=user["api_token"],
         )
 
-    @functools.lru_cache(maxsize=10)
+    @functools.lru_cache(maxsize=10)  # noqa: B019 - cache is intentional for performance
     def list_groups(self) -> list[OpenctiGroup]:
         """List OpenCTI groups.
 
