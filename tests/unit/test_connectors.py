@@ -4,6 +4,7 @@
 # Learn more about testing at: https://juju.is/docs/sdk/testing
 
 """Unit tests for connectors."""
+
 import importlib
 
 import ops.testing
@@ -139,8 +140,7 @@ _add_connector_test_params(
         "connector-log-level": "error",
         "connector-duration-period": "P2D",
         "cisa-catalog-url": (
-            "https://www.cisa.gov/sites/default/files/feeds/"
-            "known_exploited_vulnerabilities.json"
+            "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
         ),
         "cisa-create-infrastructures": False,
         "cisa-tlp": "TLP:CLEAR",
@@ -155,8 +155,7 @@ _add_connector_test_params(
         "CONNECTOR_DURATION_PERIOD": "P2D",
         "CONNECTOR_TYPE": "EXTERNAL_IMPORT",
         "CISA_CATALOG_URL": (
-            "https://www.cisa.gov/sites/default/files/feeds/"
-            "known_exploited_vulnerabilities.json"
+            "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
         ),
         "CISA_CREATE_INFRASTRUCTURES": "false",
         "CISA_TLP": "TLP:CLEAR",
