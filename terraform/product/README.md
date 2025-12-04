@@ -39,7 +39,7 @@ the bundle deployment onto any Kubernetes environment managed by [Juju][Juju].
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_opencti"></a> [opencti](#module\_opencti) | ../charm | n/a |
-| <a name="module_opensearch"></a> [opensearch](#module\_opensearch) | git::https://github.com/canonical/opensearch-operator//terraform/product/simple_deployment | 2/edge |
+| <a name="module_opensearch"></a> [opensearch](#module\_opensearch) | git::https://github.com/canonical/opensearch-operator//terraform/product/simple_deployment | rev298 |
 | <a name="module_rabbitmq_server"></a> [rabbitmq\_server](#module\_rabbitmq\_server) | ./modules/rabbitmq-server | n/a |
 | <a name="module_redis_k8s"></a> [redis\_k8s](#module\_redis\_k8s) | ./modules/redis-k8s | n/a |
 | <a name="module_s3_integrator"></a> [s3\_integrator](#module\_s3\_integrator) | ./modules/s3-integrator | n/a |
