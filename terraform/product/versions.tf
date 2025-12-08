@@ -5,8 +5,9 @@ terraform {
   required_providers {
     juju = {
       source                = "juju/juju"
-      version               = ">= 0.21.1"
+      version               = "~> 1.0"
       configuration_aliases = [juju.opencti_db]
     }
   }
+  required_version = "~> 1.6"
 }

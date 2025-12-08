@@ -2,8 +2,9 @@
 # See LICENSE file for licensing details.
 
 resource "juju_application" "rabbitmq_server" {
-  name  = var.app_name
-  model = var.model
+  name       = var.app_name
+  model_uuid = var.model_uuid
+  units      = var.units
 
   charm {
     name     = "rabbitmq-server"
@@ -14,7 +15,6 @@ resource "juju_application" "rabbitmq_server" {
 
   config      = var.config
   constraints = var.constraints
-  units       = var.units
 
   expose {}
 }

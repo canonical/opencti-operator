@@ -25,14 +25,15 @@ the bundle deployment onto any Kubernetes environment managed by [Juju][Juju].
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 0.21.1 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.6 |
+| <a name="requirement_juju"></a> [juju](#requirement\_juju) | ~> 1.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 0.21.1 |
-| <a name="provider_juju.opencti_db"></a> [juju.opencti\_db](#provider\_juju.opencti\_db) | >= 0.21.1 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | ~> 1.0 |
+| <a name="provider_juju.opencti_db"></a> [juju.opencti\_db](#provider\_juju.opencti\_db) | ~> 1.0 |
 
 ## Modules
 
@@ -58,16 +59,15 @@ the bundle deployment onto any Kubernetes environment managed by [Juju][Juju].
 | [juju_integration.s3](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/integration) | resource |
 | [juju_offer.opensearch](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
 | [juju_offer.rabbitmq_server](https://registry.terraform.io/providers/juju/juju/latest/docs/resources/offer) | resource |
-| [juju_model.opencti](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/model) | data source |
-| [juju_model.opencti_db](https://registry.terraform.io/providers/juju/juju/latest/docs/data-sources/model) | data source |
+
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_db_model"></a> [db\_model](#input\_db\_model) | Reference to the VM Juju model to deploy database charms to. | `string` | n/a | yes |
+| <a name="input_db_model_uuid"></a> [db\_model\_uuid](#input\_db\_model\_uuid) | ID of the VM Juju model to deploy database charms to. | `string` | n/a | yes |
 | <a name="input_db_model_user"></a> [db\_model\_user](#input\_db\_model\_user) | Juju user used for deploying database charms. | `string` | n/a | yes |
-| <a name="input_model"></a> [model](#input\_model) | Reference to the k8s Juju model to deploy application to. | `string` | n/a | yes |
+| <a name="input_model_uuid"></a> [model\_uuid](#input\_model\_uuid) | ID of the k8s Juju model to deploy application to. | `string` | n/a | yes |
 | <a name="input_model_user"></a> [model\_user](#input\_model\_user) | Juju user used for deploying the application. | `string` | n/a | yes |
 | <a name="input_opencti"></a> [opencti](#input\_opencti) | n/a | <pre>object({<br/>    app_name    = optional(string, "opencti")<br/>    channel     = optional(string, "latest/edge")<br/>    config      = optional(map(string), {})<br/>    constraints = optional(string, "arch=amd64")<br/>    revision    = optional(number)<br/>    base        = optional(string, "ubuntu@24.04")<br/>    units       = optional(number, 1)<br/>  })</pre> | n/a | yes |
 | <a name="input_opensearch"></a> [opensearch](#input\_opensearch) | n/a | <pre>object({<br/>    app_name    = optional(string, "opensearch")<br/>    channel     = optional(string, "2/stable")<br/>    config      = optional(map(string), {})<br/>    constraints = optional(string, "arch=amd64")<br/>    revision    = optional(number)<br/>    base        = optional(string, "ubuntu@22.04")<br/>    units       = optional(number, 3)<br/>  })</pre> | n/a | yes |

@@ -25,8 +25,8 @@ variable "constraints" {
   default     = "arch=amd64"
 }
 
-variable "model" {
-  description = "Reference to a `juju_model`."
+variable "model_uuid" {
+  description = "ID of the Juju model to deploy to."
   type        = string
   default     = ""
 }
