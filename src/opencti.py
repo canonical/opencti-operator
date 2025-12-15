@@ -61,6 +61,7 @@ class OpenctiClient:
             url: URL of the Opencti API.
             api_token: Opencti API token.
         """
+        url = url + "/" if len(url) > 0 and url[-1] != "/" else url
         transport = gql.transport.requests.RequestsHTTPTransport(
             url=urllib.parse.urljoin(url, "graphql"),
             headers={"Authorization": f"Bearer {api_token}"},
