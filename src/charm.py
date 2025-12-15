@@ -89,6 +89,7 @@ class OpenCTICharm(ops.CharmBase):
         super().__init__(*args)
         self._base_url = _OPENCTI_BASE_URL
         self._container = self.unit.get_container("opencti")
+        self._container.pebble.timeout = 60
         self._opensearch = self._register_opensearch()
         self._redis = self._register_redis()
         self._rabbitmq = self._register_rabbitmq()
