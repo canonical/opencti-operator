@@ -96,7 +96,7 @@ def test_pebble_plan():
                 "command": "python3 worker.py",
                 "environment": {
                     "OPENCTI_TOKEN": "opencti-admin-token",
-                    "OPENCTI_URL": "http://localhost:8080/opencti/",
+                    "OPENCTI_URL": "http://localhost:8080/opencti",
                     "WORKER_LOG_LEVEL": "info",
                 },
                 "override": "replace",
@@ -108,7 +108,7 @@ def test_pebble_plan():
                 "command": "python3 worker.py",
                 "environment": {
                     "OPENCTI_TOKEN": "opencti-admin-token",
-                    "OPENCTI_URL": "http://localhost:8080/opencti/",
+                    "OPENCTI_URL": "http://localhost:8080/opencti",
                     "WORKER_LOG_LEVEL": "info",
                 },
                 "override": "replace",
@@ -120,7 +120,7 @@ def test_pebble_plan():
                 "command": "python3 worker.py",
                 "environment": {
                     "OPENCTI_TOKEN": "opencti-admin-token",
-                    "OPENCTI_URL": "http://localhost:8080/opencti/",
+                    "OPENCTI_URL": "http://localhost:8080/opencti",
                     "WORKER_LOG_LEVEL": "info",
                 },
                 "override": "replace",
@@ -407,5 +407,5 @@ def test_client_params(patch_opencti_client):
     ctx = ops.testing.Context(OpenCTICharm)
     state_in = StateBuilder().add_required_integrations().add_required_configs().build()
     ctx.run(ctx.on.config_changed(), state_in)
-    expected_kwargs = {"url": "http://localhost:8080/opencti/", "api_token": "opencti-admin-token"}
+    expected_kwargs = {"url": "http://localhost:8080/opencti", "api_token": "opencti-admin-token"}
     assert patch_opencti_client.last_instance.init_kwargs == expected_kwargs
