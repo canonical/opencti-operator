@@ -253,8 +253,8 @@ class OpenCTICharm(ops.CharmBase):
             app_path = urllib.parse.urlparse(self._ingress.url).path
             if len(app_path) > 0 and app_path[0] == "/":
                 app_path = app_path[1:]
-            if len(app_path) > 0 and app_path[-1] != "/":
-                app_path += "/"  # trailing '/' is required
+            if len(app_path) > 0 and app_path[-1] == "/":
+                app_path = app_path[:-1]  # trailing '/' should not be included
             self._base_url = _OPENCTI_BASE_URL + app_path
 
         try:
@@ -275,7 +275,7 @@ class OpenCTICharm(ops.CharmBase):
         self._init_peer_relation()
         self._check_preconditions()
         health_check_token = self._get_peer_secret(_PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD)
-        health_check_url = f"{self._base_url}health?health_access_key={health_check_token}"
+        health_check_url = f"{self._base_url}/health?health_access_key={health_check_token}"
         self._install_callback_script(health_check_url)
         self._install_opensearch_cert()
         self._container.add_layer(
