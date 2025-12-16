@@ -2,8 +2,9 @@
 # See LICENSE file for licensing details.
 
 resource "juju_application" "opencti" {
-  name  = var.app_name
-  model = var.model
+  name       = var.app_name
+  model_uuid = var.model_uuid
+  units      = var.units
 
   charm {
     name     = "opencti"
@@ -14,5 +15,4 @@ resource "juju_application" "opencti" {
 
   config      = var.config
   constraints = var.constraints
-  units       = var.units
 }

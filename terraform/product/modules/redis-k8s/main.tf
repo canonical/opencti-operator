@@ -2,8 +2,9 @@
 # See LICENSE file for licensing details.
 
 resource "juju_application" "redis_k8s" {
-  name  = var.app_name
-  model = var.model
+  name       = var.app_name
+  model_uuid = var.model_uuid
+  units      = var.units
 
   charm {
     name     = "redis-k8s"
@@ -14,6 +15,5 @@ resource "juju_application" "redis_k8s" {
 
   config             = var.config
   constraints        = var.constraints
-  units              = var.units
   storage_directives = var.storage
 }

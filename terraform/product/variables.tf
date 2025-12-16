@@ -1,13 +1,13 @@
 # Copyright 2025 Canonical Ltd.
 # See LICENSE file for licensing details.
 
-variable "model" {
-  description = "Reference to the k8s Juju model to deploy application to."
+variable "model_uuid" {
+  description = "ID of the k8s Juju model to deploy application to."
   type        = string
 }
 
-variable "db_model" {
-  description = "Reference to the VM Juju model to deploy database charms to."
+variable "db_model_uuid" {
+  description = "ID of the VM Juju model to deploy database charms to."
   type        = string
 }
 
