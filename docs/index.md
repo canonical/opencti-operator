@@ -22,7 +22,7 @@ This charm will make operating OpenCTI simple and straightforward for DevOps or 
 | | |
 |--|--|
 |  |  [How-to guides](./how-to) </br> Step-by-step guides covering key operations and common tasks |
-| [Reference](./reference) </br> Technical information - specifications, APIs, architecture | [Explanation](./explanation) </br> Concepts - discussion and clarification of key topics  |
+| [Reference](./reference) </br> Technical information - specifications, APIs, architecture |  |
 
 ## Contributing to this documentation
 
