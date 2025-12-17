@@ -24,7 +24,7 @@ module "opencti" {
 }
 
 module "opensearch" {
-  source = "git::https://github.com/canonical/opensearch-operator//terraform/product/simple_deployment?ref=rev298"
+  source = "git::https://github.com/canonical/opensearch-operator//terraform/product/simple_deployment?ref=rev315&depth=1"
   opensearch = {
     app_name    = var.opensearch.app_name
     channel     = var.opensearch.channel
