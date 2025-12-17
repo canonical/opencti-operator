@@ -51,6 +51,6 @@ Thinking about using the <charm-name> Operator for your next project?
 
 # Contents
 
-1. [How-to](./how-to)
-1. [Reference](./reference)
-1. [Explanation](./explanation)
+1. [How-to](how-to)
+1. [Reference](reference)
+  1. [Charm architecture](reference/charm-architecture.md) 
