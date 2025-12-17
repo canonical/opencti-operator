@@ -8,13 +8,10 @@ Each revision is versioned by the date of the revision.
 
 ## 2025-12-17
 
-- Moved charm-architecture.md from Explanation to Reference category.
-
-## 2025-12-17
-
 ### Changed
 
 - Upgrade TF OpenSearch product to rev315
+- Moved charm-architecture.md from Explanation to Reference category.
 
 ## 2025-12-01
 
