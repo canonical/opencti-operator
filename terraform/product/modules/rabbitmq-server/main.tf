@@ -3,7 +3,7 @@
 
 resource "juju_application" "rabbitmq_server" {
   name       = var.app_name
-  model_uuid = var.model
+  model_uuid = var.model_uuid
 
   charm {
     name     = "rabbitmq-server"

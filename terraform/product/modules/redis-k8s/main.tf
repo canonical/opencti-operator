@@ -3,7 +3,7 @@
 
 resource "juju_application" "redis_k8s" {
   name       = var.app_name
-  model_uuid = var.model
+  model_uuid = var.model_uuid
 
   charm {
     name     = "redis-k8s"

@@ -3,7 +3,7 @@
 
 resource "juju_application" "s3_integrator" {
   name       = var.app_name
-  model_uuid = var.model
+  model_uuid = var.model_uuid
 
   charm {
     name     = "s3-integrator"
