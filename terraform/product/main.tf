@@ -30,7 +30,7 @@ module "opensearch" {
     channel     = var.opensearch.channel
     config      = var.opensearch.config
     constraints = var.opensearch.constraints
-    model       = data.juju_model.opencti_db.uuid
+    model_uuid  = data.juju_model.opencti_db.uuid
     revision    = var.opensearch.revision
     base        = var.opensearch.base
     units       = var.opensearch.units
