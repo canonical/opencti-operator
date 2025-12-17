@@ -2,11 +2,11 @@
 # See LICENSE file for licensing details.
 
 data "juju_model" "opencti" {
-  name = var.model
+  uuid = var.model_uuid
 }
 
 data "juju_model" "opencti_db" {
-  name = var.db_model
+  uuid = var.db_model_uuid
 
   provider = juju.opencti_db
 }
@@ -17,20 +17,20 @@ module "opencti" {
   channel     = var.opencti.channel
   config      = var.opencti.config
   constraints = var.opencti.constraints
-  model       = data.juju_model.opencti.name
+  model_uuid  = data.juju_model.opencti.uuid
   revision    = var.opencti.revision
   base        = var.opencti.base
   units       = var.opencti.units
 }
 
 module "opensearch" {
-  source = "git::https://github.com/canonical/opensearch-operator//terraform/product/simple_deployment?ref=rev298"
+  source = "git::https://github.com/canonical/opensearch-operator//terraform/product/simple_deployment?ref=rev315&depth=1"
   opensearch = {
     app_name    = var.opensearch.app_name
     channel     = var.opensearch.channel
     config      = var.opensearch.config
     constraints = var.opensearch.constraints
-    model       = data.juju_model.opencti_db.name
+    model_uuid  = data.juju_model.opencti_db.uuid
     revision    = var.opensearch.revision
     base        = var.opensearch.base
     units       = var.opensearch.units
@@ -53,7 +53,7 @@ module "rabbitmq_server" {
   channel     = var.rabbitmq_server.channel
   config      = var.rabbitmq_server.config
   constraints = var.rabbitmq_server.constraints
-  model       = data.juju_model.opencti_db.name
+  model_uuid  = data.juju_model.opencti_db.uuid
   revision    = var.rabbitmq_server.revision
   base        = var.rabbitmq_server.base
   units       = var.rabbitmq_server.units
@@ -69,7 +69,7 @@ module "redis_k8s" {
   channel     = var.redis_k8s.channel
   config      = var.redis_k8s.config
   constraints = var.redis_k8s.constraints
-  model       = data.juju_model.opencti.name
+  model_uuid  = data.juju_model.opencti.uuid
   revision    = var.redis_k8s.revision
   base        = var.redis_k8s.base
   units       = var.redis_k8s.units
@@ -82,7 +82,7 @@ module "s3_integrator" {
   channel     = var.s3_integrator.channel
   config      = var.s3_integrator.config
   constraints = var.s3_integrator.constraints
-  model       = data.juju_model.opencti.name
+  model_uuid  = data.juju_model.opencti.uuid
   revision    = var.s3_integrator.revision
   base        = var.s3_integrator.base
   units       = var.s3_integrator.units
@@ -106,7 +106,7 @@ resource "juju_access_offer" "rabbitmq_server" {
 }
 
 resource "juju_integration" "amqp" {
-  model = data.juju_model.opencti.name
+  model_uuid = data.juju_model.opencti.uuid
 
   application {
     name     = module.opencti.app_name
@@ -119,7 +119,7 @@ resource "juju_integration" "amqp" {
 }
 
 resource "juju_integration" "opensearch_client" {
-  model = data.juju_model.opencti.name
+  model_uuid = data.juju_model.opencti.uuid
 
   application {
     name     = module.opencti.app_name
@@ -132,7 +132,7 @@ resource "juju_integration" "opensearch_client" {
 }
 
 resource "juju_integration" "redis" {
-  model = data.juju_model.opencti.name
+  model_uuid = data.juju_model.opencti.uuid
 
   application {
     name     = module.opencti.app_name
@@ -146,7 +146,7 @@ resource "juju_integration" "redis" {
 }
 
 resource "juju_integration" "s3" {
-  model = data.juju_model.opencti.name
+  model_uuid = data.juju_model.opencti.uuid
 
   application {
     name     = module.opencti.app_name
@@ -160,7 +160,7 @@ resource "juju_integration" "s3" {
 }
 
 resource "juju_offer" "opensearch" {
-  model            = data.juju_model.opencti_db.name
+  model_uuid       = data.juju_model.opencti_db.uuid
   application_name = module.opensearch.app_names.opensearch
   endpoints        = [module.opensearch.provides.opensearch_client]
 
@@ -168,7 +168,7 @@ resource "juju_offer" "opensearch" {
 }
 
 resource "juju_offer" "rabbitmq_server" {
-  model            = data.juju_model.opencti_db.name
+  model_uuid       = data.juju_model.opencti_db.uuid
   application_name = module.rabbitmq_server.app_name
   endpoints        = [module.rabbitmq_server.provides.amqp]
 
@@ -176,8 +176,8 @@ resource "juju_offer" "rabbitmq_server" {
 }
 
 resource "juju_application" "sysconfig" {
-  name  = var.sysconfig.app_name
-  model = data.juju_model.opencti_db.name
+  name       = var.sysconfig.app_name
+  model_uuid = data.juju_model.opencti_db.uuid
 
   charm {
     name     = "sysconfig"
@@ -193,7 +193,7 @@ resource "juju_application" "sysconfig" {
 }
 
 resource "juju_integration" "opensearch_sysconfig" {
-  model = data.juju_model.opencti_db.name
+  model_uuid = data.juju_model.opencti_db.uuid
 
   application {
     name     = module.opensearch.app_names.opensearch

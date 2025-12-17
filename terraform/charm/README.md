@@ -23,13 +23,13 @@ like shown below:
 
 ```text
 data "juju_model" "my_model" {
-  name = var.model
+  uuid = var.model
 }
 
 module "amf" {
   source = "git::https://github.com/canonical/opencti-operator//terraform"
   
-  model = juju_model.my_model.name
+  model_uuid = juju_model.my_model.uuid
   # (Customize configuration variables here if needed)
 }
 ```
@@ -38,7 +38,7 @@ Create integrations, for instance:
 
 ```text
 resource "juju_integration" "amf-nrf" {
-  model = juju_model.my_model.name
+  model_uuid = juju_model.my_model.uuid
   application {
     name     = module.opencti.app_name
     endpoint = module.opencti.requires.logging
