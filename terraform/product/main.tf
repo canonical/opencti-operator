@@ -39,6 +39,7 @@ module "opensearch" {
   self-signed-certificates = var.self_signed_certificates
   backups-integrator       = var.s3_integrator_opensearch
   opensearch-dashboards = {
+    base  = var.opensearch.base
     units = 0
   }
 
