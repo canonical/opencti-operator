@@ -160,7 +160,7 @@ resource "juju_integration" "s3" {
 }
 
 resource "juju_offer" "opensearch" {
-  model_uuid       = data.juju_model.opencti.uuidjuju_model.opencti_db.uuid
+  model_uuid       = data.juju_model.opencti_db.uuid
   application_name = module.opensearch.app_names.opensearch
   endpoints        = [module.opensearch.provides.opensearch_client]
 
@@ -168,7 +168,7 @@ resource "juju_offer" "opensearch" {
 }
 
 resource "juju_offer" "rabbitmq_server" {
-  model_uuid       = data.juju_model.opencti.uuidjuju_model.opencti_db.uuid
+  model_uuid       = data.juju_model.opencti_db.uuid
   application_name = module.rabbitmq_server.app_name
   endpoints        = [module.rabbitmq_server.provides.amqp]
 
@@ -177,7 +177,7 @@ resource "juju_offer" "rabbitmq_server" {
 
 resource "juju_application" "sysconfig" {
   name       = var.sysconfig.app_name
-  model_uuid = data.juju_model.opencti.uuidjuju_model.opencti_db.uuid
+  model_uuid = data.juju_model.opencti_db.uuid
 
   charm {
     name     = "sysconfig"
@@ -193,7 +193,7 @@ resource "juju_application" "sysconfig" {
 }
 
 resource "juju_integration" "opensearch_sysconfig" {
-  model_uuid = data.juju_model.opencti.uuidjuju_model.opencti_db.uuid
+  model_uuid = data.juju_model.opencti_db.uuid
 
   application {
     name     = module.opensearch.app_names.opensearch
