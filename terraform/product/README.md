@@ -25,21 +25,22 @@ the bundle deployment onto any Kubernetes environment managed by [Juju][Juju].
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 0.21.1 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.6.6 |
+| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 1.1.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 0.21.1 |
-| <a name="provider_juju.opencti_db"></a> [juju.opencti\_db](#provider\_juju.opencti\_db) | >= 0.21.1 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 1.1.1 |
+| <a name="provider_juju.opencti_db"></a> [juju.opencti\_db](#provider\_juju.opencti\_db) | >= 1.1.1 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_opencti"></a> [opencti](#module\_opencti) | ../charm | n/a |
-| <a name="module_opensearch"></a> [opensearch](#module\_opensearch) | git::https://github.com/canonical/opensearch-operator//terraform/product/simple_deployment | 2/edge |
+| <a name="module_opensearch"></a> [opensearch](#module\_opensearch) | git::https://github.com/canonical/opensearch-operator//terraform/product/simple_deployment | rev315&depth=1 |
 | <a name="module_rabbitmq_server"></a> [rabbitmq\_server](#module\_rabbitmq\_server) | ./modules/rabbitmq-server | n/a |
 | <a name="module_redis_k8s"></a> [redis\_k8s](#module\_redis\_k8s) | ./modules/redis-k8s | n/a |
 | <a name="module_s3_integrator"></a> [s3\_integrator](#module\_s3\_integrator) | ./modules/s3-integrator | n/a |
@@ -65,10 +66,10 @@ the bundle deployment onto any Kubernetes environment managed by [Juju][Juju].
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_db_model"></a> [db\_model](#input\_db\_model) | Reference to the VM Juju model to deploy database charms to. | `string` | n/a | yes |
 | <a name="input_db_model_user"></a> [db\_model\_user](#input\_db\_model\_user) | Juju user used for deploying database charms. | `string` | n/a | yes |
-| <a name="input_model"></a> [model](#input\_model) | Reference to the k8s Juju model to deploy application to. | `string` | n/a | yes |
+| <a name="input_db_model_uuid"></a> [db\_model\_uuid](#input\_db\_model\_uuid) | Reference to the VM Juju model to deploy database charms to. | `string` | n/a | yes |
 | <a name="input_model_user"></a> [model\_user](#input\_model\_user) | Juju user used for deploying the application. | `string` | n/a | yes |
+| <a name="input_model_uuid"></a> [model\_uuid](#input\_model\_uuid) | Reference to the k8s Juju model to deploy application to. | `string` | n/a | yes |
 | <a name="input_opencti"></a> [opencti](#input\_opencti) | n/a | <pre>object({<br/>    app_name    = optional(string, "opencti")<br/>    channel     = optional(string, "latest/edge")<br/>    config      = optional(map(string), {})<br/>    constraints = optional(string, "arch=amd64")<br/>    revision    = optional(number)<br/>    base        = optional(string, "ubuntu@24.04")<br/>    units       = optional(number, 1)<br/>  })</pre> | n/a | yes |
 | <a name="input_opensearch"></a> [opensearch](#input\_opensearch) | n/a | <pre>object({<br/>    app_name    = optional(string, "opensearch")<br/>    channel     = optional(string, "2/stable")<br/>    config      = optional(map(string), {})<br/>    constraints = optional(string, "arch=amd64")<br/>    revision    = optional(number)<br/>    base        = optional(string, "ubuntu@22.04")<br/>    units       = optional(number, 3)<br/>  })</pre> | n/a | yes |
 | <a name="input_rabbitmq_server"></a> [rabbitmq\_server](#input\_rabbitmq\_server) | n/a | <pre>object({<br/>    app_name    = optional(string, "rabbitmq-server")<br/>    channel     = optional(string, "3.9/stable")<br/>    config      = optional(map(string), {})<br/>    constraints = optional(string, "arch=amd64")<br/>    revision    = optional(number)<br/>    base        = optional(string, "ubuntu@22.04")<br/>    units       = optional(number, 1)<br/>  })</pre> | n/a | yes |
