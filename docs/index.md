@@ -22,7 +22,7 @@ This charm will make operating OpenCTI simple and straightforward for DevOps or 
 | | |
 |--|--|
 |  |  [How-to guides](./how-to) </br> Step-by-step guides covering key operations and common tasks |
-| [Reference](./reference) </br> Technical information - specifications, APIs, architecture | [Explanation](./explanation) </br> Concepts - discussion and clarification of key topics  |
+| [Reference](./reference) </br> Technical information - specifications, APIs, architecture |  |
 
 ## Contributing to this documentation
 
@@ -51,6 +51,6 @@ Thinking about using the <charm-name> Operator for your next project?
 
 # Contents
 
-1. [How-to](./how-to)
-1. [Reference](./reference)
-1. [Explanation](./explanation)
+1. [How-to](how-to)
+1. [Reference](reference)
+  1. [Charm architecture](reference/charm-architecture.md) 
