@@ -1,0 +1,47 @@
+# Copyright 2025 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: opencti-woap-connector
+base: ubuntu@24.04
+version: &version '6.7.12'  # looks like opencti version
+summary: OpenCTI WOAP Connector
+description: >-
+  WOAP - is a customly developed OpenCTI connector that pulls alerts from
+  Wazuh Opensearch and ingests them into OpenCTI platform in a form of Incidents.
+platforms:
+  amd64:
+
+parts:
+  woap-connector:
+    source: https://github.com/canonical/woap-connector.git # connectors source code
+    source-type: git
+    source-tag: *version
+    source-depth: 1
+    plugin: nil 
+    build-packages:
+      - python3-pip
+    stage-packages:
+      - python3
+      - libmagic1
+      - libffi8
+      - libxslt1.1
+      - libxml2
+      - python-is-python3
+    override-build: | # need to change!!!
+      craftctl default
+      mkdir -p $CRAFT_PART_INSTALL/opt
+      cd woap-connector 
+      cp -rp src $CRAFT_PART_INSTALL/opt/WOAP-connector
+      echo 'cd /opt/WOAP-connector; python3 main.py' > entrypoint.sh
+      cat entrypoint.sh | grep WOAP-connector
+      mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
+      pip install \
+        --target $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages \
+        -r $(find -name requirements.txt)
+      cp entrypoint.sh $CRAFT_PART_INSTALL/
+  ca-certificates:
+    source: .
+    plugin: nil
+    stage-packages:
+      - openssl_data
+      - ca-certificates_data
