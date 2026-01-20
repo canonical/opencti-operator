@@ -67,9 +67,14 @@ config:
 
 
 requires:
+  # To send logs to Loki
   logging:
     interface: loki_push_api
     optional: true
+  # To query/write to Wazuh Indexer (OpenSearch)
+  opensearch-client:
+    interface: opensearch_client
+    limit: 1
 
 provides:
   opencti-connector:
