@@ -25,11 +25,11 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
         
         # 1. Initializing OpenSearch integration
         # "opensearch" must match the name in your charmcraft.yaml requires section
-        # "wazuh-alerts-*" is the index the connector will use
+        # "woap-connector" is the index the connector will use
         self.opensearch = OpenSearchRequires(
             self, 
             relation_name=RELATION_NAME, 
-            index="wazuh-alerts-*"
+            index="woap-connector"
         )
 
         # 2. Observe the event when OpenSearch provides the credentials/index
@@ -47,7 +47,7 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
         """Triggered when the OpenSearch relation is joined and the index is ready."""
         # By calling 'replan', the charm calls _gen_env, notices the new 
         # credentials, updates the container, and restarts the service.
-        self.container.replan()
+        self._reconcile_connector()
         self.unit.status = ops.ActiveStatus("OpenSearch integrated and ready")
         # Log that we have received data
         logger.info("OpenSearch credentials received. Updating workload configuration.")
@@ -55,7 +55,7 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
     def _on_relation_broken(self, event):
         self.unit.status = ops.BlockedStatus("Missing OpenSearch relation")
         # Calling replan will stop the service since gen_env won't have DB info
-        self.container.replan()
+        self._reconcile_connector()
         
 
     def _gen_env(self) -> dict[str, str]:
@@ -82,7 +82,7 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
                 # The keys inside the secret are defined by the OpenSearch charm
                 env["OPENSEARCH_USER"] = content.get("username")
                 env["OPENSEARCH_PASSWORD"] = content.get("password")
-                
+
             logger.info("OpenSearch credentials added to environment map.")
 
         # Check log level value, logging and setting to default if there is a misconfiguration
