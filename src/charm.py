@@ -383,8 +383,7 @@ class OpenCTICharm(ops.CharmBase):
         Args:
             health_check_url: opencti health check endpoint.
         """
-        script = textwrap.dedent(
-            f"""\
+        script = textwrap.dedent(f"""\
             while :; do
                 if curl -m 3 -sfo /dev/null "{health_check_url}"; then
                     pebble notify canonical.com/opencti/platform-healthy
@@ -394,8 +393,7 @@ class OpenCTICharm(ops.CharmBase):
                     sleep 5
                 fi
             done
-            """
-        )
+            """)
         self._container.make_dir(_CHARM_CALLBACK_SCRIPT_PATH.parent, make_parents=True)
         self._container.push(_CHARM_CALLBACK_SCRIPT_PATH, script, encoding="utf-8")
 
