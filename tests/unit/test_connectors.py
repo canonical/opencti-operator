@@ -4,6 +4,7 @@
 # Learn more about testing at: https://juju.is/docs/sdk/testing
 
 """Unit tests for connectors."""
+
 import importlib
 
 import ops.testing
