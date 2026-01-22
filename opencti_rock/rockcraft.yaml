@@ -96,4 +96,11 @@ parts:
         --target $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages \
         -r $CRAFT_PART_BUILD/opencti-worker/src/requirements.txt \
         -r $CRAFT_PART_BUILD/opencti-platform/opencti-graphql/src/python/requirements.txt \
-        https://github.com/OpenCTI-Platform/client-python/archive/$OPENCTI_VERSION.tar.gz 
+        https://github.com/OpenCTI-Platform/client-python/archive/$OPENCTI_VERSION.tar.gz
+
+  ca-certificates:
+    source: .
+    plugin: nil
+    stage-packages:
+      - openssl_data
+      - ca-certificates_data
