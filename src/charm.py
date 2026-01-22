@@ -106,6 +106,7 @@ class OpenCTICharm(ops.CharmBase):
                 }
             ],
         )
+        self._peer_secret: dict[str, str] = {}
 
         self.framework.observe(self.on.config_changed, self._reconcile)
         self.framework.observe(self.on.upgrade_charm, self._reconcile)
@@ -506,13 +507,16 @@ class OpenCTICharm(ops.CharmBase):
         Raises:
             IntegrationNotReady: peer relation not ready.
         """
+        if self._peer_secret:
+            return self._peer_secret[key]
         peer_relation = self.model.get_relation(relation_name=_PEER_INTEGRATION_NAME)
         if peer_relation is None or not (
             secret_id := peer_relation.data[self.app].get(_PEER_SECRET_FIELD)
         ):
             raise IntegrationNotReady("waiting for peer integration")
         secret = self.model.get_secret(id=secret_id)
-        return secret.get_content(refresh=True)[key]
+        self._peer_secret = secret.get_content(refresh=True)
+        return self._peer_secret[key]
 
     def _gen_opensearch_env(self) -> dict[str, str]:
         """Generate the OpenSearch-related environment variables for the OpenCTI platform.

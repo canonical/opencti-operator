@@ -10,7 +10,8 @@ Each revision is versioned by the date of the revision.
 
 ### Changed
 
-- Install ca-certificates in the OpenCTI rock
+- Install ca-certificates in the OpenCTI rock.
+- Cache peer secret content to improve performance.
 
 ## 2025-12-17
 
