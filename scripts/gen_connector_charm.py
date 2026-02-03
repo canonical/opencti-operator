@@ -332,7 +332,7 @@ def extract_crowdstrike_configs(doc_url: str) -> dict:
         description = row["description"]
         if not is_mandatory:
             description = "(optional) " + description
-        config_type = "int" if ("example" in row and row["example"].isdigit() or "default" in row and row["default"].isdigit()) else "string"
+        config_type = "int" if (row.get("example", "").isdigit() or row.get("default", "")].isdigit()) else "string"
         result[constant_to_kebab(name)] = {
             "description": description,
             "type": config_type,
