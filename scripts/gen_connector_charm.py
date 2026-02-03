@@ -321,7 +321,7 @@ def extract_crowdstrike_configs(doc_url: str) -> dict:
     rows = extract_tables(response.text)
     result = {}
     for row in rows:
-        name = row["docker environment variable"] if "docker environment variable" in row else None
+        name = row.get("docker environment variable")
         if name is None:
             continue
         if name in CHARM_MANAGED_ENV:
