@@ -89,11 +89,13 @@ def extract_template_configs(doc_url: str) -> dict:
     rows = extract_tables(response.text)
     result = {}
     for row in rows:
-        name = row["docker environment variable"]
+        name = row["docker environment variable"] if "docker environment variable" in row else None
+        if name is None:
+            continue
         if name in CHARM_MANAGED_ENV:
             continue
         is_mandatory = row["mandatory"].lower()
-        assert is_mandatory in ("yes", "no")
+        assert is_mandatory in ("yes", "no", "cond.")
         is_mandatory = is_mandatory == "yes"
         description = row["description"]
         if not is_mandatory:
@@ -319,7 +321,9 @@ def extract_crowdstrike_configs(doc_url: str) -> dict:
     rows = extract_tables(response.text)
     result = {}
     for row in rows:
-        name = row["docker environment variable"]
+        name = row["docker environment variable"] if "docker environment variable" in row else None
+        if name is None:
+            continue
         if name in CHARM_MANAGED_ENV:
             continue
         is_mandatory = row["mandatory"].lower()
@@ -328,7 +332,7 @@ def extract_crowdstrike_configs(doc_url: str) -> dict:
         description = row["description"]
         if not is_mandatory:
             description = "(optional) " + description
-        config_type = "int" if (row["example"].isdigit() or row["default"].isdigit()) else "string"
+        config_type = "int" if ("example" in row and row["example"].isdigit() or "default" in row and row["default"].isdigit()) else "string"
         result[constant_to_kebab(name)] = {
             "description": description,
             "type": config_type,
@@ -694,7 +698,8 @@ def gen_misp_feed_connector(location: pathlib.Path, version: str) -> None:
         "https://raw.githubusercontent.com/OpenCTI-Platform/connectors"
         f"/refs/tags/{version}/external-import/misp-feed/README.md"
     )
-    del config["connector-type"]
+    if "connector-type" in config:
+        del config["connector-type"]
     config["misp-feed-create-indicators"]["type"] = "boolean"
     config["misp-feed-create-observables"]["type"] = "boolean"
     config["misp-feed-import-to-ids-no-score"]["type"] = "boolean"
