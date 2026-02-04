@@ -34,6 +34,7 @@ parts:
     override-build: |
       craftctl default
       cd opencti-platform/opencti-graphql/
+      yarn policies set-version 4.12.0
       yarn install --frozen-lockfile
       yarn build:prod
       yarn cache clean --all
