@@ -258,7 +258,7 @@ def generate_abuseipdb_ipblacklist_connector(location: pathlib.Path, version: st
                 "type": "int",
             },
         },
-        install_location="abuseipdb-ipblacklist",
+        generate_entrypoint="echo 'cd /opt/opencti-connector-abuseipdb-ipblacklist; python3 main.py' > entrypoint.sh",
     )
 
 
