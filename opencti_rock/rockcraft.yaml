@@ -25,16 +25,15 @@ parts:
       - postfix
       - postfix-pcre
     build-snaps:
-      - node/20/stable
+      - node/22/stable
       - rustup
     stage-snaps:
-      - node/20/stable
+      - node/22/stable
     stage-packages:
       - curl
     override-build: |
       craftctl default
       cd opencti-platform/opencti-graphql/
-      yarn policies set-version 4.12.0
       yarn install --frozen-lockfile
       yarn build:prod
       yarn cache clean --all
@@ -53,12 +52,11 @@ parts:
       - postfix
       - postfix-pcre
     build-snaps:
-      - node/20/stable
+      - node/22/stable
       - rustup
     override-build: |
       craftctl default
       cd opencti-platform/opencti-front
-      yarn policies set-version 4.12.0
       yarn install
       yarn build:standalone
       mkdir -p $CRAFT_PART_INSTALL/opt/opencti
