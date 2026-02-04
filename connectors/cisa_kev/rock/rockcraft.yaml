@@ -32,7 +32,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd external-import/cisa-known-exploited-vulnerabilities
       cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-cisa-known-exploited-vulnerabilities
-      
+      echo 'cd /opt/opencti-connector-cisa_kev; python3 main.py' > entrypoint.sh
       cat entrypoint.sh | grep opencti-connector-cisa-known-exploited-vulnerabilities
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \

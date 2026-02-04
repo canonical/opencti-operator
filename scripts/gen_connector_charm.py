@@ -311,6 +311,7 @@ def generate_cisa_known_exploited_vulnerabilities_connector(
         display_name_short="CISA KEV",
         output_dir=location,
         config=config,
+        generate_entrypoint="echo 'cd /opt/opencti-connector-cisa_kev; python3 main.py' > entrypoint.sh",
     )
 
 
@@ -631,6 +632,7 @@ def gen_ipinfo_connector(location: pathlib.Path, version: str) -> None:
                 "description": "Set false if you want ASN name to be just the number e.g. AS8075",
             },
         },
+        generate_entrypoint="echo 'cd /opt/opencti-connector-ipinfo; python3 main.py' > entrypoint.sh",
     )
 
 
