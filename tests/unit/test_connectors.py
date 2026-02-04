@@ -87,7 +87,7 @@ _add_connector_test_params(
         "alienvault-enable-relationships": True,
         "alienvault-enable-attack-patterns-indicates": False,
         "alienvault-interval-sec": 1800,
-        "alienvault-default-x-opencti-score": "50",
+        "alienvault-default-x-opencti-score": 50,
         "alienvault-x-opencti-score-ip": "60",
         "alienvault-x-opencti-score-domain": "70",
         "alienvault-x-opencti-score-hostname": "75",
@@ -150,7 +150,6 @@ _add_connector_test_params(
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
         "CONNECTOR_NAME": "opencti-cisa-kev-connector",
         "CONNECTOR_SCOPE": "cisa",
-        "CONNECTOR_RUN_AND_TERMINATE": "false",
         "CONNECTOR_LOG_LEVEL": "error",
         "CONNECTOR_DURATION_PERIOD": "P2D",
         "CONNECTOR_TYPE": "EXTERNAL_IMPORT",
@@ -656,7 +655,6 @@ _add_connector_test_params(
         "connector-scope": "url,ipv4-addr,ipv6-addr",
         "connector-auto": False,
         "connector-log-level": "error",
-        "urlscan-enrichment-api-key": "ChangeMe",
     },
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
@@ -666,7 +664,6 @@ _add_connector_test_params(
         "CONNECTOR_AUTO": "false",
         "CONNECTOR_LOG_LEVEL": "error",
         "CONNECTOR_TYPE": "INTERNAL_ENRICHMENT",
-        "URLSCAN_ENRICHMENT_API_KEY": "ChangeMe",
     },
 )
 
