@@ -136,7 +136,6 @@ _add_connector_test_params(
     connector_name="cisa-kev",
     charm_config={
         "connector-scope": "cisa",
-        "connector-run-and-terminate": False,
         "connector-log-level": "error",
         "connector-duration-period": "P2D",
         "cisa-catalog-url": (
@@ -451,7 +450,7 @@ _add_connector_test_params(
         "misp-feed-create-observables": True,
         "misp-feed-create-object-observables": True,
         "misp-feed-create-tags-as-labels": True,
-        "misp-feed-guess-threat-from-tags": False,
+        "misp-feed-guess-threats-from-tags": False,
         "misp-feed-author-from-tags": False,
         "misp-feed-import-to-ids-no-score": True,
         "misp-feed-import-unsupported-observables-as-text": False,
@@ -477,7 +476,7 @@ _add_connector_test_params(
         "MISP_FEED_CREATE_OBSERVABLES": "true",
         "MISP_FEED_CREATE_OBJECT_OBSERVABLES": "true",
         "MISP_FEED_CREATE_TAGS_AS_LABELS": "true",
-        "MISP_FEED_GUESS_THREAT_FROM_TAGS": "false",
+        "MISP_FEED_GUESS_THREATS_FROM_TAGS": "false",
         "MISP_FEED_AUTHOR_FROM_TAGS": "false",
         "MISP_FEED_IMPORT_TO_IDS_NO_SCORE": "true",
         "MISP_FEED_IMPORT_UNSUPPORTED_OBSERVABLES_AS_TEXT": "false",
