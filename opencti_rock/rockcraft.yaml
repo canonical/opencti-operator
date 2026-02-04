@@ -58,6 +58,7 @@ parts:
     override-build: |
       craftctl default
       cd opencti-platform/opencti-front
+      yarn policies set-version 4.12.0
       yarn install
       yarn build:standalone
       mkdir -p $CRAFT_PART_INSTALL/opt/opencti

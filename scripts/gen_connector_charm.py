@@ -311,7 +311,7 @@ def generate_cisa_known_exploited_vulnerabilities_connector(
         display_name_short="CISA KEV",
         output_dir=location,
         config=config,
-        generate_entrypoint="echo 'cd /opt/opencti-connector-cisa_kev; python3 main.py' > entrypoint.sh",
+        generate_entrypoint="echo 'cd /opt/opencti-connector-cisa-kev; python3 main.py' > entrypoint.sh",
     )
 
 
