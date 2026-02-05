@@ -35,6 +35,34 @@ async def test_deploy_charm(
     act: deploy the OpenCTI charm.
     assert: deployment is successful.
     """
+    opencti = await model.deploy(
+        f"./{opencti_charm}",
+        resources={
+            "opencti-image": pytestconfig.getoption("--opencti-image"),
+        },
+        num_units=2,
+    )
+    redis_k8s = await model.deploy("redis-k8s", channel="latest/edge")
+    nginx_ingress_integrator = await model.deploy(
+        "nginx-ingress-integrator",
+        channel="edge",
+        config={
+            "path-routes": "/",
+            "service-hostname": "nginx-ingress-microk8s-controller.ingress.svc.cluster.local",
+        },
+        trust=True,
+        revision=109,
+    )
+    await model.integrate(
+        f"{machine_controller_name}:admin/{machine_model.name}.opensearch-client",
+        opencti.name,
+    )
+    await model.integrate(
+        f"{machine_controller_name}:admin/{machine_model.name}.amqp",
+        opencti.name,
+    )
+    await model.integrate(redis_k8s.name, opencti.name)
+    await model.integrate(nginx_ingress_integrator.name, opencti.name)
     minio = await model.deploy(
         "minio",
         channel="ckf-1.10/stable",
@@ -66,34 +94,6 @@ async def test_deploy_charm(
         },
     )
     await action.wait()
-    opencti = await model.deploy(
-        f"./{opencti_charm}",
-        resources={
-            "opencti-image": pytestconfig.getoption("--opencti-image"),
-        },
-        num_units=2,
-    )
-    redis_k8s = await model.deploy("redis-k8s", channel="latest/edge")
-    nginx_ingress_integrator = await model.deploy(
-        "nginx-ingress-integrator",
-        channel="edge",
-        config={
-            "path-routes": "/",
-            "service-hostname": "nginx-ingress-microk8s-controller.ingress.svc.cluster.local",
-        },
-        trust=True,
-        revision=109,
-    )
-    await model.integrate(
-        f"{machine_controller_name}:admin/{machine_model.name}.opensearch-client",
-        opencti.name,
-    )
-    await model.integrate(
-        f"{machine_controller_name}:admin/{machine_model.name}.amqp",
-        opencti.name,
-    )
-    await model.integrate(redis_k8s.name, opencti.name)
-    await model.integrate(nginx_ingress_integrator.name, opencti.name)
     await model.integrate(s3_integrator.name, opencti.name)
     secret_id = await model.add_secret(
         name="opencti-admin-user", data_args=["email=admin@example.com", "password=test"]
@@ -101,6 +101,7 @@ async def test_deploy_charm(
     secret_id = secret_id.strip()
     await model.grant_secret("opencti-admin-user", opencti.name)
     await opencti.set_config({"admin-user": secret_id})
+    await machine_model.wait_for_idle(timeout=1200, status="active")
     await model.wait_for_idle(timeout=900, status="active")
 
 
