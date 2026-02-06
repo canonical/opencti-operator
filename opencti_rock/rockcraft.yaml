@@ -50,7 +50,8 @@ parts:
       pip install \
         --target $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages \
         -r $CRAFT_PART_BUILD/opencti-worker/src/requirements.txt \
-        -r $CRAFT_PART_BUILD/opencti-platform/opencti-graphql/src/python/requirements.txt
+        -r $CRAFT_PART_BUILD/opencti-platform/opencti-graphql/src/python/requirements.txt \
+        $CRAFT_PART_BUILD/opencti-platform/client-python
     stage:
       - -usr/lib/x86_64-linux-gnu/libstdc++.so.6
 
