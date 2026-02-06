@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Each revision is versioned by the date of the revision.
 
+## 2026-02-03
+
+### Changed
+
+- Upgrade OpenCTI to version 6.9.15.
+
 ## 2026-01-22
 
 ### Changed

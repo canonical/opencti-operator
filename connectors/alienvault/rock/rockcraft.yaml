@@ -3,7 +3,7 @@
 
 name: opencti-alienvault-connector
 base: ubuntu@24.04
-version: &version '6.7.12'
+version: &version '6.9.15'
 summary: OpenCTI AlienVault Connector
 description: >-
   OpenCTI connectors are the cornerstone of the OpenCTI platform and

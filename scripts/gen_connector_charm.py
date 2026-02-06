@@ -89,11 +89,13 @@ def extract_template_configs(doc_url: str) -> dict:
     rows = extract_tables(response.text)
     result = {}
     for row in rows:
-        name = row["docker environment variable"]
+        name = row.get("docker environment variable")
+        if name is None:
+            continue
         if name in CHARM_MANAGED_ENV:
             continue
         is_mandatory = row["mandatory"].lower()
-        assert is_mandatory in ("yes", "no")
+        assert is_mandatory in ("yes", "no", "cond.")
         is_mandatory = is_mandatory == "yes"
         description = row["description"]
         if not is_mandatory:
@@ -256,7 +258,7 @@ def generate_abuseipdb_ipblacklist_connector(location: pathlib.Path, version: st
                 "type": "int",
             },
         },
-        install_location="abuseipdb-ipblacklist",
+        generate_entrypoint="echo 'cd /opt/opencti-connector-abuseipdb-ipblacklist; python3 main.py' > entrypoint.sh",
     )
 
 
@@ -309,6 +311,7 @@ def generate_cisa_known_exploited_vulnerabilities_connector(
         display_name_short="CISA KEV",
         output_dir=location,
         config=config,
+        generate_entrypoint="echo 'cd /opt/opencti-connector-cisa-known-exploited-vulnerabilities; python3 main.py' > entrypoint.sh",
     )
 
 
@@ -319,7 +322,9 @@ def extract_crowdstrike_configs(doc_url: str) -> dict:
     rows = extract_tables(response.text)
     result = {}
     for row in rows:
-        name = row["docker environment variable"]
+        name = row.get("docker environment variable")
+        if name is None:
+            continue
         if name in CHARM_MANAGED_ENV:
             continue
         is_mandatory = row["mandatory"].lower()
@@ -328,7 +333,7 @@ def extract_crowdstrike_configs(doc_url: str) -> dict:
         description = row["description"]
         if not is_mandatory:
             description = "(optional) " + description
-        config_type = "int" if (row["example"].isdigit() or row["default"].isdigit()) else "string"
+        config_type = "int" if (row.get("example", "").isdigit() or row.get("default", "").isdigit()) else "string"
         result[constant_to_kebab(name)] = {
             "description": description,
             "type": config_type,
@@ -627,6 +632,7 @@ def gen_ipinfo_connector(location: pathlib.Path, version: str) -> None:
                 "description": "Set false if you want ASN name to be just the number e.g. AS8075",
             },
         },
+        generate_entrypoint="echo 'cd /opt/opencti-connector-ipinfo; python3 main.py' > entrypoint.sh",
     )
 
 
@@ -694,7 +700,8 @@ def gen_misp_feed_connector(location: pathlib.Path, version: str) -> None:
         "https://raw.githubusercontent.com/OpenCTI-Platform/connectors"
         f"/refs/tags/{version}/external-import/misp-feed/README.md"
     )
-    del config["connector-type"]
+    if "connector-type" in config:
+        del config["connector-type"]
     config["misp-feed-create-indicators"]["type"] = "boolean"
     config["misp-feed-create-observables"]["type"] = "boolean"
     config["misp-feed-import-to-ids-no-score"]["type"] = "boolean"
@@ -1241,4 +1248,4 @@ def render(version: str) -> None:
 
 
 if __name__ == "__main__":
-    render("6.7.12")
+    render("6.9.15")

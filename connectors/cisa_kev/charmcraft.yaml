@@ -21,22 +21,6 @@ description: |
 
 config:
   options:
-    cisa-catalog-url:
-      description: The URL that hosts the KEV Cataloghttps://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json
-      type: string
-      optional: false
-    cisa-create-infrastructures:
-      description: Allows you to create or not create an infrastructure in opencti
-      type: boolean
-      optional: false
-    cisa-tlp:
-      description: TLP for data coming from this connector
-      type: string
-      optional: false
-    connector-duration-period:
-      description: Determines the time interval between each launch of the connector in ISO 8601, ex:P7D.
-      type: string
-      optional: false
     connector-scope:
       type: string
       description: connector scope
@@ -46,13 +30,25 @@ config:
       description: determines the verbosity of the logs. Options are debug, info, warn, or error
       default: info
       optional: false
-    connector-queue-threshold:
-      description: (optional) Used to determine the limit (RabbitMQ) in MB at which the connector must go into buffering mode.
+    cisa-catalog-url:
+      description: (optional) URL of the CISA KEV catalog JSON feed.
+      type: string
+      optional: true
+    cisa-create-infrastructures:
+      description: (optional) Create Infrastructure entities for affected products.
+      type: boolean
+      optional: true
+    cisa-interval:
+      description: (optional) [DEPRECATED]Interval in days between runs. UseCONNECTOR_DURATION_PERIODinstead.
       type: int
       optional: true
-    connector-run-and-terminate:
-      description: (optional) Launch the connector once if set to True. Takes 2 available values:TrueorFalse.
-      type: boolean
+    cisa-tlp:
+      description: (optional) TLP marking for imported data (TLP:CLEAR,TLP:GREEN,TLP:AMBER,TLP:AMBER+STRICT,TLP:RED).
+      type: string
+      optional: true
+    connector-duration-period:
+      description: (optional) Time interval between connector runs in ISO 8601 format.
+      type: string
       optional: true
 
 

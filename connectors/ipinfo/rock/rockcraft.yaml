@@ -3,7 +3,7 @@
 
 name: opencti-ipinfo-connector
 base: ubuntu@24.04
-version: &version '6.7.12'
+version: &version '6.9.15'
 summary: OpenCTI IpInfo Connector
 description: >-
   OpenCTI connectors are the cornerstone of the OpenCTI platform and
@@ -32,7 +32,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd internal-enrichment/ipinfo
       cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-ipinfo
-      
+      echo 'cd /opt/opencti-connector-ipinfo; python3 main.py' > entrypoint.sh
       cat entrypoint.sh | grep opencti-connector-ipinfo
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \
