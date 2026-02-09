@@ -310,7 +310,7 @@ class OpenCTICharm(ops.CharmBase):
         """
         worker_service: ops.pebble.ServiceDict = {
             "override": "replace",
-            "command": "/usr/bin/python3.12 worker.py",
+            "command": "python3 worker.py",
             "working-dir": "/opt/opencti-worker",
             "environment": {
                 "OPENCTI_URL": self._base_url,

@@ -14,7 +14,7 @@ platforms:
   amd64:
 
 parts:
-  platform/graphql:
+  platform/graphql+worker:
     plugin: nil
     source: https://github.com/OpenCTI-Platform/opencti.git
     source-tag: *version
@@ -46,6 +46,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/opt/opencti
       cp -rp node_modules $CRAFT_PART_INSTALL/opt/opencti
       cp -rp build static src config script $CRAFT_PART_INSTALL/opt/opencti
+      cp -rp ../../opencti-worker/src $CRAFT_PART_INSTALL/opt/opencti-worker
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \
         --target $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages \
