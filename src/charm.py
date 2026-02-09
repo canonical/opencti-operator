@@ -276,7 +276,7 @@ class OpenCTICharm(ops.CharmBase):
         self._init_peer_relation()
         self._check_preconditions()
         health_check_token = self._get_peer_secret(_PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD)
-        health_check_url = f"{self._base_url}/health?health_access_key={health_check_token}"
+        health_check_url = f"{self._base_url.removesuffix('/')}/health?health_access_key={health_check_token}"
         self._install_callback_script(health_check_url)
         self._install_opensearch_cert()
         self._container.add_layer(
@@ -310,7 +310,7 @@ class OpenCTICharm(ops.CharmBase):
         """
         worker_service: ops.pebble.ServiceDict = {
             "override": "replace",
-            "command": "python3 worker.py",
+            "command": "/usr/bin/python3.12 worker.py",
             "working-dir": "/opt/opencti-worker",
             "environment": {
                 "OPENCTI_URL": self._base_url,
