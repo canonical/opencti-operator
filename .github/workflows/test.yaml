@@ -30,6 +30,7 @@ jobs:
       tmate-debug: false
       self-hosted-runner-image: jammy
       microk8s-addons: "dns registry:size=40Gi rbac storage ingress"
+      tmate-timeout: '360'
   check-connector-sync:
     name: Check Connectors
     runs-on: ubuntu-latest
