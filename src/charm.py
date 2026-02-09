@@ -276,7 +276,9 @@ class OpenCTICharm(ops.CharmBase):
         self._init_peer_relation()
         self._check_preconditions()
         health_check_token = self._get_peer_secret(_PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD)
-        health_check_url = f"{self._base_url.removesuffix('/')}/health?health_access_key={health_check_token}"
+        health_check_url = (
+            f"{self._base_url.removesuffix('/')}/health?health_access_key={health_check_token}"
+        )
         self._install_callback_script(health_check_url)
         self._install_opensearch_cert()
         self._container.add_layer(
