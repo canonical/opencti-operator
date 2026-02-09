@@ -3,7 +3,7 @@
 
 name: opencti
 base: ubuntu@24.04
-version: &version '6.7.12'
+version: &version '6.9.15'
 summary: Open Cyber Threat Intelligence Platform
 description: >-
   OpenCTI is an open source platform allowing organizations to manage their 
@@ -14,7 +14,7 @@ platforms:
   amd64:
 
 parts:
-  platform/graphql:
+  platform/graphql+worker:
     plugin: nil
     source: https://github.com/OpenCTI-Platform/opencti.git
     source-tag: *version
@@ -25,14 +25,20 @@ parts:
       - postfix
       - postfix-pcre
     build-snaps:
-      - node/20/stable
+      - node/22/stable
       - rustup
+    build-environment:
+      - OPENCTI_VERSION: *version
     stage-snaps:
-      - node/20/stable
+      - node/22/stable
     stage-packages:
       - curl
+      - python3-dev
+      - libmagic1
+      - libffi-dev
     override-build: |
       craftctl default
+      yarn policies set-version stable
       cd opencti-platform/opencti-graphql/
       yarn install --frozen-lockfile
       yarn build:prod
@@ -40,6 +46,15 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/opt/opencti
       cp -rp node_modules $CRAFT_PART_INSTALL/opt/opencti
       cp -rp build static src config script $CRAFT_PART_INSTALL/opt/opencti
+      cp -rp ../../opencti-worker/src $CRAFT_PART_INSTALL/opt/opencti-worker
+      mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
+      pip install \
+        --target $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages \
+        -r $CRAFT_PART_BUILD/opencti-worker/src/requirements.txt \
+        -r $CRAFT_PART_BUILD/opencti-platform/opencti-graphql/src/python/requirements.txt \
+        "git+https://github.com/OpenCTI-Platform/opencti@${OPENCTI_VERSION}#subdirectory=client-python"
+    stage:
+      - -usr/lib/x86_64-linux-gnu/libstdc++.so.6
 
   platform/frontend:
     plugin: nil
@@ -52,10 +67,11 @@ parts:
       - postfix
       - postfix-pcre
     build-snaps:
-      - node/20/stable
+      - node/22/stable
       - rustup
     override-build: |
       craftctl default
+      yarn policies set-version stable
       cd opencti-platform/opencti-front
       yarn install
       yarn build:standalone
@@ -72,31 +88,6 @@ parts:
       mkdir -p ./opt/telemetry
       mkdir -p ./opt/.support
       chmod 777 ./opt/logs ./opt/telemetry ./opt/.support
-
-  python:
-    plugin: nil
-    source: https://github.com/OpenCTI-Platform/opencti.git
-    source-tag: *version
-    source-type: git
-    source-depth: 1
-    build-packages:
-      - python3-pip
-    stage-packages:
-      - python3-dev
-      - libmagic1
-      - libffi-dev
-    build-environment:
-      - OPENCTI_VERSION: *version
-    override-build: |
-      craftctl default
-      mkdir -p $CRAFT_PART_INSTALL/opt
-      cp -rp ./opencti-worker/src $CRAFT_PART_INSTALL/opt/opencti-worker
-      mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
-      pip install \
-        --target $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages \
-        -r $CRAFT_PART_BUILD/opencti-worker/src/requirements.txt \
-        -r $CRAFT_PART_BUILD/opencti-platform/opencti-graphql/src/python/requirements.txt \
-        https://github.com/OpenCTI-Platform/client-python/archive/$OPENCTI_VERSION.tar.gz
 
   ca-certificates:
     source: .
