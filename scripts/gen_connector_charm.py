@@ -921,7 +921,16 @@ def gen_sekoia_connector(location: pathlib.Path, version: str) -> None:
             },
         },
         source=pathlib.Path("connector-template/rock/rockcraft-nested-src.yaml.j2"),
-        generate_entrypoint="echo 'cd /opt/opencti-connector-sekoia; python3 -m src' > entrypoint.sh",
+        generate_entrypoint=textwrap.dedent(
+            """\n
+            mv $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia-tmp
+            mkdir $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia
+            mv $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia-tmp $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia/src
+            curl -fo $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia/src/data/sectors.json https://raw.githubusercontent.com/OpenCTI-Platform/datasets/master/data/sectors.json
+            curl -fo $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia/src/data/geography.json https://raw.githubusercontent.com/OpenCTI-Platform/datasets/master/data/geography.json
+            echo 'cd $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia; python3 -m src' > entrypoint.sh
+            """
+        ).strip(),
     )
 
 

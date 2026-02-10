@@ -32,7 +32,12 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd external-import/sekoia
       cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia/
-      echo 'cd /opt/opencti-connector-sekoia; python3 -m src' > entrypoint.sh
+      mv $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia-tmp
+      mkdir $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia
+      mv $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia-tmp $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia/src
+      curl -fo $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia/src/data/sectors.json https://raw.githubusercontent.com/OpenCTI-Platform/datasets/master/data/sectors.json
+      curl -fo $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia/src/data/geography.json https://raw.githubusercontent.com/OpenCTI-Platform/datasets/master/data/geography.json
+      echo 'cd $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia; python3 -m src' > entrypoint.sh
       cat entrypoint.sh | grep opencti-connector-sekoia
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \
