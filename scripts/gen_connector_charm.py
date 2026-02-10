@@ -143,7 +143,7 @@ def render_template(
     charm_override: str = "",
     generate_entrypoint: str = "",
     install_location: str | None = None,
-    template_dir: pathlib.Path = pathlib.Path("connector-template"),
+    source: pathlib.Path = pathlib.Path("connector-template/rock/rockcraft.yaml.j2"),
 ) -> None:
     """Render the connector template.
 
@@ -167,44 +167,34 @@ def render_template(
     display_name_short = display_name_short or display_name
     output_dir.mkdir(exist_ok=True)
 
-    for source in template_dir.glob("**/*"):
-        file = source.relative_to(template_dir)
-        if "__pycache__" in str(file):
-            continue
-        output = output_dir / file
-        if source.is_dir():
-            output.mkdir(exist_ok=True)
-            continue
-        if not str(file).endswith(".j2"):
-            output.write_bytes(source.read_bytes())
-            continue
+    output = output_dir / "rock" / "rockcraft.yaml"
 
-        output = pathlib.Path(str(output).removesuffix(".j2"))
-        template = jinja2.Template(source.read_text(), keep_trailing_newline=True)
-        template.globals["kebab_to_pascal"] = kebab_to_pascal
-        template.globals["constant_to_kebab"] = constant_to_kebab
+    output = pathlib.Path(str(output).removesuffix(".j2"))
+    template = jinja2.Template(source.read_text(), keep_trailing_newline=True)
+    template.globals["kebab_to_pascal"] = kebab_to_pascal
+    template.globals["constant_to_kebab"] = constant_to_kebab
 
-        output.write_text(
-            template.render(
-                name=name,
-                connector_name=connector_name,
-                connector_type=connector_type,
-                version=version,
-                display_name=display_name,
-                display_name_short=(
-                    display_name if display_name_short is None else display_name_short
-                ),
-                config=yaml.safe_dump(
-                    {"config": {"options": sort_config(config)}}, width=99999, sort_keys=False
-                ),
-                charm_override=charm_override,
-                install_location=(
-                    install_location if install_location else f"opencti-connector-{connector_name}"
-                ),
-                generate_entrypoint=generate_entrypoint,
+    output.write_text(
+        template.render(
+            name=name,
+            connector_name=connector_name,
+            connector_type=connector_type,
+            version=version,
+            display_name=display_name,
+            display_name_short=(
+                display_name if display_name_short is None else display_name_short
             ),
-            encoding="utf-8",
-        )
+            config=yaml.safe_dump(
+                {"config": {"options": sort_config(config)}}, width=99999, sort_keys=False
+            ),
+            charm_override=charm_override,
+            install_location=(
+                install_location if install_location else f"opencti-connector-{connector_name}"
+            ),
+            generate_entrypoint=generate_entrypoint,
+        ),
+        encoding="utf-8",
+    )
 
     (output_dir / "lib/charms/opencti/v0").mkdir(parents=True, exist_ok=True)
     (output_dir / "lib/charms/loki_k8s/v1").mkdir(parents=True, exist_ok=True)
@@ -632,7 +622,8 @@ def gen_ipinfo_connector(location: pathlib.Path, version: str) -> None:
                 "description": "Set false if you want ASN name to be just the number e.g. AS8075",
             },
         },
-        generate_entrypoint="echo 'cd /opt/opencti-connector-ipinfo; python3 main.py' > entrypoint.sh",
+        source=pathlib.Path("connector-template/rock/rockcraft-nested-src.yaml.j2"),
+        generate_entrypoint="echo 'cd /opt/opencti-connector-ipinfo; python3 -m src' > entrypoint.sh",
     )
 
 
@@ -780,7 +771,8 @@ def gen_mitre_connector(location: pathlib.Path, version: str) -> None:
             },
             **DEFAULT_CONFIG,
         },
-        generate_entrypoint="echo 'cd /opt/opencti-connector-mitre; python3 connector.py' > entrypoint.sh",
+        source=pathlib.Path("connector-template/rock/rockcraft-nested-src.yaml.j2"),
+        generate_entrypoint="echo 'cd /opt/opencti-connector-mitre; python3 -m src' > entrypoint.sh",
     )
 
 @connector_generator("nti")
@@ -928,7 +920,17 @@ def gen_sekoia_connector(location: pathlib.Path, version: str) -> None:
                 "optional": False,
             },
         },
-        generate_entrypoint="echo 'cd /opt/opencti-connector-sekoia; python3 sekoia.py' > entrypoint.sh",
+        source=pathlib.Path("connector-template/rock/rockcraft-nested-src.yaml.j2"),
+        generate_entrypoint=textwrap.dedent(
+            """\n
+            mv $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia-tmp
+            mkdir $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia
+            mv $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia-tmp $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia/src
+            curl -fo $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia/src/data/sectors.json https://raw.githubusercontent.com/OpenCTI-Platform/datasets/master/data/sectors.json
+            curl -fo $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia/src/data/geography.json https://raw.githubusercontent.com/OpenCTI-Platform/datasets/master/data/geography.json
+            echo 'cd $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia; python3 -m src' > entrypoint.sh
+            """
+        ).strip(),
     )
 
 
