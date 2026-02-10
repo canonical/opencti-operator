@@ -29,7 +29,7 @@ parts:
       - python-is-python3
     override-build: |
       craftctl default
-      mkdir -p $CRAFT_PART_INSTALL/opt
+      mkdir -p $CRAFT_PART_INSTALL/opt/opencti-connector-ipinfo
       cd internal-enrichment/ipinfo
       cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-ipinfo/
       echo 'cd /opt/opencti-connector-ipinfo; python3 -m src' > entrypoint.sh
