@@ -29,7 +29,7 @@ parts:
       - python-is-python3
     override-build: |
       craftctl default
-      mkdir -p $CRAFT_PART_INSTALL/opt
+      mkdir -p $CRAFT_PART_INSTALL/opt/opencti-connector-mitre
       cd external-import/mitre
       cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-mitre/
       echo 'cd /opt/opencti-connector-mitre; python3 -m src' > entrypoint.sh
