@@ -1,2 +1,2 @@
-ops==3.5.1
+ops==3.5.2
 gql[requests]==4.0.0
