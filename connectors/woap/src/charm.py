@@ -29,7 +29,8 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
         self.opensearch = OpenSearchRequires(
             self, 
             relation_name=RELATION_NAME, 
-            index="woap-connector"
+            index="woap-connector",
+            extra_user_roles="admin"
         )
 
         # 2. Observe the event when OpenSearch provides the credentials/index
@@ -64,26 +65,32 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
         # Force woap
         env["CONNECTOR_SCOPE"] = "woap"
 
-        # Dynamically adding OpenSearch credentials if they are available
-        creds = self.opensearch.fetch_relation_data()
-        if creds:
-            # Getting the first relation ID available
-            rid = list(creds.keys())[0]
-            rel_data = creds[rid]
+        rel = self.model.get_relation("opensearch-client")
+        if rel and rel.app and rel.data.get(rel.app):
+            rel_data = rel.data[rel.app]
             
-            env["OPENSEARCH_HOST"] = rel_data.get("endpoints", "")
-            #Accessing the 'secret-user' URI
+            # Override Host with the endpoints from the databag
+            endpoints = rel_data.get("endpoints", "")
+            if endpoints:
+                host_list = [e.split(':')[0] for e in endpoints.split(',')]
+                env["OPENSEARCH_HOST"] = host_list[0]
+                env["OPENSEARCH_PORT"] = "9200"
+
+            #Resolve the Secret URI
             user_secret_uri = rel_data.get("secret-user")
             if user_secret_uri:
-                # Resolve the secret URI to get the actual content
+                # Resolve URI and use refresh=True 
+                # This is mandatory to pull data across models
                 secret = self.model.get_secret(id=user_secret_uri)
-                content = secret.get_content() # This returns a dict
+                content = secret.get_content(refresh=True)
                 
-                # The keys inside the secret are defined by the OpenSearch charm
+                # Map the actual values
                 env["OPENSEARCH_USER"] = content.get("username")
                 env["OPENSEARCH_PASSWORD"] = content.get("password")
 
-            logger.info("OpenSearch credentials added to environment map.")
+                logger.info("WOAP: Successfully populated environment from Relation secret.")
+        else:
+            logger.warning("WOAP: opensearch-client relation data not found or not yet synced.")
 
         # Check log level value, logging and setting to default if there is a misconfiguration
         log_level = env.get("CONNECTOR_LOG_LEVEL", "info")
@@ -99,3 +106,4 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
 
 if __name__ == "__main__":
     ops.main(OpenctiWoapConnectorCharm)
+
