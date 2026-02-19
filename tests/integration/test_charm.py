@@ -112,15 +112,13 @@ async def test_opencti_workers(get_unit_ips, ops_test):
     """
     query = {
         "id": "WorkersStatusQuery",
-        "query": textwrap.dedent(
-            """\
+        "query": textwrap.dedent("""\
             query WorkerCount {
                 rabbitMQMetrics {
                     consumers
                 }
             }
-            """
-        ),
+            """),
         "variables": {},
     }
     _, stdout, _ = await ops_test.juju(
@@ -181,8 +179,7 @@ async def test_opencti_connectors(
     await model.wait_for_idle(status="active")
     query = {
         "id": "WorkersStatusQuery",
-        "query": textwrap.dedent(
-            """\
+        "query": textwrap.dedent("""\
                 query ConnectorsStatusQuery {
                   ...ConnectorsStatus_data
                 }
@@ -192,8 +189,7 @@ async def test_opencti_connectors(
                     active
                   }
                 }
-            """
-        ),
+            """),
         "variables": {},
     }
     _, stdout, _ = await ops_test.juju(

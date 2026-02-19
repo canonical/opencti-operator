@@ -3,7 +3,7 @@
 
 name: opencti-mitre-connector
 base: ubuntu@24.04
-version: &version '6.7.12'
+version: &version '6.9.15'
 summary: OpenCTI MITRE Datasets Connector
 description: >-
   OpenCTI connectors are the cornerstone of the OpenCTI platform and
@@ -29,10 +29,10 @@ parts:
       - python-is-python3
     override-build: |
       craftctl default
-      mkdir -p $CRAFT_PART_INSTALL/opt
+      mkdir -p $CRAFT_PART_INSTALL/opt/opencti-connector-mitre
       cd external-import/mitre
-      cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-mitre
-      echo 'cd /opt/opencti-connector-mitre; python3 connector.py' > entrypoint.sh
+      cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-mitre/
+      echo 'cd /opt/opencti-connector-mitre; python3 -m src' > entrypoint.sh
       cat entrypoint.sh | grep opencti-connector-mitre
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \
