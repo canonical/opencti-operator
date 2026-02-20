@@ -7,6 +7,7 @@
 
 import pathlib
 
+from lib.charms.opencti.v0.opencti_connector import Blocked, NotReady
 import ops
 
 import logging
@@ -43,6 +44,51 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
         return pathlib.Path(__file__).parent.parent.absolute()
 
     VALID_LOG_LEVELS = {"debug", "info", "warn", "error"}
+
+    def _reconcile(self, _=None) -> None:
+        """Reconcile the charm."""
+        try:
+            if self.app.planned_units() != 1:
+                self.unit.status = ops.BlockedStatus(
+                    "connector charm cannot have multiple units, "
+                    "scale down using the `juju scale` command"
+                )
+                return
+            self._check_config()
+
+            # Track what is missing
+            missing_requirements = []
+
+            # Check OpenCTI Relation
+            opencti_rel = self.model.get_relation("opencti-connector")
+            if not opencti_rel:
+                missing_requirements.append("OpenCTI relation")
+            else:
+                self._reconcile_integration()
+
+            # Check OpenSearch Relation
+            opensearch_rel = self.model.get_relation("opensearch-client")
+            if not opensearch_rel:
+                missing_requirements.append("OpenSearch relation")
+            elif not (opensearch_rel.app and opensearch_rel.data.get(opensearch_rel.app)):
+                # Relation exists but no data/credentials yet
+                missing_requirements.append("OpenSearch credentials")
+
+            # Determine Status based on collected requirements
+            if missing_requirements:
+                status_msg = "Waiting for: " + ", ".join(missing_requirements)
+                self.unit.status = ops.WaitingStatus(status_msg)
+                #return here because we cannot configure the workload yet
+                return
+            
+            #If we reached here, everything is ready
+            self._reconcile_connector()
+            self.unit.status = ops.ActiveStatus()
+            
+        except NotReady as exc:
+            self.unit.status = ops.WaitingStatus(str(exc))
+        except Blocked as exc:
+            self.unit.status = ops.BlockedStatus(str(exc))
 
     def _on_opensearch_ready(self, event):
         """Triggered when the OpenSearch relation is joined and the index is ready."""
