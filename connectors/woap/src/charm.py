@@ -35,9 +35,9 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
         )
 
         # 2. Observe the event when OpenSearch provides the credentials/index
-        self.framework.observe(self.opensearch.on.index_created, self._on_opensearch_ready)
-
-        self.framework.observe(self.on[RELATION_NAME].relation_broken, self._on_relation_broken)
+        self.framework.observe(self.opensearch.on.index_created, self._reconcile)
+        self.framework.observe(self.on[RELATION_NAME].relation_changed, self._reconcile)
+        self.framework.observe(self.on[RELATION_NAME].relation_broken, self._reconcile)
 
     @property
     def charm_dir(self) -> pathlib.Path:
@@ -78,6 +78,10 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
             if missing_requirements:
                 status_msg = "Waiting for: " + ", ".join(missing_requirements)
                 self.unit.status = ops.WaitingStatus(status_msg)
+                try:
+                    self._reconcile_connector()
+                except Exception:
+                    pass
                 #return here because we cannot configure the workload yet
                 return
             
@@ -90,20 +94,6 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
         except Blocked as exc:
             self.unit.status = ops.BlockedStatus(str(exc))
 
-    def _on_opensearch_ready(self, event):
-        """Triggered when the OpenSearch relation is joined and the index is ready."""
-        # By calling 'replan', the charm calls _gen_env, notices the new 
-        # credentials, updates the container, and restarts the service.
-        self._reconcile_connector()
-        self.unit.status = ops.ActiveStatus("OpenSearch integrated and ready")
-        # Log that we have received data
-        logger.info("OpenSearch credentials received. Updating workload configuration.")
-
-    def _on_relation_broken(self, event):
-        self.unit.status = ops.BlockedStatus("Missing OpenSearch relation")
-        # Calling replan will stop the service since gen_env won't have DB info
-        self._reconcile_connector()
-        
 
     def _gen_env(self) -> dict[str, str]:
         env = super()._gen_env()
