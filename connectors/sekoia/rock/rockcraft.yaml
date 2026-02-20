@@ -3,7 +3,7 @@
 
 name: opencti-sekoia-connector
 base: ubuntu@24.04
-version: &version '6.7.12'
+version: &version '6.9.15'
 summary: OpenCTI Sekoia.io Connector
 description: >-
   OpenCTI connectors are the cornerstone of the OpenCTI platform and
@@ -29,10 +29,12 @@ parts:
       - python-is-python3
     override-build: |
       craftctl default
-      mkdir -p $CRAFT_PART_INSTALL/opt
+      mkdir -p $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia
       cd external-import/sekoia
-      cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia
-      echo 'cd /opt/opencti-connector-sekoia; python3 sekoia.py' > entrypoint.sh
+      cp -rp src $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia/
+      curl -fo $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia/src/data/sectors.json https://raw.githubusercontent.com/OpenCTI-Platform/datasets/master/data/sectors.json
+      curl -fo $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia/src/data/geography.json https://raw.githubusercontent.com/OpenCTI-Platform/datasets/master/data/geography.json
+      echo 'cd $CRAFT_PART_INSTALL/opt/opencti-connector-sekoia; python3 -m src' > entrypoint.sh
       cat entrypoint.sh | grep opencti-connector-sekoia
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \

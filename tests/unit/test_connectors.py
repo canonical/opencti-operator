@@ -4,6 +4,7 @@
 # Learn more about testing at: https://juju.is/docs/sdk/testing
 
 """Unit tests for connectors."""
+
 import importlib
 
 import ops.testing
@@ -87,14 +88,14 @@ _add_connector_test_params(
         "alienvault-enable-attack-patterns-indicates": False,
         "alienvault-interval-sec": 1800,
         "alienvault-default-x-opencti-score": 50,
-        "alienvault-x-opencti-score-ip": 60,
-        "alienvault-x-opencti-score-domain": 70,
-        "alienvault-x-opencti-score-hostname": 75,
-        "alienvault-x-opencti-score-email": 70,
-        "alienvault-x-opencti-score-file": 85,
-        "alienvault-x-opencti-score-url": 80,
-        "alienvault-x-opencti-score-mutex": 60,
-        "alienvault-x-opencti-score-cryptocurrency-wallet": 80,
+        "alienvault-x-opencti-score-ip": "60",
+        "alienvault-x-opencti-score-domain": "70",
+        "alienvault-x-opencti-score-hostname": "75",
+        "alienvault-x-opencti-score-email": "70",
+        "alienvault-x-opencti-score-file": "85",
+        "alienvault-x-opencti-score-url": "80",
+        "alienvault-x-opencti-score-mutex": "60",
+        "alienvault-x-opencti-score-cryptocurrency-wallet": "80",
     },
     environment={
         "OPENCTI_URL": "https://opencti-endpoints.test-opencti-connector.svc/opencti",
@@ -135,7 +136,6 @@ _add_connector_test_params(
     connector_name="cisa-kev",
     charm_config={
         "connector-scope": "cisa",
-        "connector-run-and-terminate": False,
         "connector-log-level": "error",
         "connector-duration-period": "P2D",
         "cisa-catalog-url": (
@@ -150,7 +150,6 @@ _add_connector_test_params(
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
         "CONNECTOR_NAME": "opencti-cisa-kev-connector",
         "CONNECTOR_SCOPE": "cisa",
-        "CONNECTOR_RUN_AND_TERMINATE": "false",
         "CONNECTOR_LOG_LEVEL": "error",
         "CONNECTOR_DURATION_PERIOD": "P2D",
         "CONNECTOR_TYPE": "EXTERNAL_IMPORT",
@@ -176,14 +175,14 @@ _add_connector_test_params(
         "crowdstrike-create-observables": "true",
         "crowdstrike-create-indicators": "true",
         "crowdstrike-scopes": "actor,report,indicator,yara_master",
-        "crowdstrike-actor-start-timestamp": 0,
-        "crowdstrike-report-start-timestamp": 0,
+        "crowdstrike-actor-start-timestamp": "0",
+        "crowdstrike-report-start-timestamp": "0",
         "crowdstrike-report-status": "New",
         "crowdstrike-report-include-types": "notice,tipper,intelligence report,periodic report",
         "crowdstrike-report-type": "threat-report",
         "crowdstrike-report-target-industries": "",
         "crowdstrike-report-guess-malware": "false",
-        "crowdstrike-indicator-start-timestamp": 0,
+        "crowdstrike-indicator-start-timestamp": "0",
         "crowdstrike-indicator-exclude-types": "hash_ion,hash_md5,hash_sha1",
         # undocumented configuration
         # "crowdstrike-default-x-opencti-score": 50,
@@ -450,7 +449,7 @@ _add_connector_test_params(
         "misp-feed-create-observables": True,
         "misp-feed-create-object-observables": True,
         "misp-feed-create-tags-as-labels": True,
-        "misp-feed-guess-threat-from-tags": False,
+        "misp-feed-guess-threats-from-tags": False,
         "misp-feed-author-from-tags": False,
         "misp-feed-import-to-ids-no-score": True,
         "misp-feed-import-unsupported-observables-as-text": False,
@@ -476,7 +475,7 @@ _add_connector_test_params(
         "MISP_FEED_CREATE_OBSERVABLES": "true",
         "MISP_FEED_CREATE_OBJECT_OBSERVABLES": "true",
         "MISP_FEED_CREATE_TAGS_AS_LABELS": "true",
-        "MISP_FEED_GUESS_THREAT_FROM_TAGS": "false",
+        "MISP_FEED_GUESS_THREATS_FROM_TAGS": "false",
         "MISP_FEED_AUTHOR_FROM_TAGS": "false",
         "MISP_FEED_IMPORT_TO_IDS_NO_SCORE": "true",
         "MISP_FEED_IMPORT_UNSUPPORTED_OBSERVABLES_AS_TEXT": "false",
@@ -656,12 +655,6 @@ _add_connector_test_params(
         "connector-scope": "url,ipv4-addr,ipv6-addr",
         "connector-auto": False,
         "connector-log-level": "error",
-        "urlscan-enrichment-api-key": "ChangeMe",
-        "urlscan-enrichment-api-base-url": "https://urlscan.io/api/v1/",
-        "urlscan-enrichment-import-screenshot": True,
-        "urlscan-enrichment-visibility": "public",
-        "urlscan-enrichment-search-filtered-by-date": ">now-1y",
-        "urlscan-enrichment-max-tlp": "TLP:AMBER",
     },
     environment={
         "OPENCTI_TOKEN": "00000000-0000-0000-0000-000000000000",
@@ -671,12 +664,6 @@ _add_connector_test_params(
         "CONNECTOR_AUTO": "false",
         "CONNECTOR_LOG_LEVEL": "error",
         "CONNECTOR_TYPE": "INTERNAL_ENRICHMENT",
-        "URLSCAN_ENRICHMENT_API_KEY": "ChangeMe",
-        "URLSCAN_ENRICHMENT_API_BASE_URL": "https://urlscan.io/api/v1/",
-        "URLSCAN_ENRICHMENT_IMPORT_SCREENSHOT": "true",
-        "URLSCAN_ENRICHMENT_VISIBILITY": "public",
-        "URLSCAN_ENRICHMENT_SEARCH_FILTERED_BY_DATE": ">now-1y",
-        "URLSCAN_ENRICHMENT_MAX_TLP": "TLP:AMBER",
     },
 )
 

@@ -106,6 +106,7 @@ class OpenCTICharm(ops.CharmBase):
                 }
             ],
         )
+        self._peer_secret: dict[str, str] = {}
 
         self.framework.observe(self.on.config_changed, self._reconcile)
         self.framework.observe(self.on.upgrade_charm, self._reconcile)
@@ -275,7 +276,9 @@ class OpenCTICharm(ops.CharmBase):
         self._init_peer_relation()
         self._check_preconditions()
         health_check_token = self._get_peer_secret(_PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD)
-        health_check_url = f"{self._base_url}/health?health_access_key={health_check_token}"
+        health_check_url = (
+            f"{self._base_url.removesuffix('/')}/health?health_access_key={health_check_token}"
+        )
         self._install_callback_script(health_check_url)
         self._install_opensearch_cert()
         self._container.add_layer(
@@ -383,8 +386,7 @@ class OpenCTICharm(ops.CharmBase):
         Args:
             health_check_url: opencti health check endpoint.
         """
-        script = textwrap.dedent(
-            f"""\
+        script = textwrap.dedent(f"""\
             while :; do
                 if curl -m 3 -sfo /dev/null "{health_check_url}"; then
                     pebble notify canonical.com/opencti/platform-healthy
@@ -394,8 +396,7 @@ class OpenCTICharm(ops.CharmBase):
                     sleep 5
                 fi
             done
-            """
-        )
+            """)
         self._container.make_dir(_CHARM_CALLBACK_SCRIPT_PATH.parent, make_parents=True)
         self._container.push(_CHARM_CALLBACK_SCRIPT_PATH, script, encoding="utf-8")
 
@@ -508,13 +509,16 @@ class OpenCTICharm(ops.CharmBase):
         Raises:
             IntegrationNotReady: peer relation not ready.
         """
+        if self._peer_secret:
+            return self._peer_secret[key]
         peer_relation = self.model.get_relation(relation_name=_PEER_INTEGRATION_NAME)
         if peer_relation is None or not (
             secret_id := peer_relation.data[self.app].get(_PEER_SECRET_FIELD)
         ):
             raise IntegrationNotReady("waiting for peer integration")
         secret = self.model.get_secret(id=secret_id)
-        return secret.get_content(refresh=True)[key]
+        self._peer_secret = secret.get_content(refresh=True)
+        return self._peer_secret[key]
 
     def _gen_opensearch_env(self) -> dict[str, str]:
         """Generate the OpenSearch-related environment variables for the OpenCTI platform.
