@@ -3,7 +3,7 @@
 
 name: opencti-woap-connector
 base: ubuntu@24.04
-version: &version '1.2'  # looks like opencti version
+version: &version '1.2'
 summary: OpenCTI WOAP Connector
 description: >-
   WOAP - is a customly developed OpenCTI connector that pulls alerts from
