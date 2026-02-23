@@ -78,11 +78,7 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
             if missing_requirements:
                 status_msg = "Waiting for: " + ", ".join(missing_requirements)
                 self.unit.status = ops.WaitingStatus(status_msg)
-                try:
-                    self.update_pebble(missing_requirements)
-                except Exception:
-                    pass
-                #return here because we cannot configure the workload yet
+                self.stop_connector()
                 return
             
             #If we reached here, everything is ready
@@ -94,50 +90,32 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
         except Blocked as exc:
             self.unit.status = ops.BlockedStatus(str(exc))
 
-    def update_pebble(self, missing_requirements) -> None:
-        """Zero out relation-based configuration and stop the service."""
+    def stop_connector(self) -> None:
+        """Stop the connector service."""
         container = self.unit.get_container(self.meta.name)
         if not container.can_connect():
-            return
-        
-        try:
-            # wrapping this because super()._gen_env() will raise NotReady 
-            # if the OpenCTI relation is gone.
-            env = super()._gen_env()
-        except NotReady:
-            env = {}
-
-        for requirement in missing_requirements:
-            if requirement == "OpenCTI relation":
-                # Remove all OpenCTI related environment variables
-                env.pop("OPENCTI_URL", None)
-                env.pop("OPENCTI_TOKEN", None)
-            elif requirement == "OpenSearch relation":
-                # Remove all OpenSearch related environment variables
-                env.pop("OPENSEARCH_HOST", None)
-                env.pop("OPENSEARCH_PORT", None)
-                env.pop("OPENSEARCH_USER", None)
-                env.pop("OPENSEARCH_PASSWORD", None)
-            elif requirement == "OpenSearch credentials":
-                # Remove all OpenSearch credential environment variables
-                env.pop("OPENSEARCH_USER", None)
-                env.pop("OPENSEARCH_PASSWORD", None)
-
-        #Create a layer that disables the service and clears the env
-        cleanup_layer = ops.pebble.LayerDict(
-            services={
-                "connector": {
-                    "override": "replace",
-                    "startup": "disabled",  # Stop the service from running/restarting
-                    "environment": env,
-                }
-            }
+            raise NotReady("waiting for container ready")
+        container.add_layer(
+            "connector",
+            layer=ops.pebble.LayerDict(
+                summary=self.meta.name,
+                description=self.meta.name,
+                services={
+                    "connector": {
+                        "startup": "disabled",
+                        "on-failure": "ignore",
+                        "override": "replace",
+                        "command": "bash /entrypoint.sh",
+                    },
+                },
+            ),
+            combine=True,
         )
-
-        #Push the layer and replan
-        container.add_layer("connector", cleanup_layer, combine=True)
-        container.replan()
-        logger.info("Cleaning up Pebble layer due to missing requirements")
+        try:
+            container.replan()
+            container.stop("connector")
+        except ops.pebble.ChangeError as exc:
+            raise Blocked("failed to stop connector, will retry") from exc
 
 
     def _gen_env(self) -> dict[str, str]:
