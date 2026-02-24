@@ -20,6 +20,9 @@ description: |
   enhance and disseminate actionable insights. This connector pulls alerts from 
   Wazuh/OpenSearch and ingests them into the OpenCTI platform as STIX 2.1 entities.
 
+  Note: This connector's files were not generated via scripts/gen_connector_charm.py
+  due to its unique requirements and structure compared to the standard connector template.
+
 config:
   options:
     opensearch-index:
