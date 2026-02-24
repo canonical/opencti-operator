@@ -3,6 +3,9 @@
 # Copyright 2025 Canonical Ltd.
 # See LICENSE file for licensing details.
 
+# Note: This connector's files were not generated via scripts/gen_connector_charm.py
+# due to its unique requirements and structure compared to the standard connector template.
+
 """
 Juju Charm for the OpenCTI WOAP (Wazuh OpenSearch Alert Puller) connector.
 

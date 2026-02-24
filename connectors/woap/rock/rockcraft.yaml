@@ -1,6 +1,9 @@
 # Copyright 2025 Canonical Ltd.
 # See LICENSE file for licensing details.
 
+# Note: This connector's files were not generated via scripts/gen_connector_charm.py
+# due to its unique requirements and structure compared to the standard connector template.
+
 name: opencti-woap-connector
 base: ubuntu@24.04
 version: &version '1.2'
