@@ -3,19 +3,22 @@
 # Copyright 2025 Canonical Ltd.
 # See LICENSE file for licensing details.
 
-"""OpenCTI WOAP connector charm the service."""
+"""
+Juju Charm for the OpenCTI WOAP (Wazuh OpenSearch Alert Puller) connector.
+
+This charm manages the lifecycle of the WOAP connector, which ingests Wazuh 
+security alerts from OpenSearch into the OpenCTI platform.
+"""
 
 import pathlib
-
-from lib.charms.opencti.v0.opencti_connector import Blocked, NotReady
 import ops
-
 import logging
-logger = logging.getLogger(__name__)
-RELATION_NAME = "opensearch-client"
-
-from charms.opencti.v0.opencti_connector import OpenctiConnectorCharm
+from lib.charms.opencti.v0.opencti_connector import OpenctiConnectorCharm, Blocked, NotReady
 from charms.data_platform_libs.v0.data_interfaces import OpenSearchRequires
+
+
+logger = logging.getLogger(__name__)
+OPENSEARCH_RELATION_NAME = "opensearch-client"
 
 
 class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
@@ -24,20 +27,17 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
     def __init__(self, *args):
         super().__init__(*args)
         
-        # 1. Initializing OpenSearch integration
-        # "opensearch" must match the name in your charmcraft.yaml requires section
-        # "woap-connector" is the index the connector will use
         self.opensearch = OpenSearchRequires(
             self, 
-            relation_name=RELATION_NAME, 
+            relation_name=OPENSEARCH_RELATION_NAME, 
             index="woap-connector",
             extra_user_roles="admin"
         )
 
-        # 2. Observe the event when OpenSearch provides the credentials/index
+        # Observing the event when OpenSearch provides the credentials/index
         self.framework.observe(self.opensearch.on.index_created, self._reconcile)
-        self.framework.observe(self.on[RELATION_NAME].relation_changed, self._reconcile)
-        self.framework.observe(self.on[RELATION_NAME].relation_broken, self._reconcile)
+        self.framework.observe(self.on[OPENSEARCH_RELATION_NAME].relation_changed, self._reconcile)
+        self.framework.observe(self.on[OPENSEARCH_RELATION_NAME].relation_broken, self._reconcile)
 
     @property
     def charm_dir(self) -> pathlib.Path:
@@ -56,7 +56,6 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
                 return
             self._check_config()
 
-            # Track what is missing
             missing_requirements = []
 
             # Check OpenCTI Relation
@@ -121,7 +120,7 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
     def _gen_env(self) -> dict[str, str]:
         env = super()._gen_env()
 
-        # Force woap
+        # Set the connector scope
         env["CONNECTOR_SCOPE"] = "woap"
 
         rel = self.model.get_relation("opensearch-client")
@@ -132,7 +131,7 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
             endpoints = rel_data.get("endpoints", "")
             if endpoints:
                 host_list = [e.split(':')[0] for e in endpoints.split(',')]
-                env["OPENSEARCH_HOST"] = host_list[0]
+                env["OPENSEARCH_HOST"] = ",".join(host_list)
                 env["OPENSEARCH_PORT"] = "9200"
 
             #Resolve the Secret URI
@@ -142,14 +141,12 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
                 # This is mandatory to pull data across models
                 secret = self.model.get_secret(id=user_secret_uri)
                 content = secret.get_content(refresh=True)
-                
-                # Map the actual values
                 env["OPENSEARCH_USER"] = content.get("username")
                 env["OPENSEARCH_PASSWORD"] = content.get("password")
 
-                logger.info("WOAP: Successfully populated environment from Relation secret.")
+                logger.info("Successfully populated environment from Relation secret.")
         else:
-            logger.warning("WOAP: opensearch-client relation data not found or not yet synced.")
+            logger.warning("opensearch-client relation data not found or not yet synced.")
 
         # Check log level value, logging and setting to default if there is a misconfiguration
         log_level = env.get("CONNECTOR_LOG_LEVEL", "info")

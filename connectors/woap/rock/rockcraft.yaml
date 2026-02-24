@@ -6,8 +6,8 @@ base: ubuntu@24.04
 version: &version '1.2'
 summary: OpenCTI WOAP Connector
 description: >-
-  WOAP - is a customly developed OpenCTI connector that pulls alerts from
-  Wazuh Opensearch and ingests them into OpenCTI platform in a form of Incidents.
+  Wazuh Opensearch Alert Puller (WOAP) - is a custom-developed OpenCTI connector that pulls alerts from
+  a Wazuh indexer and/or Opensearch instance and creates OpenCTI incidents.
 platforms:
   amd64:
 
@@ -27,7 +27,7 @@ parts:
       - libxslt1.1
       - libxml2
       - python-is-python3
-    override-build: | # need to change!!!
+    override-build: |
       craftctl default
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd woap-connector 

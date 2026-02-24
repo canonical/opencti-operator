@@ -22,23 +22,6 @@ description: |
 
 config:
   options:
-    opensearch-host:
-      description: The OpenSearch host URL.
-      type: string
-      optional: false
-    opensearch-port:
-      description: The OpenSearch port.
-      type: int
-      default: 9200
-      optional: false
-    opensearch-user:
-      description: The OpenSearch username.
-      type: string
-      optional: false
-    opensearch-password:
-      description: The OpenSearch password.
-      type: string
-      optional: false
     opensearch-index:
       description: The OpenSearch index to pull alerts from.
       type: string
