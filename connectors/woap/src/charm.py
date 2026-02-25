@@ -14,6 +14,7 @@ security alerts from OpenSearch into the OpenCTI platform.
 """
 
 import pathlib
+import re
 import ops
 import logging
 from lib.charms.opencti.v0.opencti_connector import OpenctiConnectorCharm, Blocked, NotReady
@@ -22,6 +23,11 @@ from charms.data_platform_libs.v0.data_interfaces import OpenSearchRequires
 
 logger = logging.getLogger(__name__)
 OPENSEARCH_RELATION_NAME = "opensearch-client"
+# Regex for ISO 8601 duration: 
+# Matches 'P' followed by days/weeks OR 'PT' followed by hours/minutes/seconds
+ISO8601_DURATION_REGEX = re.compile(
+    r"^P(?!$)(?:\d+D)?(?:\d+W)?(?:T(?=\d)(?:\d+H)?(?:\d+M)?(?:\d+S)?)?$"
+)
 
 
 class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
@@ -46,6 +52,36 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
     def charm_dir(self) -> pathlib.Path:
         return pathlib.Path(__file__).parent.parent.absolute()
 
+    def _check_config(self) -> None:
+        """Check if required charm configurations are ready.
+
+        Raises:
+            NotReady: If some charm configurations isn't ready.
+        """
+        # Check for missing required configurations
+        missing = []
+        for config, config_meta in self._config_metadata().items():
+            value = self.config.get(config)
+            if value is None and config_meta.get("optional") is False:
+                missing.append(config)
+        if missing:
+            raise NotReady("missing configurations: {}".format(", ".join(missing)))
+        
+        # Validate the 'connector-log-level' value
+        log_level = self.config.get("connector-log-level")
+        if log_level and log_level not in ["debug", "info", "warn", "error"]:
+            raise NotReady("invalid connector-log-level value: {}".format(log_level))
+        
+        # Validate 'connector-duration-period' format
+        duration = self.config.get("connector-duration-period")
+        if duration and not ISO8601_DURATION_REGEX.match(duration):
+            raise NotReady("invalid connector-duration-period value format: {}".format(duration))
+        
+        # Validate 'wazuh-min-severity' within valid values
+        severity = self.config.get("wazuh-min-severity")
+        if severity and not (1 <= int(severity) <= 15):
+            raise NotReady(f"invalid wazuh-min-severity: {severity} (must be between 1 and 15)")
+    
     def _reconcile(self, _) -> None:
         """Reconcile the charm."""
         try:

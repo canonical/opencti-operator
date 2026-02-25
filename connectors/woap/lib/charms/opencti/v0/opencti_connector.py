@@ -18,18 +18,11 @@ import os
 import pathlib
 import urllib.parse
 import uuid
-import re
 
 import ops
 import yaml
 
 from charms.loki_k8s.v1.loki_push_api import LogForwarder
-
-# Regex for ISO 8601 duration: 
-# Matches 'P' followed by days/weeks OR 'PT' followed by hours/minutes/seconds
-ISO8601_DURATION_REGEX = re.compile(
-    r"^P(?!$)(?:\d+D)?(?:\d+W)?(?:T(?=\d)(?:\d+H)?(?:\d+M)?(?:\d+S)?)?$"
-)
 
 
 class NotReady(Exception):
@@ -124,21 +117,6 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
                 missing.append(config)
         if missing:
             raise NotReady("missing configurations: {}".format(", ".join(missing)))
-        
-        # Validate the 'connector-log-level' value
-        log_level = self.config.get("connector-log-level")
-        if log_level and log_level not in ["debug", "info", "warn", "error"]:
-            raise NotReady("invalid connector-log-level value: {}".format(log_level))
-        
-        # Validate 'connector-duration-period' format
-        duration = self.config.get("connector-duration-period")
-        if duration and not ISO8601_DURATION_REGEX.match(duration):
-            raise NotReady("invalid connector-duration-period value format: {}".format(duration))
-        
-        # Validate 'wazuh-min-severity' within valid values
-        severity = self.config.get("wazuh-min-severity")
-        if severity and not (1 <= int(severity) <= 15):
-            raise NotReady(f"invalid wazuh-min-severity: {severity} (must be between 1 and 15)")
 
     def _check_integration(self) -> None:
         """Check if required charm integrations are ready.
