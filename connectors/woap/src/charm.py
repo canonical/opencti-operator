@@ -46,9 +46,7 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
     def charm_dir(self) -> pathlib.Path:
         return pathlib.Path(__file__).parent.parent.absolute()
 
-    VALID_LOG_LEVELS = {"debug", "info", "warn", "error"}
-
-    def _reconcile(self, _=None) -> None:
+    def _reconcile(self, _) -> None:
         """Reconcile the charm."""
         try:
             if self.app.planned_units() != 1:
@@ -62,11 +60,11 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
             missing_requirements = []
 
             # Check OpenCTI Relation
-            opencti_rel = self.model.get_relation("opencti-connector")
-            if not opencti_rel:
-                missing_requirements.append("OpenCTI relation")
-            else:
+            try:
+                self._check_integration()
                 self._reconcile_integration()
+            except NotReady:
+                missing_requirements.append("OpenCTI relation")
 
             # Check OpenSearch Relation
             opensearch_rel = self.model.get_relation("opensearch-client")
@@ -83,7 +81,7 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
                 self.stop_connector()
                 return
             
-            #If we reached here, everything is ready
+            # If we reached here, everything is ready
             self._reconcile_connector()
             self.unit.status = ops.ActiveStatus()
             
@@ -97,24 +95,8 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
         container = self.unit.get_container(self.meta.name)
         if not container.can_connect():
             raise NotReady("waiting for container ready")
-        container.add_layer(
-            "connector",
-            layer=ops.pebble.LayerDict(
-                summary=self.meta.name,
-                description=self.meta.name,
-                services={
-                    "connector": {
-                        "startup": "disabled",
-                        "on-failure": "ignore",
-                        "override": "replace",
-                        "command": "bash /entrypoint.sh",
-                    },
-                },
-            ),
-            combine=True,
-        )
+
         try:
-            container.replan()
             container.stop("connector")
         except ops.pebble.ChangeError as exc:
             raise Blocked("failed to stop connector, will retry") from exc
@@ -137,7 +119,7 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
                 env["OPENSEARCH_HOST"] = ",".join(host_list)
                 env["OPENSEARCH_PORT"] = "9200"
 
-            #Resolve the Secret URI
+            # Resolve the Secret URI
             user_secret_uri = rel_data.get("secret-user")
             if user_secret_uri:
                 # Resolve URI and use refresh=True 
@@ -151,13 +133,8 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
         else:
             logger.warning("opensearch-client relation data not found or not yet synced.")
 
-        # Check log level value, logging and setting to default if there is a misconfiguration
-        log_level = env.get("CONNECTOR_LOG_LEVEL", "info")
-        if log_level not in self.VALID_LOG_LEVELS:
-            logger.warning(
-                f"CONNECTOR_LOG_LEVEL '{log_level}' is invalid, using 'info' instead."
-            )
-            log_level = "info"
+        # Assign log level
+        log_level = self.config.get("connector-log-level")
         env["CONNECTOR_LOG_LEVEL"] = log_level
 
         return env

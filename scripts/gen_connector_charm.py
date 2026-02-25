@@ -1234,7 +1234,7 @@ def gen_vxvault_connector(location: pathlib, version: str) -> None:
         },
     )
 
-#@connector_generator("woap")
+# @connector_generator("woap")
 # Here should be a function for generating WOAP connector charm files.
 # However this connector has a lot of differences with the standard template.
 # The charm files for this connector were produced manually. 

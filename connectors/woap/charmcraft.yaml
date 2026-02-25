@@ -33,7 +33,7 @@ config:
     opensearch-ssl-verify:
       description: Whether to verify SSL certificates when connecting to OpenSearch.
       type: boolean
-      default: false
+      default: true
       optional: false
     connector-log-level:
       description: The log level for this connector, could be `debug`, `info`, `warn` or `error` (less verbose).
