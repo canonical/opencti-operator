@@ -73,8 +73,8 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
         
         # Validate 'wazuh-min-severity' within valid values
         severity = self.config.get("wazuh-min-severity")
-        if severity and not (1 <= int(severity) <= 15):
-            raise NotReady(f"invalid wazuh-min-severity: {severity} (must be between 1 and 15)")
+        if severity and not (0 <= int(severity) <= 15):
+            raise NotReady(f"invalid wazuh-min-severity: {severity} (must be between 0 and 15)")
     
     def _reconcile(self, _) -> None:
         """Reconcile the charm."""
