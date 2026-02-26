@@ -59,13 +59,7 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
             NotReady: If some charm configurations isn't ready.
         """
         # Check for missing required configurations
-        missing = []
-        for config, config_meta in self._config_metadata().items():
-            value = self.config.get(config)
-            if value is None and config_meta.get("optional") is False:
-                missing.append(config)
-        if missing:
-            raise NotReady("missing configurations: {}".format(", ".join(missing)))
+        super()._check_config()
         
         # Validate the 'connector-log-level' value
         log_level = self.config.get("connector-log-level")
