@@ -1,0 +1,96 @@
+# Copyright 2025 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+# Note: This connector's files were not generated via scripts/gen_connector_charm.py
+# due to its unique requirements and structure compared to the standard connector template.
+
+name: opencti-woap-connector
+title: OpenCTI WOAP Charm
+summary: OpenCTI Wazuh OpenSearch Alert Puller connector charm.
+links:
+  documentation: https://discourse.charmhub.io
+  issues: https://github.com/canonical/opencti-operator/issues
+  source: https://github.com/canonical/opencti-operator
+  contact: https://launchpad.net/~canonical-is-devops
+
+description: |
+  A [Juju](https://juju.is/) [charm](https://juju.is/docs/olm/charmed-operators) 
+  for deploying and managing the [OpenCTI Connectors](https://docs.opencti.io/latest/deployment/connectors/)
+  for the OpenCTI charm.
+  
+  This charm simplifies the configuration and maintenance of OpenCTI Connectors
+  across a range of environments, organize your cyber threat intelligence to
+  enhance and disseminate actionable insights. This connector pulls alerts from 
+  Wazuh/OpenSearch and ingests them into the OpenCTI platform as STIX 2.1 entities.
+
+config:
+  options:
+    opensearch-index:
+      description: The OpenSearch index to pull alerts from.
+      type: string
+      default: wazuh-alerts-*
+      optional: false
+    opensearch-ssl-verify:
+      description: Whether to verify SSL certificates when connecting to OpenSearch.
+      type: boolean
+      default: true
+      optional: false
+    connector-log-level:
+      description: The log level for this connector, could be `debug`, `info`, `warn` or `error` (less verbose).
+      type: string
+      default: info
+      optional: false
+    connector-duration-period:
+      description: Determines the time interval between each launch of the connector in ISO 8601, ex- PT24H or P1D.
+      type: string
+      default: PT5M
+      optional: false
+    wazuh-min-severity:
+      description: The minimum severity level of alerts to ingest from Wazuh (0-15).
+      type: int
+      default: 13
+      optional: false
+
+
+requires:
+  # To send logs to Loki
+  logging:
+    interface: loki_push_api
+    optional: true
+  # To query/write to Wazuh Indexer (OpenSearch)
+  opensearch-client:
+    interface: opensearch_client
+    limit: 1
+
+provides:
+  opencti-connector:
+    interface: opencti_connector
+    limit: 1
+
+type: charm
+base: ubuntu@24.04
+build-base: ubuntu@24.04
+platforms:
+  amd64:
+parts:
+  charm:
+    build-snaps:
+      - rustup
+    override-build: |
+      rustup default stable
+      craftctl default
+    build-packages:
+      - libffi-dev
+      - libssl-dev
+      - pkg-config
+
+containers:
+  opencti-woap-connector:
+    resource: opencti-woap-connector-image
+resources:
+  opencti-woap-connector-image:
+    type: oci-image
+    description: OCI image for the OpenCTI WOAP connector.
+
+assumes:
+  - juju >= 3.4
