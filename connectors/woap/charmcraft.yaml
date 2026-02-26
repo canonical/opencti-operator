@@ -19,7 +19,7 @@ description: |
   for the OpenCTI charm.
   
   This charm simplifies the configuration and maintenance of OpenCTI Connectors
-  across a  range of environments, organize your cyber threat intelligence to
+  across a range of environments, organize your cyber threat intelligence to
   enhance and disseminate actionable insights. This connector pulls alerts from 
   Wazuh/OpenSearch and ingests them into the OpenCTI platform as STIX 2.1 entities.
 
