@@ -1,0 +1,47 @@
+[32mINFO    [0m integration.conftest:conftest.py:122 load opencti connector charms: {'opencti-abuseipdb-ipblacklist-connector': './opencti-abuseipdb-ipblacklist-connector_amd64.charm', 'opencti-alienvault-connector': './opencti-alienvault-connector_amd64.charm', 'opencti-cisa-kev-connector': './opencti-cisa-kev-connector_amd64.charm', 'opencti-crowdstrike-connector': './opencti-crowdstrike-connector_amd64.charm', 'opencti-cyber-campaign-connector': './opencti-cyber-campaign-connector_amd64.charm', 'opencti-export-file-csv-connector': './opencti-export-file-csv-connector_amd64.charm', 'opencti-export-file-stix-connector': './opencti-export-file-stix-connector_amd64.charm', 'opencti-export-file-txt-connector': './opencti-export-file-txt-connector_amd64.charm', 'opencti-import-document-connector': './opencti-import-document-connector_amd64.charm', 'opencti-import-file-stix-connector': './opencti-import-file-stix-connector_amd64.charm', 'opencti-ipinfo-connector': './opencti-ipinfo-connector_amd64.charm', 'opencti-malwarebazaar-connector': './opencti-malwarebazaar-connector_amd64.charm', 'opencti-misp-feed-connector': './opencti-misp-feed-connector_amd64.charm', 'opencti-mitre-connector': './opencti-mitre-connector_amd64.charm', 'opencti-nti-connector': './opencti-nti-connector_amd64.charm', 'opencti-sekoia-connector': './opencti-sekoia-connector_amd64.charm', 'opencti-urlhaus-connector': './opencti-urlhaus-connector_amd64.charm', 'opencti-urlscan-connector': './opencti-urlscan-connector_amd64.charm', 'opencti-urlscan-enrichment-connector': './opencti-urlscan-enrichment-connector_amd64.charm', 'opencti-virustotal-livehunt-connector': './opencti-virustotal-livehunt-connector_amd64.charm', 'opencti-vxvault-connector': './opencti-vxvault-connector_amd64.charm', 'opencti-woap-connector': './opencti-woap-connector_amd64.charm'}
+[32mINFO    [0m integration.conftest:conftest.py:134 load opencti connector images: {'opencti-malwarebazaar-connector': 'ghcr.io/canonical/opencti-malwarebazaar-connector:c0000a7d13c0160180dcc83cf34f5f886fcd8773-_6.9.15_amd64', 'opencti-urlhaus-connector': 'ghcr.io/canonical/opencti-urlhaus-connector:de3bc30b9c08224fc92b5cb10074f2bb530a62ca-_6.9.15_amd64', 'opencti-misp-feed-connector': 'ghcr.io/canonical/opencti-misp-feed-connector:d5ca0dcbb378506be3b2b188c4de7be566d53699-_6.9.15_amd64', 'opencti-abuseipdb-ipblacklist-connector': 'ghcr.io/canonical/opencti-abuseipdb-ipblacklist-connector:5aec91cc8756765ef91c86b24ce43cf8652af62a-_6.9.15_amd64', 'opencti-import-document-connector': 'ghcr.io/canonical/opencti-import-document-connector:4a4228c41dd043e3e86ecd84f3235d53d5d2444c-_6.9.15_amd64', 'opencti-ipinfo-connector': 'ghcr.io/canonical/opencti-ipinfo-connector:cd0bb30a166d410a525c54fc47221a59c2931460-_6.9.15_amd64', 'opencti-export-file-txt-connector': 'ghcr.io/canonical/opencti-export-file-txt-connector:242199256f67354d0dde0c172fa360e6d535eea0-_6.9.15_amd64', 'opencti-export-file-csv-connector': 'ghcr.io/canonical/opencti-export-file-csv-connector:4c7f4ce5dd8e7ec6c2e68ebd79eab24bd91d39c8-_6.9.15_amd64', 'opencti-import-file-stix-connector': 'ghcr.io/canonical/opencti-import-file-stix-connector:870d05f7a68e0da022711a85e157a9624d8b1d46-_6.9.15_amd64', 'opencti-export-file-stix-connector': 'ghcr.io/canonical/opencti-export-file-stix-connector:b46d1c93bee3ecad6a7067e7f2c3638e8f6f75b2-_6.9.15_amd64', 'opencti-vxvault-connector': 'ghcr.io/canonical/opencti-vxvault-connector:9912471d23bf5c7040bde75c8f1ec396f80b9e79-_6.9.15_amd64', 'opencti-nti-connector': 'ghcr.io/canonical/opencti-nti-connector:453120d0844406d3dfb58f47057fc7f3775e88f7-_6.9.15_amd64', 'opencti-cisa-kev-connector': 'ghcr.io/canonical/opencti-cisa-kev-connector:1c2c2bc79c5d46af081d2cb84fca9faed329c09b-_6.9.15_amd64', 'opencti-sekoia-connector': 'ghcr.io/canonical/opencti-sekoia-connector:1f5f6c2077fa6ca6394de01a391262ac4d7ee30b-_6.9.15_amd64', 'opencti-mitre-connector': 'ghcr.io/canonical/opencti-mitre-connector:cab8faecb0f3b230f358813f91afd3411e2a5597-_6.9.15_amd64', 'opencti-cyber-campaign-connector': 'ghcr.io/canonical/opencti-cyber-campaign-connector:6ef36fc7350700da30adaf0fa6833d6cd75b3057-_6.9.15_amd64', 'opencti-urlscan-connector': 'ghcr.io/canonical/opencti-urlscan-connector:60e40885705864b72bc369ffdc382af34f056a7a-_6.9.15_amd64', 'opencti-virustotal-livehunt-connector': 'ghcr.io/canonical/opencti-virustotal-livehunt-connector:a5d13c7d37c8b135a4889a6b1f4ac49695b3aa46-_6.9.15_amd64', 'opencti-urlscan-enrichment-connector': 'ghcr.io/canonical/opencti-urlscan-enrichment-connector:43b5825e648bb7f3d1c7edfd1f43e6b242114f4a-_6.9.15_amd64', 'opencti-alienvault-connector': 'ghcr.io/canonical/opencti-alienvault-connector:032f4c5f26388fe4c845b217c1187579dbb8799b-_6.9.15_amd64', 'opencti-woap-connector': 'ghcr.io/canonical/opencti-woap-connector:39e10110e490330e146ac26647e43c70180f27ae-_1.3_amd64', 'opencti-crowdstrike-connector': 'ghcr.io/canonical/opencti-crowdstrike-connector:5044a3610acd1a13661464e9115843c10fc3225d-_6.9.15_amd64'}
+[32mINFO    [0m juju.model:__init__.py:2301 Deploying local:opencti-export-file-stix-connector-0
+[32mINFO    [0m juju.model:__init__.py:3254 Waiting for model:
+  minio/0 [idle] active: 
+  s3-integrator/0 [idle] active: 
+  opencti/0 [executing] active: 
+  opencti/1 [executing] active: 
+  redis-k8s/0 [idle] active: 
+  nginx-ingress-integrator/0 [idle] active: Ingress IP(s): 127.0.0.1
+  opencti-export-file-stix-connector/0 [allocating] waiting: installing agent
+[32mINFO    [0m juju.model:__init__.py:3254 Waiting for model:
+  opencti/0 [idle] active: 
+  opencti/1 [executing] active: 
+  opencti-export-file-stix-connector/0 [idle] active: 
+[32mINFO    [0m juju.model:__init__.py:3254 Waiting for model:
+  opencti/1 [idle] active:
+[32mINFO    [0m pytest_operator.plugin:plugin.py:951 Model status:
+
+Model    Controller                Cloud/Region        Version  SLA          Timestamp
+testing  github-pr-9e625-microk8s  microk8s/localhost  3.6.14   unsupported  15:34:59Z
+
+SAAS               Status  Store      URL
+amqp               active  localhost  admin/test-opencti-deps-d31f.amqp
+opensearch-client  active  localhost  admin/test-opencti-deps-d31f.opensearch-client
+
+App                                 Version                Status  Scale  Charm                               Channel          Rev  Address         Exposed  Message
+minio                               res:oci-image@7f2474f  active      1  minio                               ckf-1.10/stable  583  10.152.183.40   no       
+nginx-ingress-integrator            24.2.0                 active      1  nginx-ingress-integrator            latest/edge      109  10.152.183.222  no       Ingress IP(s): 127.0.0.1
+opencti                                                    active      2  opencti                                                0  10.152.183.67   no       
+opencti-export-file-stix-connector                         active      1  opencti-export-file-stix-connector                     0  10.152.183.49   no       
+redis-k8s                           7.2.5                  active      1  redis-k8s                           latest/edge       42  10.152.183.22   no       
+s3-integrator                                              active      1  s3-integrator                       latest/stable    145  10.152.183.149  no       
+
+Unit                                   Workload  Agent  Address     Ports          Message
+minio/0*                               active    idle   10.1.53.13  9000-9001/TCP  
+nginx-ingress-integrator/0*            active    idle   10.1.53.17                 Ingress IP(s): 127.0.0.1
+opencti-export-file-stix-connector/0*  active    idle   10.1.53.20                 
+opencti/0                              active    idle   10.1.53.16                 
+opencti/1*                             active    idle   10.1.53.15                 
+redis-k8s/0*                           active    idle   10.1.53.19                 
+s3-integrator/0*                       active    idle   10.1.53.14                 
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:957 Juju error logs:
+
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:1039 Forgetting model main...
