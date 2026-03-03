@@ -68,3 +68,6 @@ CVE-2025-66471
 CVE-2026-21441
 # validator
 CVE-2025-12758
+# minimatch (package.json)
+CVE-2026-27903
+CVE-2026-27904
