@@ -17,7 +17,7 @@ import pathlib
 import re
 import ops
 import logging
-from lib.charms.opencti.v0.opencti_connector import OpenctiConnectorCharm, Blocked, NotReady
+from charms.opencti.v0.opencti_connector import OpenctiConnectorCharm, Blocked, NotReady
 from charms.data_platform_libs.v0.data_interfaces import OpenSearchRequires
 
 
@@ -128,6 +128,10 @@ class OpenctiWoapConnectorCharm(OpenctiConnectorCharm):
 
         try:
             container.stop("connector")
+        except ops.pebble.APIError as exc:
+            if "service \"connector\" does not exist" in str(exc):
+                return
+            raise Blocked(f"Pebble API error: {exc}") from exc
         except ops.pebble.ChangeError as exc:
             raise Blocked("failed to stop connector, will retry") from exc
 
