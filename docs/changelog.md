@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Each revision is versioned by the date of the revision.
 
+## 2026-03-11
+
+### Changed
+
+- Upgraded OpenCTI to version 6.9.24
+- Introduced terraform tests
+- Now requires terraform 1.12
+
 ## 2026-02-03
 
 ### Changed

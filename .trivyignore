@@ -71,3 +71,10 @@ CVE-2025-12758
 # minimatch (package.json)
 CVE-2026-27903
 CVE-2026-27904
+# immutable
+CVE-2026-29063
+# tar
+GHSA-qffp-2rhf-9h96
+CVE-2026-29786
+# express-rate-limit
+CVE-2026-30827

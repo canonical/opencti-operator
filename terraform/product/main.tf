@@ -40,7 +40,7 @@ module "opensearch" {
   backups-integrator       = var.s3_integrator_opensearch
 
   grafana-agent = {
-    base  = var.opensearch.base
+    base = var.opensearch.base
   }
 
   opensearch-dashboards = {
