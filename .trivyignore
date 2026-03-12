@@ -78,5 +78,6 @@ CVE-2026-29063
 # tar
 GHSA-qffp-2rhf-9h96
 CVE-2026-29786
+CVE-2026-31802
 # express-rate-limit
 CVE-2026-30827
