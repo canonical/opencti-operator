@@ -155,7 +155,7 @@ For this charm, the following Juju events are observed:
 In addition, the charm libraries can observe many other events. For more 
 details, see the documentation for the charm libraries.
 
-> See more in the Juju docs: [Hook](https://juju.is/docs/sdk/event)
+> See more in the Juju docs: [Hook](https://documentation.ubuntu.com/juju/latest/reference/hook/)
 
 ## Charm code overview
 
