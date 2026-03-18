@@ -78,3 +78,5 @@ GHSA-qffp-2rhf-9h96
 CVE-2026-29786
 # express-rate-limit
 CVE-2026-30827
+# Django CVE - fixed in Django 5.2.12/6.0.3/4.2.29; temporary until image updates Django
+CVE-2026-25673
