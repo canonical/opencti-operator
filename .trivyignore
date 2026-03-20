@@ -76,5 +76,16 @@ CVE-2026-29063
 # tar
 GHSA-qffp-2rhf-9h96
 CVE-2026-29786
+# tar CVE - fixed in 7.5.11; temporary until opencti-platform updates tar (6.2.1 and 7.4.3 present in lockfile)
+CVE-2026-31802
 # express-rate-limit
 CVE-2026-30827
+# Django CVE - fixed in Django 5.2.12/6.0.3/4.2.29; temporary until image updates Django
+CVE-2026-25673
+# Go stdlib CVE - fixed in Go 1.25.8/1.26.1; temporary until image updates Go runtime
+CVE-2026-25679
+
+# fast-xml-parser CVE - fixed in 5.5.6; temporary until opencti-platform updates fast-xml-parser
+CVE-2026-33036
+# flatted CVE - fixed in 3.4.0; temporary until opencti-platform updates flatted
+CVE-2026-32141
