@@ -82,3 +82,8 @@ CVE-2026-30827
 CVE-2026-25673
 # Go stdlib CVE - fixed in Go 1.25.8/1.26.1; temporary until image updates Go runtime
 CVE-2026-25679
+
+# fast-xml-parser CVE - fixed in 5.5.6; temporary until opencti-platform updates fast-xml-parser
+CVE-2026-33036
+# flatted CVE - fixed in 3.4.0; temporary until opencti-platform updates flatted
+CVE-2026-32141
