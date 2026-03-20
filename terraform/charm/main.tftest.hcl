@@ -12,7 +12,7 @@ run "basic_deploy" {
     model_uuid = run.setup_tests.model_uuid
     channel    = "latest/edge"
     # renovate: depName="opencti"
-    revision = 85
+    revision = 86
   }
 
   assert {
