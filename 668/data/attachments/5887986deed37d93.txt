@@ -1,0 +1,46 @@
+[32mINFO    [0m integration.conftest:conftest.py:122 load opencti connector charms: {'opencti-abuseipdb-ipblacklist-connector': './opencti-abuseipdb-ipblacklist-connector_amd64.charm', 'opencti-alienvault-connector': './opencti-alienvault-connector_amd64.charm', 'opencti-cisa-kev-connector': './opencti-cisa-kev-connector_amd64.charm', 'opencti-crowdstrike-connector': './opencti-crowdstrike-connector_amd64.charm', 'opencti-cyber-campaign-connector': './opencti-cyber-campaign-connector_amd64.charm', 'opencti-export-file-csv-connector': './opencti-export-file-csv-connector_amd64.charm', 'opencti-export-file-stix-connector': './opencti-export-file-stix-connector_amd64.charm', 'opencti-export-file-txt-connector': './opencti-export-file-txt-connector_amd64.charm', 'opencti-import-document-connector': './opencti-import-document-connector_amd64.charm', 'opencti-import-file-stix-connector': './opencti-import-file-stix-connector_amd64.charm', 'opencti-ipinfo-connector': './opencti-ipinfo-connector_amd64.charm', 'opencti-malwarebazaar-connector': './opencti-malwarebazaar-connector_amd64.charm', 'opencti-misp-feed-connector': './opencti-misp-feed-connector_amd64.charm', 'opencti-mitre-connector': './opencti-mitre-connector_amd64.charm', 'opencti-nti-connector': './opencti-nti-connector_amd64.charm', 'opencti-sekoia-connector': './opencti-sekoia-connector_amd64.charm', 'opencti-urlhaus-connector': './opencti-urlhaus-connector_amd64.charm', 'opencti-urlscan-connector': './opencti-urlscan-connector_amd64.charm', 'opencti-urlscan-enrichment-connector': './opencti-urlscan-enrichment-connector_amd64.charm', 'opencti-virustotal-livehunt-connector': './opencti-virustotal-livehunt-connector_amd64.charm', 'opencti-vxvault-connector': './opencti-vxvault-connector_amd64.charm', 'opencti-woap-connector': './opencti-woap-connector_amd64.charm'}
+[32mINFO    [0m integration.conftest:conftest.py:134 load opencti connector images: {'opencti-cisa-kev-connector': 'ghcr.io/canonical/opencti-cisa-kev-connector:6f5621eef114d880a6deb47da32726633607b137-_6.9.24_amd64', 'opencti-urlscan-enrichment-connector': 'ghcr.io/canonical/opencti-urlscan-enrichment-connector:9ac5e1d88134ab05129ef634b30cce4e03fa2756-_6.9.24_amd64', 'opencti-vxvault-connector': 'ghcr.io/canonical/opencti-vxvault-connector:8698af473b4907904c80702c6152504454ce4741-_6.9.24_amd64', 'opencti-export-file-csv-connector': 'ghcr.io/canonical/opencti-export-file-csv-connector:0694e84e1609a1fa2a6fa2392c1286a571489258-_6.9.24_amd64', 'opencti-import-file-stix-connector': 'ghcr.io/canonical/opencti-import-file-stix-connector:fd6a527bc9a41232d12e998e74506bb29ccf9dbf-_6.9.24_amd64', 'opencti-malwarebazaar-connector': 'ghcr.io/canonical/opencti-malwarebazaar-connector:9630a25ddfdf9815b0bf8a101bf3e43523a6bc23-_6.9.24_amd64', 'opencti-ipinfo-connector': 'ghcr.io/canonical/opencti-ipinfo-connector:2895c6cf7d1814c3bbfa54981accb3ff17c6942d-_6.9.24_amd64', 'opencti-mitre-connector': 'ghcr.io/canonical/opencti-mitre-connector:cbbaf499b2b1a01d91ac4b3a8c8c8eaa4a6943e8-_6.9.24_amd64', 'opencti-virustotal-livehunt-connector': 'ghcr.io/canonical/opencti-virustotal-livehunt-connector:2fc55dd74eb2a3effd7080ad254fac583171ef37-_6.9.24_amd64', 'opencti-urlscan-connector': 'ghcr.io/canonical/opencti-urlscan-connector:facab84d53be5fbecfca0a133e05188200930df5-_6.9.24_amd64', 'opencti-urlhaus-connector': 'ghcr.io/canonical/opencti-urlhaus-connector:b51a40b2c70d272f70017a47562bb0da2d76566f-_6.9.24_amd64', 'opencti-import-document-connector': 'ghcr.io/canonical/opencti-import-document-connector:c7856f9dd4cd3871b02f585d959a68c269ed1fd0-_6.9.24_amd64', 'opencti-woap-connector': 'ghcr.io/canonical/opencti-woap-connector:39e10110e490330e146ac26647e43c70180f27ae-_1.3_amd64', 'opencti-alienvault-connector': 'ghcr.io/canonical/opencti-alienvault-connector:8bf3af280faaff0e9534fca4b89e739f6b822447-_6.9.24_amd64', 'opencti-abuseipdb-ipblacklist-connector': 'ghcr.io/canonical/opencti-abuseipdb-ipblacklist-connector:ae7617424ce5de8efc333d9ececaec408cc75ffa-_6.9.24_amd64', 'opencti-nti-connector': 'ghcr.io/canonical/opencti-nti-connector:cc7240d71e0b1cbfbc0d58bf7e4a52a6e3f7afd2-_6.9.24_amd64', 'opencti-sekoia-connector': 'ghcr.io/canonical/opencti-sekoia-connector:2f6a96a140e6a73597ce92668a5bd70dc0c95b5e-_6.9.24_amd64', 'opencti-export-file-stix-connector': 'ghcr.io/canonical/opencti-export-file-stix-connector:2186f5b3a32d58daf9af17c954ddde993bb1fe53-_6.9.24_amd64', 'opencti-cyber-campaign-connector': 'ghcr.io/canonical/opencti-cyber-campaign-connector:61638ed0e423c5e2e5effdbbe611cdd4aef47b77-_6.9.24_amd64', 'opencti-crowdstrike-connector': 'ghcr.io/canonical/opencti-crowdstrike-connector:9adceb1233cc6961cf84bf166956570aaf5c02d4-_6.9.24_amd64', 'opencti-misp-feed-connector': 'ghcr.io/canonical/opencti-misp-feed-connector:1c154ec4fe8c9c97b3aa2669adf51ccaf37af78e-_6.9.24_amd64', 'opencti-export-file-txt-connector': 'ghcr.io/canonical/opencti-export-file-txt-connector:b9a0f624097206acee823292f50bdcd9208871e5-_6.9.24_amd64'}
+[32mINFO    [0m juju.model:__init__.py:2301 Deploying local:opencti-export-file-stix-connector-0
+[32mINFO    [0m juju.model:__init__.py:3254 Waiting for model:
+  minio/0 [idle] active: 
+  s3-integrator/0 [idle] active: 
+  opencti/0 [executing] active: 
+  opencti/1 [executing] active: 
+  redis-k8s/0 [idle] active: 
+  nginx-ingress-integrator/0 [idle] active: Ingress IP(s): 127.0.0.1
+  opencti-export-file-stix-connector/0 [allocating] waiting: installing agent
+[32mINFO    [0m juju.model:__init__.py:3254 Waiting for model:
+  opencti/0 [idle] active: 
+  opencti-export-file-stix-connector/0 [idle] active:
+[32mINFO    [0m pytest_operator.plugin:plugin.py:951 Model status:
+
+Model    Controller                Cloud/Region        Version  SLA          Timestamp
+testing  github-pr-13cc7-microk8s  microk8s/localhost  3.6.20   unsupported  15:36:29Z
+
+SAAS               Status  Store      URL
+amqp               active  localhost  admin/test-opencti-deps-91a6.amqp
+opensearch-client  active  localhost  admin/test-opencti-deps-91a6.opensearch-client
+
+App                                 Version                Status  Scale  Charm                               Channel          Rev  Address         Exposed  Message
+minio                               res:oci-image@7f2474f  active      1  minio                               ckf-1.10/stable  583  10.152.183.226  no       
+nginx-ingress-integrator            24.2.0                 active      1  nginx-ingress-integrator            latest/edge      109  10.152.183.40   no       Ingress IP(s): 127.0.0.1
+opencti                                                    active      2  opencti                                                0  10.152.183.34   no       
+opencti-export-file-stix-connector                         active      1  opencti-export-file-stix-connector                     0  10.152.183.110  no       
+redis-k8s                           7.2.5                  active      1  redis-k8s                           latest/edge       42  10.152.183.113  no       
+s3-integrator                                              active      1  s3-integrator                       latest/stable    145  10.152.183.199  no       
+
+Unit                                   Workload  Agent  Address     Ports          Message
+minio/0*                               active    idle   10.1.53.13  9000-9001/TCP  
+nginx-ingress-integrator/0*            active    idle   10.1.53.20                 Ingress IP(s): 127.0.0.1
+opencti-export-file-stix-connector/0*  active    idle   10.1.53.21                 
+opencti/0*                             active    idle   10.1.53.16                 
+opencti/1                              active    idle   10.1.53.17                 
+redis-k8s/0*                           active    idle   10.1.53.19                 
+s3-integrator/0*                       active    idle   10.1.53.15                 
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:957 Juju error logs:
+
+unit-opencti-1: 15:34:37 ERROR unit.opencti/1.juju-log invalid redis integration: {"application-data": {"leader-host": "redis-k8s-0.redis-k8s-endpoints.testing.svc.cluster.local"}, "unit-data": {"redis-k8s/0": {"egress-subnets": "10.152.183.113/32", "hostname": "10.1.53.19", "ingress-address": "10.152.183.113", "private-address": "10.152.183.113"}}}
+unit-opencti-0: 15:34:38 ERROR unit.opencti/0.juju-log invalid redis integration: {"application-data": {"leader-host": "redis-k8s-0.redis-k8s-endpoints.testing.svc.cluster.local"}, "unit-data": {"redis-k8s/0": {"egress-subnets": "10.152.183.113/32", "hostname": "10.1.53.19", "ingress-address": "10.152.183.113", "private-address": "10.152.183.113"}}}
+
+[32mINFO    [0m pytest_operator.plugin:plugin.py:1039 Forgetting model main...
