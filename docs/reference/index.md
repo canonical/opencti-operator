@@ -18,7 +18,7 @@ at runtime.
 
 ## Charm architecture and designs
 
-Components and dependencies within the Bacula charms, along with the
+Components and dependencies within the OpenCTI charms, along with the
 architecture decisions made during charm creation.
 
 * [Charm architecture](charm-architecture.md)
