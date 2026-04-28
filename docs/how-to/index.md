@@ -20,6 +20,6 @@ and redeployment.
 ## Guide for developers
 
 Learn the guidelines and best practices before contributing to the
-backup charm project.
+OpenCTI charms project.
 
 * [Contribute](./contribute.md)
