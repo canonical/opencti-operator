@@ -13,12 +13,13 @@ at runtime.
 
 * [Actions](actions.md)
 * [Configurations](configurations.md)
-* [Integrations](integrations.md)
 * [Observability](observability.md)
 
 ## Charm architecture and designs
 
-Components and dependencies within the OpenCTI charms, along with the
-architecture decisions made during charm creation.
+Components and dependencies within the OpenCTI charms,
+architecture decisions made during charm creation, and how
+the charms connect to the broader Juju ecosystem.
 
 * [Charm architecture](charm-architecture.md)
+* [Integrations](integrations.md)
