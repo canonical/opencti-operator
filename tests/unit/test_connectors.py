@@ -25,7 +25,7 @@ def _kebab_to_snake(string: str) -> str:
     return string.replace("-", "_")
 
 
-_CONNECTOR_TEST_PARAMS = []
+_CONNECTOR_TEST_PARAMS: list[object] = []
 
 
 def _add_connector_test_params(
