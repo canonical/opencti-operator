@@ -40,7 +40,7 @@ parts:
       craftctl default
       yarn set version 4.13.0
       cd opencti-platform/opencti-graphql/
-      yarn install --immutable --immutable-cache
+      yarn install --immutable
       yarn build:prod
       yarn cache clean --all
       mkdir -p $CRAFT_PART_INSTALL/opt/opencti
