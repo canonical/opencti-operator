@@ -1,91 +1,9 @@
-# cross-spawn (package.json)
-CVE-2024-21538
-CVE-2025-24964
-# esbuild
-CVE-2024-24790
-CVE-2023-45288
-CVE-2024-34156
-# pebble
-CVE-2024-45338
-CVE-2025-47907
-CVE-2025-61729
-# axios (package.json)
-CVE-2025-27152
-CVE-2025-58754
-# xml-crypto (package.json)
-CVE-2025-29774
-CVE-2025-29775
-# setuptools
-CVE-2025-47273
-# stdlib
-CVE-2025-22874
-CVE-2025-47906
-CVE-2025-47912
-CVE-2025-58183
-CVE-2025-58185
-CVE-2025-58186
-CVE-2025-58187
-CVE-2025-58188
-CVE-2025-58189
-CVE-2025-61723
-CVE-2025-61724
-CVE-2025-61725
-CVE-2025-68121
-CVE-2026-25679
-CVE-2026-27142
-# node
-CVE-2025-54419
-CVE-2025-9288
-CVE-2025-12816
-CVE-2025-66031
-CVE-2025-68665
-CVE-2025-15284
-CVE-2026-23745
-CVE-2026-23950
-CVE-2026-23897
-CVE-2026-25547
-CVE-2026-25128
-CVE-2026-0775
-CVE-2026-24842
-CVE-2026-25639
-CVE-2026-25896
-CVE-2026-26278
-CVE-2026-26996
-CVE-2026-27606
-CVE-2026-26960
-# form-data
-CVE-2025-7783
 # python-pkg
-CVE-2025-62727
-CVE-2025-64512
 CVE-2026-23949
 GHSA-f83h-ghpp-7wcc
 CVE-2026-24049
-CVE-2025-70559
-# glob
-CVE-2025-64756
-# urllib3
-CVE-2025-66418
-CVE-2025-66471
-CVE-2026-21441
-# validator
-CVE-2025-12758
-# minimatch (package.json)
-CVE-2026-27903
-CVE-2026-27904
-# immutable
-CVE-2026-29063
 # tar
 GHSA-qffp-2rhf-9h96
-CVE-2026-29786
-# tar CVE - fixed in 7.5.11; temporary until opencti-platform updates tar (6.2.1 and 7.4.3 present in lockfile)
-CVE-2026-31802
-# express-rate-limit
-CVE-2026-30827
-# Django CVE - fixed in Django 5.2.12/6.0.3/4.2.29; temporary until image updates Django
-CVE-2026-25673
-# Go stdlib CVE - fixed in Go 1.25.8/1.26.1; temporary until image updates Go runtime
-CVE-2026-25679
 
 # fast-xml-parser CVE - fixed in 5.5.6; temporary until opencti-platform updates fast-xml-parser
 CVE-2026-33036
