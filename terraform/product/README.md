@@ -25,15 +25,15 @@ the bundle deployment onto any Kubernetes environment managed by [Juju][Juju].
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.6.6 |
-| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 1.1.1 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.12 |
+| <a name="requirement_juju"></a> [juju](#requirement\_juju) | ~> 1.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 1.1.1 |
-| <a name="provider_juju.opencti_db"></a> [juju.opencti\_db](#provider\_juju.opencti\_db) | >= 1.1.1 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | ~> 1.0 |
+| <a name="provider_juju.opencti_db"></a> [juju.opencti\_db](#provider\_juju.opencti\_db) | ~> 1.0 |
 
 ## Modules
 
