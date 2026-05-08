@@ -3,7 +3,7 @@
 
 name: opencti
 base: ubuntu@24.04
-version: &version '6.9.28'
+version: &version '6.9.29'
 summary: Open Cyber Threat Intelligence Platform
 description: >-
   OpenCTI is an open source platform allowing organizations to manage their 
@@ -38,9 +38,9 @@ parts:
       - libffi-dev
     override-build: |
       craftctl default
-      yarn policies set-version stable
+      yarn set version 4.13.0
       cd opencti-platform/opencti-graphql/
-      yarn install --frozen-lockfile
+      yarn install --immutable
       yarn build:prod
       yarn cache clean --all
       mkdir -p $CRAFT_PART_INSTALL/opt/opencti
