@@ -228,23 +228,26 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
         container = self.unit.get_container(self.meta.name)
         if not container.can_connect():
             raise NotReady("waiting for container ready")
-        container.add_layer(
-            "connector",
-            layer=ops.pebble.LayerDict(
-                summary=self.meta.name,
-                description=self.meta.name,
-                services={
-                    "connector": {
-                        "startup": "enabled",
-                        "on-failure": "restart",
-                        "override": "replace",
-                        "command": "bash /entrypoint.sh",
-                        "environment": self._gen_env(),
+        try:
+            container.add_layer(
+                "connector",
+                layer=ops.pebble.LayerDict(
+                    summary=self.meta.name,
+                    description=self.meta.name,
+                    services={
+                        "connector": {
+                            "startup": "enabled",
+                            "on-failure": "restart",
+                            "override": "replace",
+                            "command": "bash /entrypoint.sh",
+                            "environment": self._gen_env(),
+                        },
                     },
-                },
-            ),
-            combine=True,
-        )
+                ),
+                combine=True,
+            )
+        except TimeoutError as exc:
+            raise NotReady("Timeout while adding pebble layer, will retry.") from exc
         try:
             container.replan()
             container.start("connector")
