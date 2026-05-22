@@ -247,7 +247,7 @@ class OpenctiConnectorCharm(ops.CharmBase, abc.ABC):
                 combine=True,
             )
         except TimeoutError as exc:
-            raise NotReady("Timeout while adding pebble layer, will retry.") from exc
+            raise Blocked("Timeout while adding pebble layer, will retry.") from exc
         try:
             container.replan()
             container.start("connector")
