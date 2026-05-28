@@ -20,6 +20,9 @@ jobs:
 
   publish-charm:
     needs: [ find-charms ]
+    permissions:
+      contents: write
+      pull-requests: write
     strategy:
       fail-fast: false
       matrix:
