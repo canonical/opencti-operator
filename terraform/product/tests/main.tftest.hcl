@@ -37,7 +37,7 @@ run "basic_deploy" {
     rabbitmq_server = {
       channel = "3.9/edge"
       # renovate: depName="rabbitmq-server"
-      revision = 262
+      revision = 291
     }
     redis_k8s = {
       channel = "latest/edge"
