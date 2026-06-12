@@ -7,7 +7,7 @@
 
 The charm design leverages the [sidecar](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/#example-1-sidecar-containers)
 pattern to allow multiple containers in each pod with 
-[Pebble](https://juju.is/docs/sdk/pebble) running as the workload container’s 
+[Pebble](https://ubuntu.com/docs/pebble/) running as the workload container's 
 entrypoint.
 
 Pebble is a lightweight, API-driven process supervisor that is responsible for
@@ -116,7 +116,7 @@ We use [Rockcraft](https://canonical-rockcraft.readthedocs-hosted.com/en/latest/
 The images are defined in the [OpenCTI rock](https://github.com/canonical/opencti-operator/blob/main/opencti_rock/rockcraft.yaml).
 They are published to [Charmhub](https://charmhub.io/), the official repository of charms.
 
-> See more: [How to publish your charm on Charmhub](https://juju.is/docs/sdk/publishing)
+> See more: [How to publish your charm on Charmhub](https://documentation.ubuntu.com/charmcraft/stable/howto/#publish-charms-and-manage-releases)
 
 ## Containers
 
@@ -126,7 +126,7 @@ Configuration files for the containers can be found in the respective directorie
 
 The `opencti` container runs the OpenCTI platform and OpenCTI workers.
 In every container, one instance of OpenCTI platform and three instances of 
-OpenCTI workers are running. The ratio is recommended by the [OpenCTI deployment guide](https://docs.opencti.io/latest/deployment/clustering/).
+OpenCTI workers are running. The ratio is recommended by the [OpenCTI deployment guide](https://docs.opencti.io/latest/deployment/advanced/clustering/).
 
 The workload that this container is running is defined in the [OpenCTI rock](https://github.com/canonical/opencti-operator/blob/main/opencti_rock/rockcraft.yaml).
 
@@ -161,7 +161,7 @@ details, see the documentation for the charm libraries.
 
 The `src/charm.py` is the default entry point for a charm and has the 
 `OpenCTICharm` Python class which inherits from CharmBase. CharmBase is the 
-base class from which all Charms are formed, defined by [Ops](https://juju.is/docs/sdk/ops) 
+base class from which all Charms are formed, defined by [Ops](https://canonical.com/juju/docs/ops/latest/) 
 (Python framework for developing charms).
 
 > See more in the Juju docs: [Charm](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/charm/)
