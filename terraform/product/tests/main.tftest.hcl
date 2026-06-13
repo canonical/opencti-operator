@@ -22,7 +22,7 @@ run "basic_deploy" {
     opencti = {
       channel = "latest/edge"
       # renovate: depName="opencti"
-      revision = 110
+      revision = 117
     }
     opensearch = {
       channel = "2/edge"
