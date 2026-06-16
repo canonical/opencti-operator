@@ -19,8 +19,7 @@ jobs:
       vale-style-check: false
   integration-tests:
     name: Integration Tests
-    uses: 
-      canonical/operator-workflows/.github/workflows/integration_test.yaml@main
+    uses: canonical/operator-workflows/.github/workflows/integration_test.yaml@main
     secrets: inherit
     with:
       channel: 1.33-strict/stable
@@ -41,7 +40,7 @@ jobs:
       - uses: actions/checkout@v6.0.2
       - uses: actions/setup-python@v6.2.0
         with:
-          python-version: '3.14'
+          python-version: '3.12'
       - run: pip install tox
       - run: tox -e generate-connectors
       - run: git diff --exit-code
