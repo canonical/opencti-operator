@@ -5,6 +5,10 @@ on:
   schedule:
   - cron: "0 15 * * SAT"
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   unit-tests:
     name: Unit Tests
