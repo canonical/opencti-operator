@@ -17,7 +17,7 @@ Use links instead.
 [![Promote charm](https://github.com/canonical/opencti-operator/actions/workflows/promote_charm.yaml/badge.svg)](https://github.com/canonical/opencti-operator/actions/workflows/promote_charm.yaml)
 [![Discourse Status](https://img.shields.io/discourse/status?server=https%3A%2F%2Fdiscourse.charmhub.io&style=flat&label=CharmHub%20Discourse)](https://discourse.charmhub.io)
 
-A [Juju](https://juju.is/) [charm](https://canonical-juju.readthedocs-hosted.com/en/3.6/user/reference/charm/)
+A [Juju](https://juju.is/) [charm](https://canonical.com/juju/docs/juju-cli/3.6/reference/charm/)
 for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
 open source threat intelligence platform in your systems.
 
@@ -36,7 +36,7 @@ You’ll need a workstation, e.g., a laptop, with sufficient resources to launch
 a virtual machine with 4 CPUs, 8 GB RAM, and 50 GB disk space.
 
 ### Set up
-You can follow the tutorial [here](https://canonical-juju.readthedocs-hosted.com/en/latest/user/howto/manage-your-deployment/manage-your-deployment-environment/#manage-your-deployment-environment) 
+You can follow the tutorial [here](https://canonical.com/juju/docs/juju-cli/3.6/howto/manage-your-deployment/) 
 to set up a test environment for Juju.
 
 ### Deploy databases on the VM model
@@ -60,7 +60,7 @@ juju deploy rabbitmq-server --channel 3.9/stable
 juju integrate self-signed-certificates opensearch
 ```
 ### Create Juju offers
-Next, we will create some [offers](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/offer/)
+Next, we will create some [offers](https://canonical.com/juju/docs/juju-cli/3.6/reference/offer/)
 for cross-model integrations.
 
 ```bash
