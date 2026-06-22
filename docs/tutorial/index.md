@@ -16,8 +16,8 @@ the OpenCTI charm with all its dependencies using Juju.
 
 ## What you'll need
 
-You will need a working station, e.g., a laptop, with AMD64 architecture. Your
-working station should have at least 8 CPU cores, 16 GB of RAM, and 100 GB of
+You will need a working station with AMD64 architecture. Your
+working station should have at least eight CPU cores, 16 GB of RAM, and 100 GB of
 disk space.
 
 > **Tip:** You can use Multipass to create an isolated environment by running:
@@ -32,7 +32,7 @@ This tutorial requires the following software to be installed in your working
 environment (preferably a Multipass VM):
 
 - Juju 3.6+
-- Canonicak Kubernetes 1.32+
+- Canonical Kubernetes 1.32+
 - LXD 5.21+
 
 Use [Concierge](https://github.com/canonical/concierge) to set up Juju, LXD and
