@@ -1,0 +1,6 @@
+[41mE100[0m [config pipeline failed] Runtime error
+
+no sources provided
+
+[2m[3mExecution stopped with code 1.[0m[2m[0m
+make: *** [Makefile.docs:51: vale-sync] Error 2

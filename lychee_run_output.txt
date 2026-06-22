@@ -1,0 +1,5 @@
+Error: Cannot parse inputs from arguments
+
+Caused by:
+    Input 'docs/' not found as file and not a valid URL. Use full URL (e.g., https://example.com) or check file path.
+make: *** [Makefile.docs:65: lychee] Error 1

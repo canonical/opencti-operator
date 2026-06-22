@@ -1,0 +1,45 @@
+[IGNORED] s3://opencti (at 905:11) | Unsupported: Failed to create HTTP request client: builder error for url (s3://opencti)
+[EXCLUDED] mailto:email=admin@example.com (at 923:67) | This is due to your 'exclude' values
+[EXCLUDED] mailto:`admin@example.com (at 932:52) | This is due to your 'exclude' values
+[ERROR] http://minio-endpoints.welcome.svc.cluster.local:9000/ (at 893:46) | Connection failed. Check network connectivity and firewall settings
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#upgrade-charm (at 357:22) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#update-status (at 358:22) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#secret-changed (at 359:23) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#container-pebble-ready (at 360:29) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-created (at 361:38) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-changed (at 362:38) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-departed (at 363:39) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-broken (at 364:37) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#container-pebble-custom-notice (at 365:38) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-joined (at 366:43) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-changed (at 367:44) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#stop (at 368:14) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/ (at 373:37) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#config-changed (at 356:23) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[404] https://canonical.com/docs/rockcraft/ (at 330:20) | Rejected status code: 404 Not Found (configurable with "accept" option) | Followed 1 redirect. Redirects: https://canonical.com/docs/rockcraft/ --[302]--> https://canonical.com/docs/rockcraft
+[404] https://canonical.com/juju/docs/juju-cli/3.6/reference/refresh/ (at 3:26) | Rejected status code: 404 Not Found (configurable with "accept" option)
+[ERROR] http://opencti.local/ (at 932:2) | Connection failed. Check network connectivity and firewall settings
+Issues found in 1 input. Find details below.
+
+[stdin]:
+[ERROR] http://minio-endpoints.welcome.svc.cluster.local:9000/ (at 893:46) | Connection failed. Check network connectivity and firewall settings
+[ERROR] http://opencti.local/ (at 932:2) | Connection failed. Check network connectivity and firewall settings
+[404] https://canonical.com/docs/rockcraft/ (at 330:20) | Rejected status code: 404 Not Found (configurable with "accept" option) | Followed 1 redirect. Redirects: https://canonical.com/docs/rockcraft/ --[302]--> https://canonical.com/docs/rockcraft
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/ (at 373:37) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#config-changed (at 356:23) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#container-pebble-custom-notice (at 365:38) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#container-pebble-ready (at 360:29) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-broken (at 364:37) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-changed (at 362:38) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-changed (at 367:44) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-created (at 361:38) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-departed (at 363:39) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-joined (at 366:43) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#secret-changed (at 359:23) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#stop (at 368:14) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#update-status (at 358:22) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[377] https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#upgrade-charm (at 357:22) | Rejected status code: 377 Unknown status code (configurable with "accept" option)
+[404] https://canonical.com/juju/docs/juju-cli/3.6/reference/refresh/ (at 3:26) | Rejected status code: 404 Not Found (configurable with "accept" option)
+
+🔍 92 Total (in 8s 103ms) 🔗 71 Unique ✅ 71 OK 🚫 18 Errors 👻 2 Excluded ⛔ 1 Unsupported 🔀 17 Redirects
+
