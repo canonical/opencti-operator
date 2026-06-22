@@ -112,7 +112,7 @@ C4Component
 
 ## OCI images
 
-We use [Rockcraft](https://canonical.com/docs/rockcraft/) to build OCI Images for the OpenCTI charm. 
+We use [Rockcraft](https://documentation.ubuntu.com/rockcraft/latest/) to build OCI Images for the OpenCTI charm. 
 The images are defined in the [OpenCTI rock](https://github.com/canonical/opencti-operator/blob/main/opencti_rock/rockcraft.yaml).
 They are published to [Charmhub](https://charmhub.io/), the official repository of charms.
 
@@ -138,24 +138,24 @@ OpenCTI platform in the OpenCTI charm is [configured to expose prometheus on por
 
 For this charm, the following Juju events are observed:
 
-1. [`config-changed`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#config-changed)
-2. [`upgrade-charm`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#upgrade-charm)
-3. [`update-status`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#update-status)
-4. [`secret-changed`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#secret-changed)
-5. [`opencti-pebble-ready`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#container-pebble-ready)
-6. [`opencti-peer-relation-created`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-created)
-7. [`opencti-peer-relation-changed`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-changed)
-8. [`opencti-peer-relation-departed`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-departed)
-9. [`opencti-peer-relation-broken`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-broken)
-10. [`opencti-pebble-custom-notice`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#container-pebble-custom-notice)
-11. [`opencti-connector-relation-joined`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-joined)
-12. [`opencti-connector-relation-changed`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-changed)
-13. [`stop`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#stop)
+1. [`config-changed`](https://documentation.ubuntu.com/juju/3.6/reference/hook/#config-changed)
+2. [`upgrade-charm`](https://documentation.ubuntu.com/juju/3.6/reference/hook/#upgrade-charm)
+3. [`update-status`](https://documentation.ubuntu.com/juju/3.6/reference/hook/#update-status)
+4. [`secret-changed`](https://documentation.ubuntu.com/juju/3.6/reference/hook/#secret-changed)
+5. [`opencti-pebble-ready`](https://documentation.ubuntu.com/juju/3.6/reference/hook/#container-pebble-ready)
+6. [`opencti-peer-relation-created`](https://documentation.ubuntu.com/juju/3.6/reference/hook/#endpoint-relation-created)
+7. [`opencti-peer-relation-changed`](https://documentation.ubuntu.com/juju/3.6/reference/hook/#endpoint-relation-changed)
+8. [`opencti-peer-relation-departed`](https://documentation.ubuntu.com/juju/3.6/reference/hook/#endpoint-relation-departed)
+9. [`opencti-peer-relation-broken`](https://documentation.ubuntu.com/juju/3.6/reference/hook/#endpoint-relation-broken)
+10. [`opencti-pebble-custom-notice`](https://documentation.ubuntu.com/juju/3.6/reference/hook/#container-pebble-custom-notice)
+11. [`opencti-connector-relation-joined`](https://documentation.ubuntu.com/juju/3.6/reference/hook/#endpoint-relation-joined)
+12. [`opencti-connector-relation-changed`](https://documentation.ubuntu.com/juju/3.6/reference/hook/#endpoint-relation-changed)
+13. [`stop`](https://documentation.ubuntu.com/juju/3.6/reference/hook/#stop)
 
 In addition, the charm libraries can observe many other events. For more 
 details, see the documentation for the charm libraries.
 
-> See more in the Juju docs: [Hook](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/)
+> See more in the Juju docs: [Hook](https://documentation.ubuntu.com/juju/3.6/reference/hook/)
 
 ## Charm code overview
 
