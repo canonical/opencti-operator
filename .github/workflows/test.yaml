@@ -18,6 +18,9 @@ jobs:
       vale-style-check: false
   integration-tests:
     name: Integration Tests
+    permissions:
+      contents: read
+      packages: write
     uses: 
       canonical/operator-workflows/.github/workflows/integration_test.yaml@main
     secrets: inherit
@@ -35,6 +38,8 @@ jobs:
       microk8s-addons: "dns registry:size=40Gi rbac storage ingress"
   check-connector-sync:
     name: Check Connectors
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6.0.3
@@ -46,6 +51,8 @@ jobs:
       - run: git diff --exit-code
   allure-report:
     if: ${{ !cancelled() && github.event_name == 'schedule' }}
+    permissions:
+      contents: write
     needs:
     - integration-tests
     uses: canonical/operator-workflows/.github/workflows/allure_report.yaml@main
