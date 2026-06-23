@@ -1,0 +1,4 @@
+Error: Cannot parse inputs from arguments
+
+Caused by:
+    Input './CONTRIBUTING.md' not found as file and not a valid URL. Use full URL (e.g., https://example.com) or check file path.
