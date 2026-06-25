@@ -7,7 +7,7 @@
 
 The charm design leverages the [sidecar](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/#example-1-sidecar-containers)
 pattern to allow multiple containers in each pod with 
-[Pebble](https://juju.is/docs/sdk/pebble) running as the workload container’s 
+[Pebble](https://ubuntu.com/docs/pebble/) running as the workload container's
 entrypoint.
 
 Pebble is a lightweight, API-driven process supervisor that is responsible for
@@ -138,33 +138,33 @@ OpenCTI platform in the OpenCTI charm is [configured to expose prometheus on por
 
 For this charm, the following Juju events are observed:
 
-1. [`config-changed`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#config-changed)
-2. [`upgrade-charm`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#upgrade-charm)
-3. [`update-status`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#update-status)
-4. [`secret-changed`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#secret-changed)
-5. [`opencti-pebble-ready`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#container-pebble-ready)
-6. [`opencti-peer-relation-created`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-created)
-7. [`opencti-peer-relation-changed`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-changed)
-8. [`opencti-peer-relation-departed`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-departed)
-9. [`opencti-peer-relation-broken`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-broken)
-10. [`opencti-pebble-custom-notice`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#container-pebble-custom-notice)
-11. [`opencti-connector-relation-joined`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-joined)
-12. [`opencti-connector-relation-changed`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#endpoint-relation-changed)
-13. [`stop`](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/hook/#stop)
+1. [`config-changed`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#config-changed)
+2. [`upgrade-charm`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#upgrade-charm)
+3. [`update-status`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#update-status)
+4. [`secret-changed`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#secret-changed)
+5. [`opencti-pebble-ready`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#container-pebble-ready)
+6. [`opencti-peer-relation-created`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-created)
+7. [`opencti-peer-relation-changed`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-changed)
+8. [`opencti-peer-relation-departed`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-departed)
+9. [`opencti-peer-relation-broken`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-broken)
+10. [`opencti-pebble-custom-notice`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#container-pebble-custom-notice)
+11. [`opencti-connector-relation-joined`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-joined)
+12. [`opencti-connector-relation-changed`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#endpoint-relation-changed)
+13. [`stop`](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/#stop)
 
 In addition, the charm libraries can observe many other events. For more 
 details, see the documentation for the charm libraries.
 
-> See more in the Juju docs: [Hook](https://documentation.ubuntu.com/juju/latest/reference/hook/)
+> See more in the Juju docs: [Hook](https://canonical.com/juju/docs/juju-cli/3.6/reference/hook/)
 
 ## Charm code overview
 
 The `src/charm.py` is the default entry point for a charm and has the 
 `OpenCTICharm` Python class which inherits from CharmBase. CharmBase is the 
-base class from which all Charms are formed, defined by [Ops](https://juju.is/docs/sdk/ops) 
+base class from which all Charms are formed, defined by [Ops](https://canonical.com/juju/docs/ops/latest/) 
 (Python framework for developing charms).
 
-> See more in the Juju docs: [Charm](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/charm/)
+> See more in the Juju docs: [Charm](https://canonical.com/juju/docs/juju-cli/3.6/reference/charm/)
 
 The `__init__` method guarantees that the charm observes all events relevant to its operation and handles them.
 
