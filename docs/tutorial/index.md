@@ -1,16 +1,14 @@
 # Deploy OpenCTI for the first time
 
-OpenCTI is an open-source cyber threat intelligence platform that enables
+OpenCTI is an open-source threat intelligence platform that enables
 organisations to collect, correlate, and leverage threat data at strategic,
 operational and tactical levels. This tutorial walks you through deploying
 the OpenCTI charm with all its dependencies using Juju.
 
 ## What you'll do
 
-- Set up two Juju models: one VM model (LXD) for databases and one Kubernetes
-  model (MicroK8s) for the OpenCTI platform
-- Deploy OpenSearch and RabbitMQ on the VM model
-- Deploy OpenCTI and its Kubernetes dependencies (Redis, MinIO, NGINX ingress)
+- Deploy OpenSearch and RabbitMQ on a VM model (using LXD)
+- Deploy OpenCTI platform and its dependencies (Redis, MinIO, an ingress) on a Kubernetes model
 - Integrate the two models using Juju cross-model relations
 - Create an admin user and access the OpenCTI platform from a browser
 
@@ -21,15 +19,13 @@ working station should have at least eight CPU cores, 16 GB of RAM, and 100 GB o
 disk space.
 
 > **Tip:** You can use Multipass to create an isolated environment by running:
-> ```
+>
+> ```shell
 > multipass launch 24.04 --name opencti-tutorial-vm --cpus 8 --memory 16G --disk 100G
 > ```
-> When using a Multipass VM, make sure to replace `127.0.0.1` IP addresses with
-> the VM IP in steps that assume you're running locally. To get the IP address of
-> the Multipass instance run `multipass info opencti-tutorial-vm`.
 
 This tutorial requires the following software to be installed in your working
-environment (preferably a Multipass VM):
+environment:
 
 - Juju 3.6+
 - Canonical Kubernetes 1.32+
@@ -39,12 +35,35 @@ Use [Concierge](https://github.com/canonical/concierge) to set up Juju, LXD and
 Canonical Kubernetes:
 
 ```shell
+VM_IP=$(hostname -I | awk '{print $1}')
 sudo snap install --classic concierge
-sudo concierge prepare -p dev
+cat << EOF > concierge.yaml
+providers:
+  lxd:
+    enable: true
+    bootstrap: true
+  k8s:
+    enable: true
+    bootstrap: true
+    bootstrap-constraints:
+      root-disk: "5G"
+    features:
+      load-balancer:
+        l2-mode: "true"
+        cidrs: "$VM_IP/28"
+      local-storage: {}
+      network: {}
+      ingress: 
+
+host:
+  snaps:
+    aws-cli:
+EOF
+sudo concierge prepare -c concierge.yaml
 ```
 
 Once the command succeeds, you have a working environment with Juju, LXD and
-Kubernetes working. You can confirm by running `juju controllers` that should 
+Kubernetes working. You can confirm by running `juju controllers` that should
 return both controllers:
 
 ```shell
@@ -53,22 +72,10 @@ concierge-k8s   testing  admin  superuser  k8s                       2      1   
 concierge-lxd*  testing  admin  superuser  localhost/localhost       2      1  none  3.6.24  
 ```
 
-Kubernetes must have an ingress controller enabled. Complete this step by running:
+## Deploy the databases
 
-```shell
-sudo k8s enable ingress
-```
-
-Additionally, this tutorial uses the AWS CLI to create an S3 bucket in MinIO.
-Install it with:
-
-```shell
-sudo snap install aws-cli --classic
-```
-
-## Set up the tutorial models
-
-Create a Juju model on the LXD controller for the database dependencies:
+OpenCTI requires OpenSearch and RabbitMQ, which run best as machine charms on
+LXD rather than on Kubernetes. So let's start by creating a Juju model on the LXD controller for them:
 
 ```shell
 juju switch concierge-lxd
@@ -80,22 +87,6 @@ You can confirm with `juju status`:
 ```shell
 Model              Controller     Cloud/Region         Version  SLA          Timestamp
 opencti-databases  concierge-lxd  localhost/localhost  3.6.24   unsupported  17:22:42+02:00
-```
-
-Create a Juju model on the Kubernetes controller for the OpenCTI platform:
-
-```
-juju switch concierge-k8s
-juju add-model opencti
-```
-
-## Deploy the databases
-
-OpenCTI requires OpenSearch and RabbitMQ, which run best as machine charms on
-LXD rather than on Kubernetes. Switch to the database model and deploy them:
-
-```shell
-juju switch concierge-lxd:opencti-databases
 ```
 
 Deploy a self-signed certificate authority for securing OpenSearch:
@@ -120,19 +111,31 @@ Machine  State    Address         Inst id        Base          AZ               
 0        started  10.204.160.215  juju-3415cb-0  ubuntu@24.04  opencti-tutorial-vm  Running
 ```
 
-Deploy a three-node OpenSearch cluster. OpenSearch requires specific kernel
+Deploy a signle-node OpenSearch cluster. OpenSearch requires specific kernel
 parameters on the host machine. The `sysconfig` charm applies them
 automatically:
 
-```
-juju deploy opensearch --channel 2/stable
+```shell
+juju deploy opensearch --channel 2/stable --constraints "virt-type=virtual-machine cores=2 mem=4G"
 juju deploy sysconfig --channel latest/stable \
   --config sysctl="{vm.max_map_count: 262144, vm.swappiness: 0, net.ipv4.tcp_retries2: 5, fs.file-max: 1048576}"
 juju integrate sysconfig opensearch
 juju integrate self-signed-certificates opensearch
 ```
 
-Deploy RabbitMQ, which OpenCTI uses as a message queue:
+Note: `sysconfig` will remain in `blocked` state as it needs a reboot:
+
+```shell
+  sysconfig/1*               blocked   idle            10.228.176.177                  update-grub and reboot required. Changes in: /etc/default/grub.d/90-sysconfig.cfg
+```
+
+This is not an issue for the rest of the tutorial. If you still want to reboot it, you can do so with:
+
+```shell
+juju ssh opensearch/leader -- sudo reboot
+```
+
+In parallel to OpenSearch, you can deploy RabbitMQ, which OpenCTI uses as a message queue:
 
 ```shell
 juju deploy rabbitmq-server --channel 3.9/stable
@@ -148,19 +151,21 @@ juju wait-for application opensearch --query='status=="active"' --timeout 20m
 ## Create Juju offers
 
 Create [cross-model offers](https://canonical.com/juju/docs/juju-cli/latest/reference/offer/)
-so that the Kubernetes model can consume the database services:
+so that the Kubernetes model can consume the database and certificate services:
 
 ```shell
 juju offer opensearch:opensearch-client opensearch-client
 juju offer rabbitmq-server:amqp amqp
+juju offer self-signed-certificates:certificates certificates
 ```
 
 ## Deploy OpenCTI and its dependencies
 
-Switch to the Kubernetes model and deploy the OpenCTI platform and its requirements:
+Create a Juju model on the Kubernetes controller for the OpenCTI platform:
 
 ```shell
-juju switch concierge-k8s:opencti
+juju switch concierge-k8s
+juju add-model opencti
 ```
 
 Deploy MinIO as S3-compatible object storage for OpenCTI file attachments. The
@@ -184,15 +189,25 @@ Deploy Redis, which OpenCTI uses for caching:
 juju deploy redis-k8s --channel latest/edge
 ```
 
-TODO
-Deploy NGINX ingress integrator to expose the OpenCTI web interface:
+Deploy `gateway-api-integrator` and `ingress-configurator` to provide an ingress relation to expose the OpenCTI web interface. The last command integrates the `gateway-api-service` with `self-signed-certificates` to be able to provide `https` access:
 
+```shell
+juju integrate gateway-api-integrator concierge-lxd:admin/opencti-databases.certificates
 ```
-juju deploy nginx-ingress-integrator --trust \
-  --channel latest/edge \
-  --config path-routes=/ \
-  --config service-hostname=opencti.local
+
+```shell
+juju deploy gateway-api-integrator \
+  --trust \
+  --channel 1/edge \
+  --config gateway-class=cilium
+juju deploy ingress-configurator \
+  --trust \
+  --channel latest/edge  
+juju integrate ingress-configurator gateway-api-integrator
+juju integrate gateway-api-integrator concierge-lxd:admin/opencti-databases.certificates
 ```
+
+Note: `ingress-configurator` will remain in `blocked` state until we relate it to `opencti` in the comming sections.
 
 Deploy the OpenCTI charm itself:
 
@@ -214,7 +229,7 @@ aws s3 mb s3://opencti
 
 Sync the credentials to the `s3-integrator` charm:
 
-```
+```shell
 juju run s3-integrator/0 sync-s3-credentials \
   --string-args access-key=minioadmin secret-key=minioadmin
 ```
@@ -226,12 +241,40 @@ The `s3-integrator` should now turn to `active`.
 Integrate OpenCTI with all its dependencies, including the cross-model offers
 from the LXD controller:
 
-```
+```shell
 juju integrate opencti concierge-lxd:admin/opencti-databases.opensearch-client
 juju integrate opencti concierge-lxd:admin/opencti-databases.amqp
 juju integrate opencti redis-k8s
 juju integrate opencti s3-integrator
-juju integrate opencti nginx-ingress-integrator
+juju integrate opencti ingress-configurator
+```
+
+The final result should look like this when you run `juju status`:
+
+```shell
+Model    Controller     Cloud/Region  Version  SLA          Timestamp
+opencti  concierge-k8s  k8s           3.6.24   unsupported  11:52:39+02:00
+
+SAAS               Status   Store          URL
+amqp               active   concierge-lxd  admin/opencti-databases.amqp
+certificates       active   concierge-lxd  admin/opencti-databases.certificates
+opensearch-client  blocked  concierge-lxd  admin/opencti-databases.opensearch-client
+
+App                     Version                Status   Scale  Charm                   Channel          Rev  Address         Exposed  Message
+gateway-api-integrator                         active       1  gateway-api-integrator  1/edge           161  10.152.183.116  no       Gateway addresses: 10.56.254.16
+ingress-configurator                           active       1  ingress-configurator    latest/edge       90  10.152.183.160  no       Ready
+minio                   res:oci-image@7f2474f  active       1  minio                   ckf-1.10/stable  583  10.152.183.121  no       
+opencti                                        blocked      1  opencti                 latest/edge      117  10.152.183.213  no       missing charm config: admin-user
+redis-k8s               7.2.5                  active       1  redis-k8s               latest/edge       42  10.152.183.205  no       
+s3-integrator                                  active       1  s3-integrator           1/stable         562  10.152.183.117  no       
+
+Unit                       Workload  Agent  Address     Ports          Message
+gateway-api-integrator/0*  active    idle   10.1.0.237                 Gateway addresses: 10.56.254.16
+ingress-configurator/0*    active    idle   10.1.0.137                 Ready
+minio/0*                   active    idle   10.1.0.71   9000-9001/TCP  
+opencti/0*                 blocked   idle   10.1.0.229                 missing charm config: admin-user
+redis-k8s/0*               active    idle   10.1.0.89                  
+s3-integrator/0*           active    idle   10.1.0.57
 ```
 
 ## Configure the admin user
@@ -258,51 +301,42 @@ juju wait-for application opencti --query='status=="active"' --timeout 20m
 
 Run `juju status` to confirm that all applications are active:
 
-```
+```shell
 juju status
 ```
 
 The output should resemble:
 
-```
-Model   Controller          Cloud/Region        Version  SLA          Timestamp
-opencti  concierge-k8s  microk8s/localhost  3.6.0    unsupported  ...
+```shell
+Model    Controller     Cloud/Region  Version  SLA          Timestamp
+opencti  concierge-k8s  k8s           3.6.24   unsupported  14:36:29+02:00
 
-App                       Version  Status  Scale  Charm                     Channel      Rev  Address         Exposed  Message
-minio                              active      1  minio                     ckf-1.10/stable  ...
-nginx-ingress-integrator           active      1  nginx-ingress-integrator  latest/edge  ...
-opencti                            active      1  opencti                   latest/edge  ...
-redis-k8s                          active      1  redis-k8s                 latest/edge  ...
-s3-integrator                      active      1  s3-integrator             ...
-```
+...
 
-You can also verify the Kubernetes pods are running:
+App                     Version                Status  Scale  Charm                   Channel          Rev  Address         Exposed  Message
+gateway-api-integrator                         active      1  gateway-api-integrator  1/edge           161  10.152.183.116  no       Gateway addresses: 10.56.254.16
+ingress-configurator                           active      1  ingress-configurator    latest/edge       90  10.152.183.201  no       Ready
+minio                   res:oci-image@7f2474f  active      1  minio                   ckf-1.10/stable  583  10.152.183.121  no       
+opencti                                        active      1  opencti                 latest/edge      117  10.152.183.213  no       
+redis-k8s               7.2.5                  active      1  redis-k8s               latest/edge       42  10.152.183.205  no       
+s3-integrator                                  active      1  s3-integrator           1/stable         562  10.152.183.117  no       
 
+Unit                       Workload  Agent  Address     Ports          Message
+gateway-api-integrator/0*  active    idle   10.1.0.23                  Gateway addresses: 10.56.254.16
+ingress-configurator/0*    active    idle   10.1.0.202                 Ready
+minio/0*                   active    idle   10.1.0.17   9000-9001/TCP  
+opencti/0*                 active    idle   10.1.0.62                  
+redis-k8s/0*               active    idle   10.1.0.205                 
+s3-integrator/0*           active    idle   10.1.0.164    
 ```
-kubectl get pods -n opencti
-```
-
-Expected output:
-
-```
-NAME                                   READY   STATUS    RESTARTS   AGE
-opencti-0                              2/2     Running   0          5m
-```
-
-The `2/2` indicates both the charm sidecar container and the OpenCTI container
-are running successfully.
 
 ## Access OpenCTI
 
-Add the `opencti.local` hostname to your `/etc/hosts` file, pointing it to
-`127.0.0.1` (or to your Multipass VM IP if applicable):
+On your workstation open a browser and navigate to `https://<gateway-addresses>`, where `<gateway-address>` is the IP you see in front of `gateway-api-integrator` in the output of `juju status`.
 
-```
-echo "127.0.0.1 opencti.local" | sudo tee -a /etc/hosts
-```
+Note: You will have to bypass the security warning as we are using a self-signed certificate in this tutorial: click the "Advanced" button and then click the "Proceed to <gateway-address>" to access the service.
 
-Open a browser and navigate to `http://opencti.local`. Log in with the
-credentials you configured in the previous step:
+Log in with the credentials you configured in the previous step:
 
 - **Email:** `admin@example.com`
 - **Password:** the password you chose
@@ -317,19 +351,18 @@ with all its dependencies using Juju.
 
 To remove everything created during this tutorial, destroy both Juju models:
 
-```
+```shell
 juju switch concierge-k8s
-juju destroy-model opencti --no-prompt
+juju destroy-model opencti --destroy-storage --no-prompt
 ```
 
-```
+```shell
 juju switch concierge-lxd
-juju destroy-model opencti-databases --no-prompt
+juju destroy-model opencti-databases --destroy-storage --no-prompt
 ```
 
 If you created a Multipass VM, you can also delete it:
 
-```
-multipass delete opencti-tutorial-vm
-multipass purge
+```shell
+multipass delete --purge opencti-tutorial-vm
 ```
