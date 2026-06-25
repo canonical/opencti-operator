@@ -207,7 +207,7 @@ juju integrate ingress-configurator gateway-api-integrator
 juju integrate gateway-api-integrator concierge-lxd:admin/opencti-databases.certificates
 ```
 
-Note: `ingress-configurator` will remain in `blocked` state until we relate it to `opencti` in the comming sections.
+Note: `ingress-configurator` will remain in `blocked` state until we relate it to `opencti` in the coming sections.
 
 Deploy the OpenCTI charm itself:
 
@@ -330,11 +330,11 @@ redis-k8s/0*               active    idle   10.1.0.205
 s3-integrator/0*           active    idle   10.1.0.164    
 ```
 
-## Access OpenCTI
+## Accessing OpenCTI in a browser
 
 On your workstation open a browser and navigate to `https://<gateway-addresses>`, where `<gateway-address>` is the IP you see in front of `gateway-api-integrator` in the output of `juju status`.
 
-Note: You will have to bypass the security warning as we are using a self-signed certificate in this tutorial: click the "Advanced" button and then click the "Proceed to <gateway-address>" to access the service.
+Note: You will have to bypass the security warning as we are using a self-signed certificate in this tutorial: click the "Advanced" button and then follow the "Proceed to `<gateway-address>`" prompt.
 
 Log in with the credentials you configured in the previous step:
 

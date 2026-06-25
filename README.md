@@ -41,7 +41,7 @@ integration with other tools and applications. The OpenCTI connector
 charms help with the deployment, configuration, and management of OpenCTI
 connectors.
 
-Existing OpenCTI connector charms can be found [here](connectors).
+Existing OpenCTI connector charms can be found in the [connectors directory](connectors).
 
 Deploy and integrate an OpenCTI connector charm with:
 
@@ -52,7 +52,7 @@ juju integrate opencti opencti-export-file-stix-connector
 
 ## Learn more
 
-* [Read more](https://charmhub.io/opencti)
+* [OpenCTI charm on Charmhub](https://charmhub.io/opencti)
 * [Official webpage](https://filigran.io/solutions/open-cti/)
 * [Troubleshooting](https://matrix.to/#/#charmhub-charmdev:ubuntu.com)
 

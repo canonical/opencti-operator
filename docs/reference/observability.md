@@ -197,8 +197,8 @@ Total number of active requests.
 
 ## Prometheus alerts
 
-The OpenCTI charm provides the following default Prometheus alerts.  
-The full alert rules can be seen [here](https://github.com/canonical/opencti-operator/blob/main/src/prometheus_alert_rules/opencti.rule).
+The OpenCTI charm provides the following default Prometheus alerts.
+The full alert rules can be seen in the [opencti.rule file](https://github.com/canonical/opencti-operator/blob/main/src/prometheus_alert_rules/opencti.rule).
 
 ### `OpenCTITargetMissing`
 
@@ -214,8 +214,8 @@ OpenCTI NodeJS Event loop lag is above 500 milliseconds for two minutes.
 
 ## Logging
 
-Container logs for the OpenCTI platform, OpenCTI workers, and OpenCTI 
-connectors are exported using [Pebble log forwarding](https://documentation.ubuntu.com/pebble/reference/log-forwarding/).  
+Container logs for the OpenCTI platform, OpenCTI workers, and OpenCTI
+connectors are exported using [Pebble log forwarding](https://documentation.ubuntu.com/pebble/reference/log-forwarding/).
 
 Integrate the OpenCTI charm or OpenCTI worker charm with the Loki charm via 
 the `logging` charm integration to export logs.

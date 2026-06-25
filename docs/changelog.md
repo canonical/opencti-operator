@@ -58,7 +58,7 @@ Each revision is versioned by the date of the revision.
 
 - Require ingresses without stripped path prefix.
 - Add support for path prefixed URLs.
-- Pass ingress URL in the relation databag
+- Pass ingress URL in the relation data bag
 
 ### Changed
 
