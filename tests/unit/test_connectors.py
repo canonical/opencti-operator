@@ -1,7 +1,7 @@
 # Copyright 2025 Canonical Ltd.
 # See LICENSE file for licensing details.
 
-# Learn more about testing at: https://juju.is/docs/sdk/testing
+# Learn more about testing at: https://canonical.com/juju/docs/ops/latest//testing
 
 """Unit tests for connectors."""
 

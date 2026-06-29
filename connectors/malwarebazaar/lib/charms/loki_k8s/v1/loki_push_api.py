@@ -2,7 +2,7 @@
 # Copyright 2023 Canonical Ltd.
 # See LICENSE file for licensing details.
 #
-# Learn more at: https://juju.is/docs/sdk
+# Learn more at: https://canonical.com/juju/docs/ops/latest/
 
 r"""## Overview.
 

@@ -9,7 +9,7 @@ This document explains the processes and practices recommended for contributing 
 - If you would like to chat with us about your use-cases or proposed implementation, you can reach
   us at [Canonical Matrix public channel](https://matrix.to/#/#charmhub-charmdev:ubuntu.com)
   or [Discourse](https://discourse.charmhub.io/).
-- Familiarizing yourself with the [Charmed Operator Framework](https://juju.is/docs/sdk) library
+- Familiarizing yourself with the [Charmed Operator Framework](https://canonical.com/juju/docs/ops/latest/) library
   will help you a lot when working on new features or bug fixes.
 - All enhancements require review before being merged. Code review typically examines
   - code quality
@@ -20,7 +20,7 @@ This document explains the processes and practices recommended for contributing 
 
 ## Developing
 
-To make contributions to this charm, you'll need a working [development setup](https://canonical-juju.readthedocs-hosted.com/en/latest/user/howto/manage-your-deployment/manage-your-deployment-environment/#set-things-up).
+To make contributions to this charm, you'll need a working [development setup](https://canonical.com/juju/docs/juju-cli/latest/howto/).
 
 The code for this charm can be downloaded as follows:
 

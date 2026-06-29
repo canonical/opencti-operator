@@ -112,7 +112,7 @@ C4Component
 
 ## OCI images
 
-We use [Rockcraft](https://canonical-rockcraft.readthedocs-hosted.com/en/latest/) to build OCI Images for the OpenCTI charm. 
+We use [Rockcraft](https://documentation.ubuntu.com/rockcraft/latest/) to build OCI Images for the OpenCTI charm. 
 The images are defined in the [OpenCTI rock](https://github.com/canonical/opencti-operator/blob/main/opencti_rock/rockcraft.yaml).
 They are published to [Charmhub](https://charmhub.io/), the official repository of charms.
 
