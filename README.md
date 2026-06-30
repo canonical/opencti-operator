@@ -32,11 +32,11 @@ Official [OpenCTI Charm Documentation](https://charmhub.io/opencti).
 ## Get started
 In this section, we will deploy the base OpenCTI charm.
 
-You’ll need a workstation, e.g., a laptop, with sufficient resources to launch 
-a virtual machine with 4 CPUs, 8 GB RAM, and 50 GB disk space.
+You'll need a workstation, for example, a laptop, with sufficient resources to launch 
+a virtual machine with four CPUs, eight GB RAM, and 50 GB disk space.
 
 ### Set up
-You can follow the tutorial [here](https://canonical.com/juju/docs/juju-cli/3.6/howto/manage-your-deployment/) 
+You can follow the [Juju test environment tutorial](https://canonical.com/juju/docs/juju-cli/3.6/howto/manage-your-deployment/) 
 to set up a test environment for Juju.
 
 ### Deploy databases on the VM model
@@ -115,10 +115,10 @@ juju config opencti admin-user=$OPENCTI_ADMIN_USER_SECRET_ID
 
 When the OpenCTI charm has completed deployment and installation, you can 
 access OpenCTI from a browser. First, we need to modify the `/etc/hosts` file 
-to point the `opencti.local` domain to the IP address of the virtual machine.  
-After that, we can access the OpenCTI instance in the browser using the address 
+to point the `opencti.local` domain to the IP address of the virtual machine.
+After that, we can access the OpenCTI instance in the browser using the address
 `http://opencti.local` and the test admin username `admin@example.com` and
-password `test`.  
+password `test`.
 
 ## Integrations
 
@@ -128,7 +128,7 @@ integration with other tools and applications. The OpenCTI connector
 charms help with the deployment, configuration, and management of OpenCTI 
 connectors.
 
-Existing OpenCTI connector charms can be found [here](connectors).
+Existing OpenCTI connector charms can be found in the [connectors directory](connectors).
 
 Deploy and integrate an OpenCTI connector charm with:
 
@@ -138,7 +138,7 @@ juju integrate opencti opencti-export-file-stix-connector
 ```
 
 ## Learn more
-* [Read more](https://charmhub.io/opencti)
+* [OpenCTI charm on Charmhub](https://charmhub.io/opencti)
 * [Official webpage](https://filigran.io/solutions/open-cti/)
 * [Troubleshooting](https://matrix.to/#/#charmhub-charmdev:ubuntu.com)
 
