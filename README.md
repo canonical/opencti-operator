@@ -17,7 +17,7 @@ Use links instead.
 [![Promote charm](https://github.com/canonical/opencti-operator/actions/workflows/promote_charm.yaml/badge.svg)](https://github.com/canonical/opencti-operator/actions/workflows/promote_charm.yaml)
 [![Discourse Status](https://img.shields.io/discourse/status?server=https%3A%2F%2Fdiscourse.charmhub.io&style=flat&label=CharmHub%20Discourse)](https://discourse.charmhub.io)
 
-A [Juju](https://juju.is/) [charm](https://canonical-juju.readthedocs-hosted.com/en/3.6/user/reference/charm/)
+A [Juju](https://juju.is/) [charm](https://canonical.com/juju/docs/juju-cli/3.6/reference/charm/)
 for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
 open source threat intelligence platform in your systems.
 
@@ -32,11 +32,11 @@ Official [OpenCTI Charm Documentation](https://charmhub.io/opencti).
 ## Get started
 In this section, we will deploy the base OpenCTI charm.
 
-You’ll need a workstation, e.g., a laptop, with sufficient resources to launch 
-a virtual machine with 4 CPUs, 8 GB RAM, and 50 GB disk space.
+You'll need a workstation, such as a laptop, with sufficient resources to launch 
+a virtual machine with four CPUs, eight GB RAM, and 50 GB disk space.
 
 ### Set up
-You can follow the tutorial [here](https://canonical-juju.readthedocs-hosted.com/en/latest/user/howto/manage-your-deployment/manage-your-deployment-environment/#manage-your-deployment-environment) 
+You can follow the [Juju local testing and development tutorial](https://canonical.com/juju/docs/juju-cli/latest/howto/manage-your-juju-deployment/set-up-your-juju-deployment-local-testing-and-development/)
 to set up a test environment for Juju.
 
 ### Deploy databases on the VM model
@@ -60,7 +60,7 @@ juju deploy rabbitmq-server --channel 3.9/stable
 juju integrate self-signed-certificates opensearch
 ```
 ### Create Juju offers
-Next, we will create some [offers](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/offer/)
+Next, we will create some [offers](https://canonical.com/juju/docs/juju-cli/latest/reference/offer/)
 for cross-model integrations.
 
 ```bash
@@ -115,10 +115,10 @@ juju config opencti admin-user=$OPENCTI_ADMIN_USER_SECRET_ID
 
 When the OpenCTI charm has completed deployment and installation, you can 
 access OpenCTI from a browser. First, we need to modify the `/etc/hosts` file 
-to point the `opencti.local` domain to the IP address of the virtual machine.  
+to point the `opencti.local` domain to the IP address of the virtual machine.
 After that, we can access the OpenCTI instance in the browser using the address 
 `http://opencti.local` and the test admin username `admin@example.com` and
-password `test`.  
+password `test`.
 
 ## Integrations
 
@@ -128,7 +128,7 @@ integration with other tools and applications. The OpenCTI connector
 charms help with the deployment, configuration, and management of OpenCTI 
 connectors.
 
-Existing OpenCTI connector charms can be found [here](connectors).
+The [available OpenCTI connector charms](connectors) can be found in the connectors directory.
 
 Deploy and integrate an OpenCTI connector charm with:
 
@@ -138,7 +138,7 @@ juju integrate opencti opencti-export-file-stix-connector
 ```
 
 ## Learn more
-* [Read more](https://charmhub.io/opencti)
+* [OpenCTI charm on Charmhub](https://charmhub.io/opencti)
 * [Official webpage](https://filigran.io/solutions/open-cti/)
 * [Troubleshooting](https://matrix.to/#/#charmhub-charmdev:ubuntu.com)
 
