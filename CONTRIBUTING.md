@@ -20,7 +20,7 @@ This document explains the processes and practices recommended for contributing 
 
 ## Developing
 
-To make contributions to this charm, you'll need a working [development setup](https://canonical-juju.readthedocs-hosted.com/en/latest/user/howto/manage-your-deployment/manage-your-deployment-environment/#set-things-up).
+To make contributions to this charm, you'll need a working [development setup](https://canonical.com/juju/docs/juju-cli/latest/howto/manage-your-juju-deployment/set-up-your-juju-deployment-local-testing-and-development/).
 
 The code for this charm can be downloaded as follows:
 
