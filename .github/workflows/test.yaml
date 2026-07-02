@@ -24,6 +24,8 @@ jobs:
     name: Integration Tests
     uses: canonical/operator-workflows/.github/workflows/integration_test.yaml@main
     secrets: inherit
+    permissions:
+      contents: read
     with:
       channel: 1.33-strict/stable
       charmcraft-channel: latest/edge
@@ -38,6 +40,8 @@ jobs:
   check-connector-sync:
     name: Check Connectors
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v6.0.2
       - uses: actions/setup-python@v6.2.0
@@ -51,3 +55,5 @@ jobs:
     needs:
     - integration-tests
     uses: canonical/operator-workflows/.github/workflows/allure_report.yaml@main
+    permissions:
+      contents: write
