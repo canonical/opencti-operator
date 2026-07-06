@@ -123,16 +123,10 @@ juju integrate sysconfig opensearch
 juju integrate self-signed-certificates opensearch
 ```
 
-Note: `sysconfig` will remain in `blocked` state as it needs a reboot:
+Note: `sysconfig` may remain in `blocked` state mentioning it needs a reboot. This is not an issue for the rest of the tutorial.
 
 ```shell
   sysconfig/1*               blocked   idle            10.228.176.177                  update-grub and reboot required. Changes in: /etc/default/grub.d/90-sysconfig.cfg
-```
-
-This is not an issue for the rest of the tutorial. If you still want to reboot it, you can do so with:
-
-```shell
-juju ssh opensearch/leader -- sudo reboot
 ```
 
 In parallel to OpenSearch, you can deploy RabbitMQ, which OpenCTI uses as a message queue:
@@ -190,10 +184,6 @@ juju deploy redis-k8s --channel latest/edge
 ```
 
 Deploy `gateway-api-integrator` and `ingress-configurator` to provide an ingress relation to expose the OpenCTI web interface. The last command integrates the `gateway-api-service` with `self-signed-certificates` to be able to provide `https` access:
-
-```shell
-juju integrate gateway-api-integrator concierge-lxd:admin/opencti-databases.certificates
-```
 
 ```shell
 juju deploy gateway-api-integrator \
