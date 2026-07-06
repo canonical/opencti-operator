@@ -1,7 +1,7 @@
 # Deploy OpenCTI for the first time
 
 OpenCTI is an open-source threat intelligence platform that enables
-organisations to collect, correlate, and leverage threat data at strategic,
+organizations to collect, correlate, and leverage threat data at strategic,
 operational and tactical levels. This tutorial walks you through deploying
 the OpenCTI charm with all its dependencies using Juju.
 
@@ -207,7 +207,7 @@ juju integrate ingress-configurator gateway-api-integrator
 juju integrate gateway-api-integrator concierge-lxd:admin/opencti-databases.certificates
 ```
 
-Note: `ingress-configurator` will remain in `blocked` state until we relate it to `opencti` in the coming sections.
+Note: `ingress-configurator` will remain in `blocked` state until we integrate it to `opencti` in the coming sections.
 
 Deploy the OpenCTI charm itself:
 
@@ -289,7 +289,7 @@ juju grant-secret opencti-admin-user opencti
 juju config opencti admin-user=$OPENCTI_ADMIN_SECRET_ID
 ```
 
-Replace `changeme` with a strong password of your choice.
+> Note: In production, replace `changeme` with a strong password of your choice.
 
 Wait for OpenCTI to finish deploying:
 
@@ -330,7 +330,7 @@ redis-k8s/0*               active    idle   10.1.0.205
 s3-integrator/0*           active    idle   10.1.0.164    
 ```
 
-## Accessing OpenCTI in a browser
+## Access OpenCTI in a browser
 
 On your workstation open a browser and navigate to `https://<gateway-addresses>`, where `<gateway-address>` is the IP you see in front of `gateway-api-integrator` in the output of `juju status`.
 
@@ -339,7 +339,7 @@ Note: You will have to bypass the security warning as we are using a self-signed
 Log in with the credentials you configured in the previous step:
 
 - **Email:** `admin@example.com`
-- **Password:** the password you chose
+- **Password:** `changeme`
 
 You should see the OpenCTI dashboard. Congratulations — your OpenCTI deployment
 is up and running!
