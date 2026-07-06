@@ -23,7 +23,7 @@ jobs:
     secrets: inherit
     with:
       channel: 1.33-strict/stable
-      charmcraft-channel: latest/edge
+      charmcraft-channel: latest/stable
       juju-channel: 3.6/stable
       pre-run-script: tests/integration/prepare.sh
       self-hosted-runner: false
