@@ -214,7 +214,7 @@ OpenCTI NodeJS Event loop lag is above 500 milliseconds for two minutes.
 
 ## Logging
 
-Container logs for the OpenCTI platform, OpenCTI workers, and OpenCTI
+Container logs for the OpenCTI platform, OpenCTI workers, and OpenCTI 
 connectors are exported using [Pebble log forwarding](https://documentation.ubuntu.com/pebble/reference/log-forwarding/).
 
 Integrate the OpenCTI charm or OpenCTI worker charm with the Loki charm via 

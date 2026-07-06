@@ -126,7 +126,7 @@ Configuration files for the containers can be found in the respective directorie
 
 The `opencti` container runs the OpenCTI platform and OpenCTI workers.
 In every container, one instance of OpenCTI platform and three instances of 
-OpenCTI workers are running. The ratio is recommended by the [OpenCTI deployment guide](https://docs.opencti.io/latest/deployment/overview/).
+OpenCTI workers are running. The ratio is recommended by the [OpenCTI deployment guide](https://docs.opencti.io/latest/deployment/advanced/clustering/).
 
 The workload that this container is running is defined in the [OpenCTI rock](https://github.com/canonical/opencti-operator/blob/main/opencti_rock/rockcraft.yaml).
 

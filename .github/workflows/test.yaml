@@ -13,6 +13,9 @@ jobs:
       contents: read
       pull-requests: write
     secrets: inherit
+    permissions:
+      contents: read
+      pull-requests: write
     with:
       self-hosted-runner: false
       vale-style-check: false
@@ -30,12 +33,11 @@ jobs:
       charmcraft-channel: latest/edge
       juju-channel: 3.6/stable
       pre-run-script: tests/integration/prepare.sh
-      self-hosted-runner: true
-      self-hosted-runner-label: xlarge
+      self-hosted-runner: false
       use-canonical-k8s: false
       provider: microk8s
       tmate-debug: false
-      self-hosted-runner-image: jammy
+      runs-on: ubuntu-22.04
       microk8s-addons: "dns registry:size=40Gi rbac storage ingress"
   check-connector-sync:
     name: Check Connectors

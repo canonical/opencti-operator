@@ -41,7 +41,7 @@ integration with other tools and applications. The OpenCTI connector
 charms help with the deployment, configuration, and management of OpenCTI
 connectors.
 
-Existing OpenCTI connector charms can be found in the [connectors directory](connectors).
+The [available OpenCTI connector charms](connectors) can be found in the connectors directory.
 
 Deploy and integrate an OpenCTI connector charm with:
 
