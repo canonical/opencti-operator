@@ -21,6 +21,7 @@ This charm will make operating OpenCTI simple and straightforward for DevOps or 
 
 | | |
 |--|--|
+| [Tutorial](./tutorial) </br> Get started - a guided first deployment of OpenCTI |  |
 |  |  [How-to guides](./how-to) </br> Step-by-step guides covering key operations and common tasks |
 | [Reference](./reference) </br> Technical information - specifications, APIs, architecture |  |
 
@@ -51,6 +52,7 @@ Thinking about using the <charm-name> Operator for your next project?
 
 # Contents
 
+1. [Tutorial](tutorial)
 1. [How-to](how-to)
 1. [Reference](reference)
   1. [Charm architecture](reference/charm-architecture.md) 
