@@ -9,6 +9,9 @@ jobs:
   unit-tests:
     name: Unit Tests
     uses: canonical/operator-workflows/.github/workflows/test.yaml@main
+    permissions:
+      contents: read
+      pull-requests: write
     secrets: inherit
     permissions:
       contents: read
@@ -20,6 +23,10 @@ jobs:
     name: Integration Tests
     uses: 
       canonical/operator-workflows/.github/workflows/integration_test.yaml@main
+    permissions:
+      contents: read
+      packages: write
+      pull-requests: write
     secrets: inherit
     with:
       channel: 1.33-strict/stable
@@ -48,3 +55,5 @@ jobs:
     needs:
     - integration-tests
     uses: canonical/operator-workflows/.github/workflows/allure_report.yaml@main
+    permissions:
+      contents: write

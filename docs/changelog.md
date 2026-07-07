@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Each revision is versioned by the date of the revision.
 
+## 2026-06-25
+
+### Added
+
+- Added tutorial to the documentation set
+
 ## 2026-03-11
 
 ### Changed
@@ -52,7 +58,7 @@ Each revision is versioned by the date of the revision.
 
 - Require ingresses without stripped path prefix.
 - Add support for path prefixed URLs.
-- Pass ingress URL in the relation databag
+- Pass ingress URL in the relation data bag
 
 ### Changed
 
