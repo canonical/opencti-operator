@@ -66,7 +66,7 @@ _PEER_SECRET_HEALTH_ACCESS_KEY_SECRET_FIELD = "health-access-key"  # nosec
 _CHARM_CALLBACK_SCRIPT_PATH = pathlib.Path("/opt/opencti/charm-callback.sh")
 _OPENSEARCH_CERT_PATH = pathlib.Path("/opt/opencti/config/opensearch.pem")
 _OPENCTI_CONNECTOR_USER_PREFIX = "charm-connector-"
-_OPENCTI_BASE_URL = "http://localhost:8080/"
+_OPENCTI_BASE_URL = "http://localhost:8080"
 
 
 # caused by charm libraries
@@ -251,12 +251,8 @@ class OpenCTICharm(ops.CharmBase):
     def _reconcile(self, _: ops.EventBase) -> None:
         """Run charm reconcile function and catch all exceptions."""
         if isinstance(self._ingress.url, str) and len(self._ingress.url) > 0:
-            app_path = urllib.parse.urlparse(self._ingress.url).path
-            if len(app_path) > 0 and app_path[0] == "/":
-                app_path = app_path[1:]
-            if len(app_path) > 0 and app_path[-1] == "/":
-                app_path = app_path[:-1]  # trailing '/' should not be included
-            self._base_url = _OPENCTI_BASE_URL + app_path
+            app_path = urllib.parse.urlparse(self._ingress.url).path.strip("/")
+            self._base_url = f"{_OPENCTI_BASE_URL}/{app_path}" if app_path else _OPENCTI_BASE_URL
 
         try:
             self._reconcile_platform()
@@ -746,7 +742,7 @@ class OpenCTICharm(ops.CharmBase):
         connector_type = integration_data.get("connector_type")
         if not connector_charm_name or not connector_type:
             return None
-        opencti_url = self._ingress.url
+        opencti_url = self._ingress.url.rstrip("/") if self._ingress.url else self._ingress.url
         integration.data[self.app]["opencti_url"] = opencti_url
         connector_user_name = f"charm-connector-{connector_charm_name.replace('_', '-').lower()}"
         connector_user = self._get_opencti_user(client, connector_user_name)

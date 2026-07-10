@@ -139,8 +139,11 @@ class StateBuilder:
         )
         return self
 
-    def add_ingress_integration(self) -> "StateBuilder":
+    def add_ingress_integration(self, url: str = "https://opencti-endpoints.test-opencti.svc/opencti") -> "StateBuilder":
         """Add ingress integration.
+
+        Args:
+            url: The ingress URL to use. Defaults to a sub-path URL used by most tests.
 
         Returns: self
         """
@@ -150,7 +153,7 @@ class StateBuilder:
                 endpoint="ingress",
                 remote_app_data={
                     "ingress": json.dumps(
-                        {"url": "https://opencti-endpoints.test-opencti.svc/opencti"}
+                        {"url": url}
                     )
                 },
             )

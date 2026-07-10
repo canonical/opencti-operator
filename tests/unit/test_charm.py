@@ -409,3 +409,26 @@ def test_client_params(patch_opencti_client):
     ctx.run(ctx.on.config_changed(), state_in)
     expected_kwargs = {"url": "http://localhost:8080/opencti", "api_token": "opencti-admin-token"}
     assert patch_opencti_client.last_instance.init_kwargs == expected_kwargs
+
+
+@pytest.mark.usefixtures("patch_is_platform_healthy")
+def test_worker_url_has_no_trailing_slash_on_root_path(patch_opencti_client):
+    """
+    arrange: configure the ingress with a root path URL (no sub-path).
+    act: simulate a config-changed event.
+    assert: OPENCTI_URL for workers has no trailing slash so pycti constructs valid API paths.
+    """
+    ctx = ops.testing.Context(OpenCTICharm)
+    state_in = (
+        StateBuilder()
+        .add_required_integrations(excludes=["ingress"])
+        .add_ingress_integration(url="http://opencti.example.com/")
+        .add_required_configs()
+        .build()
+    )
+    state_out = ctx.run(ctx.on.config_changed(), state_in)
+    container = state_out.get_container("opencti")
+    plan = container.plan.to_dict()
+    worker_url = plan["services"]["worker-0"]["environment"]["OPENCTI_URL"]
+    assert not worker_url.endswith("/"), f"OPENCTI_URL must not end with '/': {worker_url!r}"
+    assert worker_url == "http://localhost:8080"
