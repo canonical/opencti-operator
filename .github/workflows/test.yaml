@@ -21,8 +21,7 @@ jobs:
       vale-style-check: false
   integration-tests:
     name: Integration Tests
-    uses: 
-      canonical/operator-workflows/.github/workflows/integration_test.yaml@main
+    uses: canonical/operator-workflows/.github/workflows/integration_test.yaml@main
     permissions:
       contents: read
       packages: write
