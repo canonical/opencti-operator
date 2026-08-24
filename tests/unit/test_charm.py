@@ -412,7 +412,7 @@ def test_client_params(patch_opencti_client):
 
 
 @pytest.mark.usefixtures("patch_is_platform_healthy")
-def test_worker_url_has_no_trailing_slash_on_root_path(patch_opencti_client):
+def test_worker_url_has_no_trailing_slash_on_root_path():
     """
     arrange: configure the ingress with a root path URL (no sub-path).
     act: simulate a config-changed event.
