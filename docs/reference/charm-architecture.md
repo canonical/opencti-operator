@@ -116,7 +116,7 @@ We use [Rockcraft](https://canonical-rockcraft.readthedocs-hosted.com/en/latest/
 The images are defined in the [OpenCTI rock](https://github.com/canonical/opencti-operator/blob/main/opencti_rock/rockcraft.yaml).
 They are published to [Charmhub](https://charmhub.io/), the official repository of charms.
 
-> See more: [How to publish your charm on Charmhub](https://juju.is/docs/sdk/publishing)
+> See more: [How to publish your charm on Charmhub](https://canonical.com/juju/docs/ops/latest/)
 
 ## Containers
 

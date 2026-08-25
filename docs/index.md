@@ -2,7 +2,7 @@
 # OpenCTI operator
 <!-- vale Canonical.007-Headings-sentence-case = YES -->
 
-A [Juju](https://juju.is/) [charm](https://documentation.ubuntu.com/juju/3.6/reference/charm/) for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
+A [Juju](https://juju.is/) [charm](https://canonical.com/juju/docs/juju-cli/3.6/reference/charm/) for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
 open source threat intelligence platform in your systems. 
 
 This charm simplifies the configuration and maintenance of OpenCTI system and 
