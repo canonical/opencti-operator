@@ -15,6 +15,21 @@ from bs4 import BeautifulSoup
 
 _CONNECTOR_GENERATORS = {}
 
+_OPENCTI_ROCKCRAFT_PATH = pathlib.Path(__file__).resolve().parent.parent / "opencti_rock" / "rockcraft.yaml"
+
+
+def get_opencti_version() -> str:
+    """Read the OpenCTI platform version from the main charm's rockcraft.yaml.
+
+    Connector charms must run the same OpenCTI version as the platform, otherwise
+    their pycti client can become incompatible with the platform's GraphQL API.
+
+    Returns:
+        The OpenCTI version pinned in opencti_rock/rockcraft.yaml.
+    """
+    rockcraft = yaml.safe_load(_OPENCTI_ROCKCRAFT_PATH.read_text(encoding="utf-8"))
+    return rockcraft["version"]
+
 
 def connector_generator(name: str) -> Callable:
     """Decorator for marking connector generators."""
@@ -1247,4 +1262,4 @@ def render(version: str) -> None:
 
 
 if __name__ == "__main__":
-    render("6.9.24")
+    render(get_opencti_version())
