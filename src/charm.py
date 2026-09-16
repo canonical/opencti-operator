@@ -256,7 +256,10 @@ class OpenCTICharm(ops.CharmBase):
                 app_path = app_path[1:]
             if len(app_path) > 0 and app_path[-1] == "/":
                 app_path = app_path[:-1]  # trailing '/' should not be included
-            self._base_url = _OPENCTI_BASE_URL + app_path
+            # pycti appends "/graphql" without normalizing slashes, and OpenCTI's
+            # Express 5 router doesn't collapse "//graphql" onto "/graphql", so
+            # _base_url must never end with a trailing slash.
+            self._base_url = f"{_OPENCTI_BASE_URL.rstrip('/')}/{app_path}".rstrip("/")
 
         try:
             self._reconcile_platform()
