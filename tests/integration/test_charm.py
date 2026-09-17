@@ -23,12 +23,13 @@ from opencti import OpenctiClient
 
 
 def _create_bucket_with_retry(
-    s3: botocore.client.BaseClient, bucket: str, timeout: int = 60
+    s3: botocore.client.BaseClient, bucket: str, timeout: int = 300
 ) -> None:
     """Create an S3 bucket, retrying while the endpoint is not yet reachable.
 
-    minio's workload can report "idle"/"active" via Juju slightly before its
-    container is actually accepting connections.
+    minio's workload can report "idle"/"active" via Juju well before its pod
+    has finished starting (image pull, PVC provisioning, container init),
+    so retry for a while instead of failing immediately.
 
     Raises:
         ConnectionError: if the S3 endpoint is still unreachable after the
