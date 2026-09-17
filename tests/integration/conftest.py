@@ -7,6 +7,7 @@ import json
 import logging
 import pathlib
 import secrets
+import subprocess  # nosec B404
 import typing
 
 import pytest
@@ -133,3 +134,72 @@ def opencti_connector_images_fixture(connectors, pytestconfig) -> dict[str, str]
             images[connector] = image
     logger.info("load opencti connector images: %s", images)
     return images
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item, call):  # pylint: disable=unused-argument
+    """Expose each test phase's result on the test item for use by fixtures.
+
+    Args:
+        item: The pytest test item being reported on.
+        call: The phase (setup/call/teardown) execution info, unused.
+    """
+    outcome = yield
+    report = outcome.get_result()
+    setattr(item, f"rep_{report.when}", report)
+
+
+def _dump_pod_logs(namespace: str) -> None:
+    """Dump kubectl logs for every pod in a namespace, for post-mortem diagnostics.
+
+    juju-crashdump/juju debug-log only capture the Juju agent's own logs, not
+    workload container stdout, which hides errors from processes such as a
+    connector's pycti client. This surfaces those logs directly in the CI
+    job's output so a failure doesn't need a separate artifact to diagnose.
+    """
+    for kubectl in (["microk8s", "kubectl"], ["kubectl"]):
+        try:
+            pods = subprocess.run(  # nosec B603, B607
+                [*kubectl, "get", "pods", "-n", namespace, "-o", "name"],
+                capture_output=True,
+                text=True,
+                timeout=30,
+                check=True,
+            ).stdout.split()
+            break
+        except FileNotFoundError:
+            continue
+        except subprocess.CalledProcessError as exc:
+            logger.warning("failed to list pods in namespace %s: %s", namespace, exc.stderr)
+            return
+    else:
+        logger.warning("no kubectl binary found, skipping pod log dump")
+        return
+
+    for pod in pods:
+        for args in (
+            [*kubectl, "logs", pod, "-n", namespace, "--all-containers", "--tail=500"],
+            [
+                *kubectl,
+                "logs",
+                pod,
+                "-n",
+                namespace,
+                "--all-containers",
+                "--tail=500",
+                "--previous",
+            ],
+        ):
+            result = subprocess.run(  # nosec B603
+                args, capture_output=True, text=True, timeout=30, check=False
+            )
+            if result.stdout.strip():
+                logger.info("=== logs for %s (%s) ===\n%s", pod, args[-1], result.stdout)
+
+
+@pytest.fixture(autouse=True)
+def _dump_pod_logs_on_failure(request: pytest.FixtureRequest, model: Model):
+    """Dump kubectl pod logs for the test model's namespace when a test fails."""
+    yield
+    if getattr(request.node, "rep_call", None) is not None and request.node.rep_call.failed:
+        _dump_pod_logs(model.name)
