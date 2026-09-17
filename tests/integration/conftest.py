@@ -157,7 +157,7 @@ def _dump_pod_logs(namespace: str) -> None:
     connector's pycti client. This surfaces those logs directly in the CI
     job's output so a failure doesn't need a separate artifact to diagnose.
     """
-    for kubectl in (["microk8s", "kubectl"], ["kubectl"]):
+    for kubectl in (["sudo", "microk8s", "kubectl"], ["kubectl"]):
         try:
             pods = subprocess.run(  # nosec B603, B607
                 [*kubectl, "get", "pods", "-n", namespace, "-o", "name"],
