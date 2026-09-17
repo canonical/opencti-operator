@@ -35,6 +35,11 @@ jobs:
       tmate-debug: false
       runs-on: ubuntu-22.04
       microk8s-addons: "dns registry:size=40Gi rbac storage ingress"
+      # pytest-operator's default "legacy" crash-dump policy skips juju-crashdump
+      # whenever --keep-models is set (which this workflow always does), so unit/
+      # container logs (e.g. connector workloads) are never captured on failure.
+      # "on-failure" forces the dump to run regardless of --keep-models.
+      extra-arguments: --crash-dump=on-failure
   check-connector-sync:
     name: Check Connectors
     runs-on: ubuntu-latest
