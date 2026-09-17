@@ -8,16 +8,41 @@
 """Integration tests."""
 
 import textwrap
+import time
 import urllib.parse
 
 import boto3
 import botocore.client
+import botocore.exceptions
 import pytest
 import requests
 import yaml
 from juju.model import Model
 
 from opencti import OpenctiClient
+
+
+def _create_bucket_with_retry(
+    s3: botocore.client.BaseClient, bucket: str, timeout: int = 60
+) -> None:
+    """Create an S3 bucket, retrying while the endpoint is not yet reachable.
+
+    minio's workload can report "idle"/"active" via Juju slightly before its
+    container is actually accepting connections.
+
+    Raises:
+        ConnectionError: if the S3 endpoint is still unreachable after the
+            timeout.
+    """
+    deadline = time.monotonic() + timeout
+    while True:
+        try:
+            s3.create_bucket(Bucket=bucket)
+            return
+        except botocore.exceptions.ConnectionError:
+            if time.monotonic() >= deadline:
+                raise
+            time.sleep(5)
 
 
 @pytest.mark.abort_on_fail
@@ -49,7 +74,7 @@ async def test_deploy_charm(
         aws_secret_access_key="minioadmin",
         config=botocore.client.Config(signature_version="s3v4"),
     )
-    s3.create_bucket(Bucket="opencti")
+    _create_bucket_with_retry(s3, "opencti")
     s3_integrator = await model.deploy(
         "s3-integrator",
         config={
