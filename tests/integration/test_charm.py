@@ -9,6 +9,7 @@
 
 import textwrap
 import time
+import typing
 import urllib.parse
 
 import boto3
@@ -44,6 +45,26 @@ def _create_bucket_with_retry(
             if time.monotonic() >= deadline:
                 raise
             time.sleep(5)
+
+
+def _wait_for_connector_registration(
+    query_connectors: typing.Callable[[], dict], connector: str, timeout: int = 120
+) -> dict:
+    """Poll the OpenCTI connectors query until the connector registers as active.
+
+    A charm/unit reporting "active" via Juju only means its workload was
+    started, not that the connector process has finished connecting to and
+    registering itself with the OpenCTI platform, which can take longer.
+    """
+    deadline = time.monotonic() + timeout
+    while True:
+        connectors = query_connectors()
+        if connector in connectors and connectors[connector]["active"]:
+            return connectors
+        if time.monotonic() >= deadline:
+            assert connector in connectors
+            assert connectors[connector]["active"]
+        time.sleep(5)
 
 
 @pytest.mark.abort_on_fail
@@ -224,16 +245,22 @@ async def test_opencti_connectors(
     plan = yaml.safe_load(stdout)
     api_token = plan["services"]["platform"]["environment"]["APP__ADMIN__TOKEN"]
     url = plan["services"]["platform"]["environment"]["APP__BASE_URL"]
-    resp = requests.post(
-        "http://127.0.0.1/graphql",
-        json=query,
-        headers={
-            "Authorization": f"Bearer {api_token}",
-            "Host": urllib.parse.urlparse(url).netloc,
-        },
-        timeout=5,
-        verify=False,
-    )
-    connectors = {c["name"]: c for c in resp.json()["data"]["connectors"]}
-    assert connector in connectors
-    assert connectors[connector]["active"]
+
+    def _query_connectors() -> dict:
+        """Fetch the connectors currently known to the OpenCTI platform."""
+        resp = requests.post(
+            "http://127.0.0.1/graphql",
+            json=query,
+            headers={
+                "Authorization": f"Bearer {api_token}",
+                "Host": urllib.parse.urlparse(url).netloc,
+            },
+            timeout=5,
+            verify=False,
+        )
+        return {c["name"]: c for c in resp.json()["data"]["connectors"]}
+
+    # a charm/unit reporting "active" only means its workload was started, not
+    # that the connector process has finished registering with the platform,
+    # so poll for a while instead of asserting immediately.
+    _wait_for_connector_registration(_query_connectors, connector)
