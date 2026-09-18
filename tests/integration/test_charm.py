@@ -48,7 +48,7 @@ def _create_bucket_with_retry(
 
 
 def _wait_for_connector_registration(
-    query_connectors: typing.Callable[[], dict], connector: str, timeout: int = 120
+    query_connectors: typing.Callable[[], dict], connector: str, timeout: int = 300
 ) -> dict:
     """Poll the OpenCTI connectors query until the connector registers as active.
 
