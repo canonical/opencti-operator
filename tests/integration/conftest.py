@@ -91,7 +91,7 @@ async def machine_charm_dependencies_fixture(machine_model: Model):
     """Deploy opencti charm's machine dependency charms."""
     self_signed_certificates = await machine_model.deploy("self-signed-certificates")
     opensearch = await machine_model.deploy(
-        "opensearch", channel="2/stable", num_units=3, config={"profile": "testing"}
+        "opensearch", channel="2/edge", num_units=3, config={"profile": "testing"}
     )
     await machine_model.integrate(self_signed_certificates.name, opensearch.name)
     await machine_model.create_offer(f"{opensearch.name}:opensearch-client", "opensearch-client")
