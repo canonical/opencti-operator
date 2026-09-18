@@ -132,6 +132,28 @@ def test_pebble_plan():
     assert (container.get_filesystem(ctx) / "opt/opencti/config/opensearch.pem").exists()
 
 
+@pytest.mark.usefixtures("patch_is_platform_healthy")
+def test_pebble_plan_root_ingress_path():
+    """
+    arrange: provide the charm with an ingress URL that has no path (root "/").
+    act: simulate a config-changed event.
+    assert: the worker OPENCTI_URL has no trailing slash, avoiding a "//graphql"
+        request that OpenCTI's Express 5 router would reject with a 404.
+    """
+    ctx = ops.testing.Context(OpenCTICharm)
+    state_in = (
+        StateBuilder()
+        .add_required_integrations(excludes=["ingress"])
+        .add_ingress_integration(url="https://opencti-endpoints.test-opencti.svc/")
+        .add_required_configs()
+        .build()
+    )
+    state_out = ctx.run(ctx.on.config_changed(), state_in)
+    container = state_out.get_container("opencti")
+    worker_url = container.plan.to_dict()["services"]["worker-0"]["environment"]["OPENCTI_URL"]
+    assert worker_url == "http://localhost:8080"
+
+
 @pytest.mark.parametrize(
     "missing_integration", ["opensearch-client", "amqp", "redis", "s3", "ingress", "opencti-peer"]
 )
