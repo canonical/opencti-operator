@@ -98,7 +98,7 @@ jobs:
         tag-prefix: ${{ steps.charm-name.outputs.charm-name }}
   publish-charm-libs:
     name: Release charm libs
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     needs: [publish-charm]
     steps:
     - uses: actions/checkout@v6.0.2
