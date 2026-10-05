@@ -1,56 +1,61 @@
-<!-- vale Canonical.007-Headings-sentence-case = NO -->
+---
+myst:
+  html_meta:
+    "description lang=en": "A Juju charm deploying and managing OpenCTI."
+---
 # OpenCTI operator
-<!-- vale Canonical.007-Headings-sentence-case = YES -->
 
-A [Juju](https://juju.is/) [charm](https://documentation.ubuntu.com/juju/3.6/reference/charm/) for deploying and managing the [OpenCTI](https://filigran.io/solutions/open-cti/)
-open source threat intelligence platform in your systems. 
+The OpenCTI operator is an open-source software operator that deploys and operates OpenCTI on Juju.
 
 This charm simplifies the configuration and maintenance of OpenCTI system and 
 commonly used OpenCTI connectors across a range of environments, enabling users
 to collect, correlate, and leverage threat data at strategic, operational and 
 tactical levels.
 
-Like any Juju charm, this charm supports one-line deployment, configuration, integration, scaling, and more. 
-
 The OpenCTI charm allows for deployment on many different Kubernetes platforms, from 
 [Canonical Kubernetes](https://ubuntu.com/kubernetes) to public cloud Kubernetes offerings.
 
-This charm will make operating OpenCTI simple and straightforward for DevOps or SRE teams through Juju's clean interface. 
-
 ## In this documentation
 
-| | |
-|--|--|
-|  |  [How-to guides](./how-to) </br> Step-by-step guides covering key operations and common tasks |
-| [Reference](./reference) </br> Technical information - specifications, APIs, architecture |  |
+```{list-table}
+   :header-rows: 0
+   :widths: 15 30
 
-## Contributing to this documentation
+* - **Operations**
+  - [Create a user account](how-to/account.md) | [Upgrade](how-to/upgrade.md) | [Back up](how-to/backup.md) | [Redeploy](how-to/redeploy.md)
+* - **Observability**
+  - [Integrate with COS](how-to/observability.md) | [Observability reference](reference/observability.md)
+* - **Reference**
+  - [Actions](reference/actions.md) | [Configurations](reference/configurations.md) | [Integrations](reference/integrations.md)
+* - **Architecture**
+  - [Charm architecture](reference/charm-architecture.md)
+```
 
-Documentation is an important part of this project, and we take the same open-source approach to the documentation as 
-the code. As such, we welcome community contributions, suggestions and constructive feedback on our documentation. 
-Our documentation is hosted on the [Charmhub forum](https://discourse.charmhub.io/) 
-to enable easy collaboration. Please use the "Help us improve this documentation" links on each documentation page to 
-either directly change something you see that's wrong, ask a question or make a suggestion about a potential change via 
-the comments section.
+## How this documentation is organized
 
-If there's a particular area of documentation that you'd like to see that's missing, please 
-[file a bug](https://github.com/canonical/opencti-operator/issues).
+This documentation uses the
+[Diátaxis documentation structure](https://diataxis.fr/).
+
+* The [How-to guides](how-to/index.md) cover practical tasks for configuring, integrating, and maintaining your OpenCTI deployment.
+* The [Reference](reference/index.md) provides technical reference for the OpenCTI operator.
 
 ## Project and community
 
-The OpenCTI Operator is a member of the Ubuntu family. It's an open-source project that warmly welcomes community 
+The OpenCTI operator is a member of the Ubuntu family. It's an open-source project that warmly welcomes community 
 projects, contributions, suggestions, fixes, and constructive feedback.
 
-- [Code of conduct](https://ubuntu.com/community/code-of-conduct)
-- [Get support](https://discourse.charmhub.io/)
-- [Join our online chat](https://matrix.to/#/#charmhub-charmdev:ubuntu.com)
-- [Contribute](how-to/contribute.md)
+- [Code of conduct](https://ubuntu.com/community/docs/ethos/code-of-conduct)
+-- [File a bug](https://github.com/canonical/opencti-operator/issues)
+- Get support through the [Discourse forum](https://discourse.charmhub.io/)
+- Join our [online chat](https://matrix.to/#/#charmhub-charmdev:ubuntu.com)
+- {ref}`Contribute <how_to_contribute>`
 
-Thinking about using the <charm-name> Operator for your next project? 
+[Thinking about using the OpenCTI operator for your next project?
 [Get in touch](https://matrix.to/#/#charmhub-charmdev:ubuntu.com)!
 
-# Contents
-
-1. [How-to](how-to)
-1. [Reference](reference)
-  1. [Charm architecture](reference/charm-architecture.md) 
+```{toctree}
+:hidden:
+:maxdepth: 1
+How-to guides <how-to/index.md>
+Reference <reference/index.md>
+```
