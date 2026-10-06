@@ -1,4 +1,6 @@
 placeholder
 databag
 [Mm]inio
+monorepo
 [Ss]ysconfig
+subprojects
