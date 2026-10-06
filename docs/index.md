@@ -48,11 +48,11 @@ The OpenCTI operator is a member of the Ubuntu family. It's an open-source proje
 projects, contributions, suggestions, fixes, and constructive feedback.
 
 - [Code of conduct](https://ubuntu.com/community/docs/ethos/code-of-conduct)
--- [File a bug](https://github.com/canonical/opencti-operator/issues)
+- [File a bug](https://github.com/canonical/opencti-operator/issues)
 - Get support through the [Discourse forum](https://discourse.charmhub.io/)
 - Join our [online chat](https://matrix.to/#/#charmhub-charmdev:ubuntu.com)
 
-[Thinking about using the OpenCTI operator for your next project?
+Thinking about using the OpenCTI operator for your next project?
 [Get in touch](https://matrix.to/#/#charmhub-charmdev:ubuntu.com)!
 
 ```{toctree}
