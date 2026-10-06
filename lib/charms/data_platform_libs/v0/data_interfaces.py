@@ -453,11 +453,7 @@ LIBAPI = 0
 
 # Increment this PATCH version before using `charmcraft publish-lib` or reset
 # to 0 if you are raising the major API version
-<<<<<<< HEAD
-LIBPATCH = 56
-=======
 LIBPATCH = 58
->>>>>>> main
 
 PYDEPS = ["ops>=2.0.0"]
 
