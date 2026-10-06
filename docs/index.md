@@ -21,6 +21,8 @@ The OpenCTI charm allows for deployment on many different Kubernetes platforms, 
    :header-rows: 0
    :widths: 15 30
 
+* - **Get started**
+  - [Deploy OpenCTI for the first time](tutorial/index.md)
 * - **Operations**
   - [Create a user account](how-to/account.md) | [Upgrade](how-to/upgrade.md) | [Back up](how-to/backup.md) | [Redeploy](how-to/redeploy.md)
 * - **Observability**
@@ -36,6 +38,7 @@ The OpenCTI charm allows for deployment on many different Kubernetes platforms, 
 This documentation uses the
 [Diátaxis documentation structure](https://diataxis.fr/).
 
+* The [Tutorial](tutorial/index.md) takes you step-by-step through a first deployment of the OpenCTI charm.
 * The [How-to guides](how-to/index.md) cover practical tasks for configuring, integrating, and maintaining your OpenCTI deployment.
 * The [Reference](reference/index.md) provides technical reference for the OpenCTI operator.
 
@@ -48,7 +51,6 @@ projects, contributions, suggestions, fixes, and constructive feedback.
 -- [File a bug](https://github.com/canonical/opencti-operator/issues)
 - Get support through the [Discourse forum](https://discourse.charmhub.io/)
 - Join our [online chat](https://matrix.to/#/#charmhub-charmdev:ubuntu.com)
-- {ref}`Contribute <how_to_contribute>`
 
 [Thinking about using the OpenCTI operator for your next project?
 [Get in touch](https://matrix.to/#/#charmhub-charmdev:ubuntu.com)!
@@ -56,6 +58,7 @@ projects, contributions, suggestions, fixes, and constructive feedback.
 ```{toctree}
 :hidden:
 :maxdepth: 1
+Tutorial <tutorial/index.md>
 How-to guides <how-to/index.md>
 Reference <reference/index.md>
 ```

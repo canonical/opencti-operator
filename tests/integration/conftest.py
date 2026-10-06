@@ -89,7 +89,9 @@ async def get_unit_ips_fixture(ops_test: OpsTest, model: Model):
 async def machine_charm_dependencies_fixture(machine_model: Model):
     """Deploy opencti charm's machine dependency charms."""
     self_signed_certificates = await machine_model.deploy("self-signed-certificates")
-    opensearch = await machine_model.deploy("opensearch", channel="2/stable", num_units=3)
+    opensearch = await machine_model.deploy(
+        "opensearch", channel="2/stable", num_units=3, config={"profile": "testing"}
+    )
     await machine_model.integrate(self_signed_certificates.name, opensearch.name)
     await machine_model.create_offer(f"{opensearch.name}:opensearch-client", "opensearch-client")
     rabbitmq_server = await machine_model.deploy("rabbitmq-server", channel="3.9/stable")

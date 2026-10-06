@@ -32,7 +32,7 @@ parts:
       mkdir -p $CRAFT_PART_INSTALL/opt
       cd {{ constant_to_kebab(connector_type) }}/{{ connector_name }}
       cp -rp src $CRAFT_PART_INSTALL/opt/{{ install_location }}
-      {{ generate_entrypoint }}
+      {{ generate_entrypoint | indent(6) }}
       cat entrypoint.sh | grep {{ install_location }}
       mkdir -p $CRAFT_PART_INSTALL/usr/local/lib/python3.12/dist-packages
       pip install \

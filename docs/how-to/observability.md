@@ -1,7 +1,7 @@
 # How to integrate with COS
 
 The OpenCTI charm exposes standard [COS](https://charmhub.io/topics/canonical-observability-stack)
-integration [endpoints](https://canonical-juju.readthedocs-hosted.com/en/latest/user/reference/application/#application-endpoint). 
+integration [endpoints](https://canonical.com/juju/docs/juju-cli/3.6/reference/application/#application-endpoint). 
 
 These include:
 

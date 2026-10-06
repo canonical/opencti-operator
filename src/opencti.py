@@ -2,6 +2,7 @@
 # See LICENSE file for licensing details.
 
 """OpenCTI API client."""
+
 import functools
 import logging
 import pathlib

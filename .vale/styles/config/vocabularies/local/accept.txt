@@ -1,1 +1,4 @@
 placeholder
+databag
+[Mm]inio
+[Ss]ysconfig

@@ -6,6 +6,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Each revision is versioned by the date of the revision.
 
+## 2026-06-25
+
+### Added
+
+- Added tutorial to the documentation set
+
+## 2026-03-11
+
+### Changed
+
+- Upgraded OpenCTI to version 6.9.24
+- Introduced terraform tests
+- Now requires terraform 1.12
+
+## 2026-02-03
+
+### Changed
+
+- Upgrade OpenCTI to version 6.9.15.
+
+## 2026-01-22
+
+### Changed
+
+- Install ca-certificates in the OpenCTI rock.
+- Cache peer secret content to improve performance.
+
 ## 2025-12-17
 
 ### Changed
@@ -31,7 +58,7 @@ Each revision is versioned by the date of the revision.
 
 - Require ingresses without stripped path prefix.
 - Add support for path prefixed URLs.
-- Pass ingress URL in the relation databag
+- Pass ingress URL in the relation data bag
 
 ### Changed
 
