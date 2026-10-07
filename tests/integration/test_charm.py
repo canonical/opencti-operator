@@ -7,6 +7,7 @@
 
 """Integration tests."""
 
+import subprocess  # nosec B404
 import textwrap
 import time
 import typing
@@ -21,6 +22,40 @@ import yaml
 from juju.model import Model
 
 from opencti import OpenctiClient
+
+INGRESS_NAMESPACE = "ingress"
+INGRESS_CONTROLLER_SERVICES = ("nginx-ingress-microk8s-controller", "traefik")
+
+
+def _ingress_service_hostname() -> str:
+    """Get the in-cluster hostname of the ingress controller service.
+
+    Older MicroK8s ingress addons deploy nginx, newer ones deploy traefik, so the
+    service name depends on the MicroK8s version.
+
+    Returns:
+        The hostname of the first known ingress controller service found, defaulting to
+        the nginx one if the cluster can't be queried.
+    """
+    service_name = INGRESS_CONTROLLER_SERVICES[0]
+    for kubectl in (["kubectl"], ["sudo", "microk8s", "kubectl"]):
+        try:
+            result = subprocess.run(  # nosec B603
+                [*kubectl, "get", "services", "-n", INGRESS_NAMESPACE, "-o", "name"],
+                check=True,
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+        except (OSError, subprocess.SubprocessError):
+            continue
+        existing_services = {line.split("/")[-1] for line in result.stdout.splitlines()}
+        for candidate in INGRESS_CONTROLLER_SERVICES:
+            if candidate in existing_services:
+                service_name = candidate
+                break
+        break
+    return f"{service_name}.{INGRESS_NAMESPACE}.svc.cluster.local"
 
 
 def _create_bucket_with_retry(
@@ -126,7 +161,7 @@ async def test_deploy_charm(
         channel="edge",
         config={
             "path-routes": "/",
-            "service-hostname": "nginx-ingress-microk8s-controller.ingress.svc.cluster.local",
+            "service-hostname": _ingress_service_hostname(),
         },
         trust=True,
         revision=109,

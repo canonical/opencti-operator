@@ -52,6 +52,13 @@ async def machine_model_fixture(
     machine_controller: Controller, machine_controller_name: str, pytestconfig
 ) -> typing.AsyncGenerator[Model, None]:
     """The machine model for OpenSearch charm."""
+    existing_model_name = pytestconfig.getoption("--machine-model")
+    if existing_model_name:
+        model = Model()
+        await model.connect(f"{machine_controller_name}:admin/{existing_model_name}")
+        yield model
+        await model.disconnect()
+        return
     machine_model_name = f"test-opencti-deps-{secrets.token_hex(2)}"
     model = await machine_controller.add_model(machine_model_name)
     await model.connect(f"{machine_controller_name}:admin/{model.name}")
@@ -87,8 +94,11 @@ async def get_unit_ips_fixture(ops_test: OpsTest, model: Model):
 
 
 @pytest_asyncio.fixture(name="machine_charm_dependencies", scope="module")
-async def machine_charm_dependencies_fixture(machine_model: Model):
+async def machine_charm_dependencies_fixture(machine_model: Model, pytestconfig: pytest.Config):
     """Deploy opencti charm's machine dependency charms."""
+    if pytestconfig.getoption("--machine-model"):
+        await machine_model.wait_for_idle(timeout=1200, status="active")
+        return
     self_signed_certificates = await machine_model.deploy("self-signed-certificates")
     opensearch = await machine_model.deploy(
         "opensearch", channel="2/edge", num_units=3, config={"profile": "testing"}

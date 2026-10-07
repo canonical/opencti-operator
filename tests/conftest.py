@@ -37,5 +37,12 @@ def pytest_addoption(parser):
     parser.addoption("--charm-file", action="append")
     parser.addoption("--opencti-image", action="store")
     parser.addoption("--machine-controller", action="store", default="localhost")
+    parser.addoption(
+        "--machine-model",
+        action="store",
+        default=None,
+        help="Reuse this existing machine model (with OpenSearch/RabbitMQ offers) instead of "
+        "creating one; it is never destroyed.",
+    )
     for connector in list_connectors():
         parser.addoption(f"--{connector}-image", action="store")
