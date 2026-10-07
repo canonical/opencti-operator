@@ -13,9 +13,6 @@ jobs:
       contents: read
       pull-requests: write
     secrets: inherit
-    permissions:
-      contents: read
-      pull-requests: write
     with:
       self-hosted-runner: false
       vale-style-check: false
