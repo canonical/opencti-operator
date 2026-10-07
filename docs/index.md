@@ -23,12 +23,12 @@ The OpenCTI charm allows for deployment on many different Kubernetes platforms, 
 
 * - **Get started**
   - [Deploy OpenCTI for the first time](tutorial/index.md)
+* - **Deployment**
+  - [Create a user account](how-to/account.md) | [Configurations](reference/configurations.md)
 * - **Operations**
-  - [Create a user account](how-to/account.md) | [Upgrade](how-to/upgrade.md) | [Back up](how-to/backup.md) | [Redeploy](how-to/redeploy.md)
+  - [Integrations](reference/integrations.md) | [Upgrade](how-to/upgrade.md) | [Back up](how-to/backup.md) | [Redeploy](how-to/redeploy.md)
 * - **Observability**
   - [Integrate with COS](how-to/observability.md) | [Observability reference](reference/observability.md)
-* - **Reference**
-  - [Actions](reference/actions.md) | [Configurations](reference/configurations.md) | [Integrations](reference/integrations.md)
 * - **Architecture**
   - [Charm architecture](reference/charm-architecture.md)
 ```
