@@ -13,16 +13,12 @@ jobs:
       contents: read
       pull-requests: write
     secrets: inherit
-    permissions:
-      contents: read
-      pull-requests: write
     with:
       self-hosted-runner: false
       vale-style-check: false
   integration-tests:
     name: Integration Tests
-    uses: 
-      canonical/operator-workflows/.github/workflows/integration_test.yaml@main
+    uses: canonical/operator-workflows/.github/workflows/integration_test.yaml@main
     permissions:
       contents: read
       packages: write
@@ -39,6 +35,11 @@ jobs:
       tmate-debug: false
       runs-on: ubuntu-22.04
       microk8s-addons: "dns registry:size=40Gi rbac storage ingress"
+      # pytest-operator's default "legacy" crash-dump policy skips juju-crashdump
+      # whenever --keep-models is set (which this workflow always does), so unit/
+      # container logs (e.g. connector workloads) are never captured on failure.
+      # "on-failure" forces the dump to run regardless of --keep-models.
+      extra-arguments: --crash-dump=on-failure
   check-connector-sync:
     name: Check Connectors
     runs-on: ubuntu-latest

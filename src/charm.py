@@ -256,7 +256,10 @@ class OpenCTICharm(ops.CharmBase):
                 app_path = app_path[1:]
             if len(app_path) > 0 and app_path[-1] == "/":
                 app_path = app_path[:-1]  # trailing '/' should not be included
-            self._base_url = _OPENCTI_BASE_URL + app_path
+            # pycti appends "/graphql" without normalizing slashes, and OpenCTI's
+            # Express 5 router doesn't collapse "//graphql" onto "/graphql", so
+            # _base_url must never end with a trailing slash.
+            self._base_url = f"{_OPENCTI_BASE_URL.rstrip('/')}/{app_path}".rstrip("/")
 
         try:
             self._reconcile_platform()
@@ -746,7 +749,8 @@ class OpenCTICharm(ops.CharmBase):
         connector_type = integration_data.get("connector_type")
         if not connector_charm_name or not connector_type:
             return None
-        opencti_url = self._ingress.url
+        # pycti appends "/graphql", so a trailing slash would produce "//graphql".
+        opencti_url = self._ingress.url.rstrip("/") if self._ingress.url else self._ingress.url
         integration.data[self.app]["opencti_url"] = opencti_url
         connector_user_name = f"charm-connector-{connector_charm_name.replace('_', '-').lower()}"
         connector_user = self._get_opencti_user(client, connector_user_name)
