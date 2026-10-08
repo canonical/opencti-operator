@@ -749,7 +749,8 @@ class OpenCTICharm(ops.CharmBase):
         connector_type = integration_data.get("connector_type")
         if not connector_charm_name or not connector_type:
             return None
-        opencti_url = self._ingress.url
+        # pycti appends "/graphql", so a trailing slash would produce "//graphql".
+        opencti_url = self._ingress.url.rstrip("/") if self._ingress.url else self._ingress.url
         integration.data[self.app]["opencti_url"] = opencti_url
         connector_user_name = f"charm-connector-{connector_charm_name.replace('_', '-').lower()}"
         connector_user = self._get_opencti_user(client, connector_user_name)
