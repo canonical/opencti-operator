@@ -251,11 +251,7 @@ class OpenCTICharm(ops.CharmBase):
     def _reconcile(self, _: ops.EventBase) -> None:
         """Run charm reconcile function and catch all exceptions."""
         if isinstance(self._ingress.url, str) and len(self._ingress.url) > 0:
-            app_path = urllib.parse.urlparse(self._ingress.url).path
-            if len(app_path) > 0 and app_path[0] == "/":
-                app_path = app_path[1:]
-            if len(app_path) > 0 and app_path[-1] == "/":
-                app_path = app_path[:-1]  # trailing '/' should not be included
+            app_path = urllib.parse.urlparse(self._ingress.url).path.strip("/")
             # pycti appends "/graphql" without normalizing slashes, and OpenCTI's
             # Express 5 router doesn't collapse "//graphql" onto "/graphql", so
             # _base_url must never end with a trailing slash.
