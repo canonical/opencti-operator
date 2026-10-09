@@ -132,6 +132,28 @@ def test_pebble_plan():
     assert (container.get_filesystem(ctx) / "opt/opencti/config/opensearch.pem").exists()
 
 
+@pytest.mark.usefixtures("patch_is_platform_healthy")
+def test_pebble_plan_root_ingress_path():
+    """
+    arrange: provide the charm with an ingress URL that has no path (root "/").
+    act: simulate a config-changed event.
+    assert: the worker OPENCTI_URL has no trailing slash, avoiding a "//graphql"
+        request that OpenCTI's Express 5 router would reject with a 404.
+    """
+    ctx = ops.testing.Context(OpenCTICharm)
+    state_in = (
+        StateBuilder()
+        .add_required_integrations(excludes=["ingress"])
+        .add_ingress_integration(url="https://opencti-endpoints.test-opencti.svc/")
+        .add_required_configs()
+        .build()
+    )
+    state_out = ctx.run(ctx.on.config_changed(), state_in)
+    container = state_out.get_container("opencti")
+    worker_url = container.plan.to_dict()["services"]["worker-0"]["environment"]["OPENCTI_URL"]
+    assert worker_url == "http://localhost:8080"
+
+
 @pytest.mark.parametrize(
     "missing_integration", ["opensearch-client", "amqp", "redis", "s3", "ingress", "opencti-peer"]
 )
@@ -396,6 +418,37 @@ def test_opencti_connector(patch_opencti_client):
     secret_id = integration_out.local_app_data["opencti_token"]  # type: ignore
     secret = state_out.get_secret(id=secret_id)
     assert secret.tracked_content == {"token": "00000000-0000-0000-0000-000000000000"}
+
+
+@pytest.mark.usefixtures("patch_opencti_client")
+def test_opencti_connector_url_has_no_trailing_slash():
+    """
+    arrange: provide the charm with an ingress URL ending with a slash and a connector.
+    act: simulate a config-changed event.
+    assert: the opencti_url shared with the connector has no trailing slash.
+    """
+    ctx = ops.testing.Context(OpenCTICharm)
+    opencti_connector_integration = ops.testing.Relation(
+        endpoint="opencti-connector",
+        remote_app_data={
+            "connector_type": "INTERNAL_EXPORT_FILE",
+            "connector_charm_name": "test",
+        },
+    )
+    state_in = (
+        StateBuilder()
+        .add_required_integrations(excludes=["ingress"])
+        .add_ingress_integration(url="http://opencti.example.com/")
+        .add_required_configs()
+        .add_integration(opencti_connector_integration)
+        .build()
+    )
+    state_out = ctx.run(ctx.on.config_changed(), state_in)
+    integration_out = state_out.get_relation(opencti_connector_integration.id)
+    assert (
+        integration_out.local_app_data["opencti_url"]  # type: ignore
+        == "http://opencti.example.com"
+    )
 
 
 def test_client_params(patch_opencti_client):
