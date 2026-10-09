@@ -220,7 +220,7 @@ connectors are exported using [Pebble log forwarding](https://documentation.ubun
 Integrate the OpenCTI charm or OpenCTI worker charm with the Loki charm via 
 the `logging` charm integration to export logs.
 
-## Healthcheck endpoints
+## Health check endpoints
 
 The OpenCTI charm doesn't expose external health check endpoints. Health check
 endpoints are internally checked and linked to the pod's readiness check.
