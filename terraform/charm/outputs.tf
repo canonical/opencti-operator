@@ -6,21 +6,65 @@ output "app_name" {
   value       = juju_application.opencti.name
 }
 
-output "requires" {
-  value = {
-    amqp              = "amqp"
-    ingress           = "ingress"
-    logging           = "logging"
-    opencti_connector = "opencti-connector"
-    opensearch_client = "opensearch-client"
-    redis             = "redis"
-    s3                = "s3"
-  }
+output "application" {
+  description = "The deployed opencti Juju application resource."
+  value       = juju_application.opencti
 }
 
 output "provides" {
+  description = "Provides endpoints of the opencti charm."
   value = {
-    grafana_dashboard = "grafana-dashboard"
-    metrics_endpoint  = "metrics-endpoint"
+    grafana_dashboard = {
+      kind     = "endpoint"
+      name     = juju_application.opencti.name
+      endpoint = "grafana-dashboard"
+    }
+    metrics_endpoint = {
+      kind     = "endpoint"
+      name     = juju_application.opencti.name
+      endpoint = "metrics-endpoint"
+    }
+  }
+}
+
+output "requires" {
+  description = "Requires endpoints of the opencti charm."
+  value = {
+    amqp = {
+      kind     = "endpoint"
+      name     = juju_application.opencti.name
+      endpoint = "amqp"
+    }
+    ingress = {
+      kind       = "endpoint"
+      name       = juju_application.opencti.name
+      endpoint   = "ingress"
+      controller = null
+    }
+    logging = {
+      kind     = "endpoint"
+      name     = juju_application.opencti.name
+      endpoint = "logging"
+    }
+    opencti_connector = {
+      kind     = "endpoint"
+      name     = juju_application.opencti.name
+      endpoint = "opencti-connector"
+    }
+    opensearch_client = {
+      kind     = "endpoint"
+      name     = juju_application.opencti.name
+      endpoint = "opensearch-client"
+    }
+    redis = {
+      kind     = "endpoint"
+      name     = juju_application.opencti.name
+      endpoint = "redis"
+    }
+    s3 = {
+      kind     = "endpoint"
+      name     = juju_application.opencti.name
+      endpoint = "s3"
+    }
   }
 }

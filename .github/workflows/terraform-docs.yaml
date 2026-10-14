@@ -2,14 +2,23 @@ name: Update Terraform documentation
 
 on:
   pull_request:
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/terraform-docs.yaml'
   push:
     branches:
       - main
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/terraform-docs.yaml'
 
 jobs:
   terraform-docs:
     name: Update Terraform documentation
-    uses: canonical/operator-workflows/.github/workflows/generate_terraform_docs.yaml@main
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: canonical/operator-workflows/.github/workflows/generate_terraform_docs.yaml@030c5b20a0bb880dcf1ed326bff0fc16b6eb6ac1 # main
     secrets: inherit
     with:
       terraform-directory: terraform/charm,terraform/product,terraform/product/modules/rabbitmq-server,terraform/product/modules/redis-k8s,terraform/product/modules/s3-integrator

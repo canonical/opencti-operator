@@ -6,17 +6,32 @@ output "app_name" {
   value       = module.opencti.app_name
 }
 
-output "requires" {
+output "metadata" {
+  description = "Metadata describing this product deployment."
   value = {
-    ingress           = "ingress"
-    logging           = "logging"
-    opencti_connector = "opencti-connector"
+    version     = var.metadata_version
+    deployed_at = timestamp()
+    updated_at  = timestamp()
   }
 }
 
-output "provides" {
+output "models" {
+  description = "Map of the deployed models and the components deployed in each of them."
   value = {
-    grafana_dashboard = "grafana-dashboard"
-    metrics_endpoint  = "metrics-endpoint"
+    opencti = {
+      model_uuid = data.juju_model.opencti.uuid
+      components = {
+        opencti       = module.opencti.application
+        redis_k8s     = module.redis_k8s.application
+        s3_integrator = module.s3_integrator.application
+      }
+    }
+    opencti_db = {
+      model_uuid = data.juju_model.opencti_db.uuid
+      components = {
+        rabbitmq_server = module.rabbitmq_server.application
+        sysconfig       = juju_application.sysconfig
+      }
+    }
   }
 }
