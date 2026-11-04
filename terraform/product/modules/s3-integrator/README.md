@@ -1,3 +1,10 @@
+# s3-integrator Terraform module
+
+This folder contains a [Terraform][Terraform] module for the `s3-integrator` charm,
+used as an internal dependency of the OpenCTI product module.
+
+[Terraform]: https://www.terraform.io/
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

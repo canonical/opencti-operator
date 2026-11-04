@@ -1,3 +1,10 @@
+# redis-k8s Terraform module
+
+This folder contains a [Terraform][Terraform] module for the `redis-k8s` charm,
+used as an internal dependency of the OpenCTI product module.
+
+[Terraform]: https://www.terraform.io/
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 

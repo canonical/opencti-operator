@@ -19,4 +19,9 @@ run "basic_deploy" {
     condition     = output.app_name == "opencti"
     error_message = "opencti app_name did not match expected"
   }
+
+  assert {
+    condition     = output.application.name == "opencti"
+    error_message = "opencti application output did not match expected"
+  }
 }
