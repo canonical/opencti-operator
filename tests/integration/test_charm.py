@@ -7,6 +7,7 @@
 
 """Integration tests."""
 
+import pathlib
 import subprocess  # nosec B404
 import textwrap
 import urllib.parse
@@ -58,12 +59,12 @@ def _ingress_service_hostname() -> str:
 @pytest.mark.abort_on_fail
 @pytest.mark.usefixtures("machine_charm_dependencies")
 async def test_deploy_charm(
-    pytestconfig: pytest.Config,
     model: Model,
     machine_model: Model,
     machine_controller_name: str,
     get_unit_ips,
     opencti_charm,
+    opencti_image,
 ):
     """
     arrange: deploy dependencies of the OpenCTI charm.
@@ -102,10 +103,8 @@ async def test_deploy_charm(
     )
     await action.wait()
     opencti = await model.deploy(
-        f"./{opencti_charm}",
-        resources={
-            "opencti-image": pytestconfig.getoption("--opencti-image"),
-        },
+        opencti_charm,
+        resources={"opencti-image": opencti_image},
         num_units=2,
     )
     redis_k8s = await model.deploy("redis-k8s", channel="latest/edge")
@@ -194,9 +193,7 @@ async def test_opencti_client(get_unit_ips, ops_test):
     assert user.account_status == "Inactive"
 
 
-async def test_opencti_connectors(
-    ops_test, model, opencti_connector_charms, opencti_connector_images
-):
+async def test_opencti_connectors(ops_test, model, charm_paths, charm_resource_images):
     """
     arrange: deploy the OpenCTI charm and OpenCTI connector charm.
     act: integrate the OpenCTI connector charm with the OpenCTI charm.
@@ -204,10 +201,8 @@ async def test_opencti_connectors(
     """
     connector = "opencti-export-file-stix-connector"
     connector_charm = await model.deploy(
-        f"./{opencti_connector_charms[connector]}",
-        resources={
-            f"{connector}-image": opencti_connector_images[connector],
-        },
+        str(pathlib.Path(charm_paths[connector].path).resolve()),
+        resources=charm_resource_images[connector],
         config={"connector-scope": "application/json"},
     )
     await model.integrate(connector_charm.name, "opencti")
