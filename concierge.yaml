@@ -1,0 +1,23 @@
+# Copyright 2026 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+juju:
+  channel: 3.6/stable
+  model-defaults:
+    test-mode: "true"
+    automatically-retry-hooks: "false"
+
+providers:
+  lxd:
+    enable: true
+    bootstrap: true
+    controller-name: localhost
+  microk8s:
+    enable: true
+    bootstrap: true
+    channel: 1.33-strict/stable
+    addons:
+      - dns
+      - rbac
+      - storage
+      - ingress
