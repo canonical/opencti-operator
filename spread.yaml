@@ -10,6 +10,7 @@ backends:
     type: integration-test
     systems:
     - ubuntu-24.04:
+        runner: [ubuntu-22.04]
         cpu: 4
         memory: 16
         disk: 60
