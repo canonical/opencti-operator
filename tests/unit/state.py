@@ -4,6 +4,7 @@
 """Generate fake data for unit tests."""
 
 import json
+from secrets import token_hex
 
 import ops.testing
 
@@ -119,6 +120,38 @@ class StateBuilder:
         )
         return self
 
+    def add_valkey_integration(self) -> "StateBuilder":
+        """Add valkey integration.
+
+        Returns: self
+        """
+        user_secret = ops.testing.Secret(
+            id=f"secret:{token_hex(10)}",
+            tracked_content={"username": "relation-5-opencti", "password": "valkey-password"},
+        )
+        tls_secret = ops.testing.Secret(
+            id=f"secret:{token_hex(10)}", tracked_content={"tls": "false"}
+        )
+        self._secrets.extend([user_secret, tls_secret])
+        response = {
+            "resource": "*",
+            "request-id": "request-1",
+            "salt": "salt-1",
+            "endpoints": "valkey-0.valkey-endpoints.test-opencti.svc.cluster.local:6379",
+            "secret-user": user_secret.id,
+            "secret-tls": tls_secret.id,
+            "mode": "sentinel",
+            "version": "9.0.0",
+        }
+        self._integrations.append(
+            ops.testing.Relation(
+                remote_app_name="valkey",
+                endpoint="valkey",
+                remote_app_data={"version": "v1", "requests": json.dumps([response])},
+            )
+        )
+        return self
+
     def add_s3_integration(self) -> "StateBuilder":
         """Add s3 integration.
 
@@ -191,8 +224,8 @@ class StateBuilder:
             self.add_opensearch_client_integration()
         if "amqp" not in excludes:
             self.add_rabbitmq_integration()
-        if "redis" not in excludes:
-            self.add_redis_integration()
+        if "valkey" not in excludes:
+            self.add_valkey_integration()
         if "s3" not in excludes:
             self.add_s3_integration()
         if "ingress" not in excludes:
