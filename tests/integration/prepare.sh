@@ -8,6 +8,7 @@
 # The root-installed tox points to a Python managed by root's uv, which the ubuntu user that
 # runs the tests cannot execute on Ubuntu 22.04 runners, so install tox for that user.
 runuser -l ubuntu -c "uv tool install --python 3.12 tox --with tox-uv --quiet"
+sudo ln -sf /home/ubuntu/.local/bin/tox /usr/local/bin/tox
 
 # https://charmhub.io/opensearch/docs/t-set-up#set-parameters-on-the-host-machine
 sudo tee -a /etc/sysctl.conf > /dev/null <<EOT
