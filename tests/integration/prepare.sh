@@ -10,6 +10,9 @@
 runuser -l ubuntu -c "uv tool install --python 3.12 tox --with tox-uv --quiet"
 sudo ln -sf /home/ubuntu/.local/bin/tox /usr/local/bin/tox
 
+# Docker on the runner sets the FORWARD policy to DROP, which blocks LXD container traffic.
+sudo iptables -I DOCKER-USER -j ACCEPT
+
 # https://charmhub.io/opensearch/docs/t-set-up#set-parameters-on-the-host-machine
 sudo tee -a /etc/sysctl.conf > /dev/null <<EOT
 vm.max_map_count=262144
