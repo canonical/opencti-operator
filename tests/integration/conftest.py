@@ -101,15 +101,18 @@ async def machine_charm_dependencies_fixture(machine_model: Model, machine_contr
         await machine_model.wait_for_idle(timeout=1200)
     except asyncio.TimeoutError:
         model = f"{machine_controller_name}:admin/{machine_model.name}"
-        for command in (
-            ("status", "--relations"),
-            ("debug-log", "--replay", "--no-tail", "--include", "unit-opensearch-0"),
-        ):
+        commands = [["status", "--relations"]]
+        for unit in range(3):
+            commands.append(
+                ["debug-log", "--replay", "--no-tail", "--include", f"unit-opensearch-{unit}"]
+            )
+            commands.append(["exec", "--unit", f"opensearch/{unit}", "--", "snap", "changes"])
+        for command in commands:
             result = await asyncio.create_subprocess_exec(
                 "juju", command[0], "-m", model, *command[1:], stdout=asyncio.subprocess.PIPE
             )
             stdout, _ = await result.communicate()
-            logger.error("juju %s:\n%s", command[0], stdout.decode()[-20000:])
+            logger.error("juju %s:\n%s", " ".join(command), stdout.decode()[-3000:])
         raise
 
 
