@@ -21,3 +21,8 @@ providers:
       - rbac
       - storage
       - ingress
+
+host:
+  snaps:
+    charmcraft:
+      channel: latest/stable
