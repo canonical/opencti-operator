@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Each revision is versioned by the date of the revision.
 
+## 2026-11-12
+
+### Changed
+
+- Migrated the build, integration test and publish workflows to canonical/charm-ci
+
 ## 2026-06-25
 
 ### Added
