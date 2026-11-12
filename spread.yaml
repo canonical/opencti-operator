@@ -28,5 +28,7 @@ integration-suites:
     working-dir: ./
     backends:
     - integration-test
+    pytest-arguments-template: |
+      --controller concierge-microk8s
     prepare: |
       "$SPREAD_PATH/tests/integration/prepare.sh"
