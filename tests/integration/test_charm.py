@@ -7,6 +7,7 @@
 
 """Integration tests."""
 
+import asyncio
 import pathlib
 import subprocess  # nosec B404
 import textwrap
@@ -14,6 +15,7 @@ import urllib.parse
 
 import boto3
 import botocore.client
+import botocore.exceptions
 import pytest
 import requests
 import yaml
@@ -85,7 +87,15 @@ async def test_deploy_charm(
         aws_secret_access_key="minioadmin",
         config=botocore.client.Config(signature_version="s3v4"),
     )
-    s3.create_bucket(Bucket="opencti")
+    for _ in range(30):
+        try:
+            s3.create_bucket(Bucket="opencti")
+            break
+        except botocore.exceptions.EndpointConnectionError:
+            # MinIO reports active before its server accepts connections.
+            await asyncio.sleep(5)
+    else:
+        s3.create_bucket(Bucket="opencti")
     s3_integrator = await model.deploy(
         "s3-integrator",
         config={
