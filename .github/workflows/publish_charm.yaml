@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs: [publish]
     steps:
-    - uses: actions/checkout@v6.0.2
+    - uses: actions/checkout@v6.1.0
     - uses: canonical/charming-actions/release-libraries@2.7.0
       name: Release libs
       with:
