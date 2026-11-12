@@ -3,19 +3,12 @@
 # Copyright 2025 Canonical Ltd.
 # See LICENSE file for licensing details.
 
-# Pre-run script for integration test operator-workflows action.
-# https://github.com/canonical/operator-workflows/blob/main/.github/workflows/integration_test.yaml
+# Spread suite prepare script, run after concierge has provisioned LXD and MicroK8s.
 
-# OpenSearch/RabbitMQ charms are deployed on lxd and OpenCTI charm is deployed on Canonical kubernetes.
-
-TESTING_MODEL="$(juju switch)"
-
-# lxd should be install and init by a previous step in integration test action.
-echo "bootstrapping lxd juju controller"
-juju bootstrap localhost localhost
-
-echo "Switching to testing model"
-juju switch "$TESTING_MODEL"
+# The root-installed tox points to a Python managed by root's uv, which the ubuntu user that
+# runs the tests cannot execute on Ubuntu 22.04 runners, so install tox for that user.
+runuser -l ubuntu -c "uv tool install --python 3.12 tox --with tox-uv --quiet"
+sudo ln -sf /home/ubuntu/.local/bin/tox /usr/local/bin/tox
 
 # https://charmhub.io/opensearch/docs/t-set-up#set-parameters-on-the-host-machine
 sudo tee -a /etc/sysctl.conf > /dev/null <<EOT
@@ -26,15 +19,6 @@ fs.file-max=1048576
 EOT
 
 sudo sysctl -p
-
-[[ -n "${CI}" ]] && [[ -n "${GITHUB_RUN_ID}" ]] && sudo rm -rf \
-  /usr/local/lib/node_modules/ \
-  /usr/local/.ghcup \
-  /usr/local/julia1.11.1 \
-  /usr/local/share/powershell \
-  /usr/local/share/chromium \
-  /usr/local/share/vcpkg \
-  /opt/hostedtoolcache
 
 sudo microk8s kubectl apply -f - << EOF
 apiVersion: v1

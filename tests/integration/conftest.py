@@ -100,36 +100,12 @@ async def machine_charm_dependencies_fixture(machine_model: Model):
 
 
 @pytest.fixture(name="opencti_charm", scope="module")
-def opencti_charm_fixture(pytestconfig) -> dict[str, str]:
+def opencti_charm_fixture(charm_paths) -> str:
     """Opencti charm file."""
-    charm_files = pytestconfig.getoption("--charm-file")
-    assert charm_files
-    for charm_file in charm_files:
-        if "connector" not in pathlib.Path(charm_file).name:
-            return charm_file
-    raise ValueError("opencti charm file not provided")
+    return str(pathlib.Path(charm_paths["opencti"].path).resolve())
 
 
-@pytest.fixture(name="opencti_connector_charms", scope="module")
-def opencti_connector_charms_fixture(connectors, pytestconfig) -> dict[str, str]:
-    """Get opencti connector charm files."""
-    charms = {}
-    charm_files = pytestconfig.getoption("--charm-file")
-    for charm_file in charm_files:
-        name = pathlib.Path(charm_file).name.split("_")[0]
-        if name in connectors:
-            charms[name] = charm_file
-    logger.info("load opencti connector charms: %s", charms)
-    return charms
-
-
-@pytest.fixture(name="opencti_connector_images", scope="module")
-def opencti_connector_images_fixture(connectors, pytestconfig) -> dict[str, str]:
-    """Get opencti connector charm images."""
-    images = {}
-    for connector in connectors:
-        image = pytestconfig.getoption(f"--{connector}-image")
-        if image:
-            images[connector] = image
-    logger.info("load opencti connector images: %s", images)
-    return images
+@pytest.fixture(name="opencti_image", scope="module")
+def opencti_image_fixture(charm_resource_images) -> str:
+    """Opencti OCI image."""
+    return charm_resource_images["opencti"]["opencti-image"]
