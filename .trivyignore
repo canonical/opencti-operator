@@ -1,10 +1,6 @@
 # python-pkg
 CVE-2026-23949
-GHSA-f83h-ghpp-7wcc
 CVE-2026-24049
-# tar
-GHSA-qffp-2rhf-9h96
-
 # fast-xml-parser CVE - fixed in 5.5.6; temporary until opencti-platform updates fast-xml-parser
 CVE-2026-33036
 # flatted CVE - fixed in 3.4.0; temporary until opencti-platform updates flatted
