@@ -117,7 +117,7 @@ async def test_deploy_charm(
         resources={"opencti-image": opencti_image},
         num_units=2,
     )
-    redis_k8s = await model.deploy("redis-k8s", channel="latest/edge")
+    valkey = await model.deploy("valkey", channel="9/edge", trust=True)
     nginx_ingress_integrator = await model.deploy(
         "nginx-ingress-integrator",
         channel="edge",
@@ -136,7 +136,7 @@ async def test_deploy_charm(
         f"{machine_controller_name}:admin/{machine_model.name}.amqp",
         opencti.name,
     )
-    await model.integrate(redis_k8s.name, opencti.name)
+    await model.integrate(f"{valkey.name}:valkey-client", f"{opencti.name}:valkey")
     await model.integrate(nginx_ingress_integrator.name, opencti.name)
     await model.integrate(s3_integrator.name, opencti.name)
     secret_id = await model.add_secret(

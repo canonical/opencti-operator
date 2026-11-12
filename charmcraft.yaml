@@ -38,7 +38,11 @@ requires:
     limit: 1
   redis:
     interface: redis
-    optional: false
+    optional: true
+    limit: 1
+  valkey:
+    interface: valkey_client
+    optional: true
     limit: 1
   amqp:
     interface: rabbitmq

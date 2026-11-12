@@ -84,9 +84,11 @@ def test_pebble_plan():
                     "RABBITMQ__PORT_MANAGEMENT": "15672",
                     "RABBITMQ__USERNAME": "opencti",
                     "REDIS__HOSTNAME": (
-                        "redis-k8s-0.redis-k8s-endpoints.test-opencti.svc.cluster.local"
+                        "valkey-0.valkey-endpoints.test-opencti.svc.cluster.local"
                     ),
+                    "REDIS__PASSWORD": "valkey-password",
                     "REDIS__PORT": "6379",
+                    "REDIS__USERNAME": "relation-5-opencti",
                 },
                 "override": "replace",
                 "working-dir": "/opt/opencti",
@@ -155,7 +157,7 @@ def test_pebble_plan_root_ingress_path():
 
 
 @pytest.mark.parametrize(
-    "missing_integration", ["opensearch-client", "amqp", "redis", "s3", "ingress", "opencti-peer"]
+    "missing_integration", ["opensearch-client", "amqp", "valkey", "s3", "ingress", "opencti-peer"]
 )
 @pytest.mark.usefixtures("patch_is_platform_healthy")
 def test_missing_integration(missing_integration):
@@ -337,7 +339,7 @@ def test_insecure_opensearch_integration():
 
 
 @pytest.mark.parametrize(
-    "incomplete_integration", ["opensearch-client", "amqp", "redis", "s3", "ingress"]
+    "incomplete_integration", ["opensearch-client", "amqp", "valkey", "s3", "ingress"]
 )
 @pytest.mark.usefixtures("patch_is_platform_healthy")
 def test_incomplete_integration(incomplete_integration):
@@ -369,7 +371,7 @@ def test_redis_library_workaround():
     ctx = ops.testing.Context(OpenCTICharm)
     state_in = (
         StateBuilder()
-        .add_required_integrations(excludes=["redis"])
+        .add_required_integrations(excludes=["valkey"])
         .add_integration(
             ops.testing.Relation(
                 endpoint="redis",
@@ -384,6 +386,50 @@ def test_redis_library_workaround():
     state_out = ctx.run(ctx.on.config_changed(), state_in)
     assert state_out.unit_status.name == "blocked"
     assert state_out.unit_status.message == "invalid redis integration"
+
+
+@pytest.mark.usefixtures("patch_is_platform_healthy")
+def test_redis_backwards_compatibility():
+    """
+    arrange: provide the charm with a redis integration instead of valkey.
+    act: simulate a config-changed event.
+    assert: charm is active and uses the redis host.
+    """
+    ctx = ops.testing.Context(OpenCTICharm)
+    state_in = (
+        StateBuilder()
+        .add_required_integrations(excludes=["valkey"])
+        .add_redis_integration()
+        .add_required_configs()
+        .build()
+    )
+    state_out = ctx.run(ctx.on.config_changed(), state_in)
+    environment = state_out.get_container("opencti").plan.to_dict()["services"]["platform"][
+        "environment"
+    ]
+    assert state_out.unit_status.name == "active"
+    assert environment["REDIS__HOSTNAME"].startswith("redis-k8s-0")
+    assert "REDIS__PASSWORD" not in environment
+
+
+@pytest.mark.usefixtures("patch_is_platform_healthy")
+def test_redis_and_valkey_blocked():
+    """
+    arrange: provide the charm with both redis and valkey integrations.
+    act: simulate a config-changed event.
+    assert: charm is blocked.
+    """
+    ctx = ops.testing.Context(OpenCTICharm)
+    state_in = (
+        StateBuilder()
+        .add_required_integrations()
+        .add_redis_integration()
+        .add_required_configs()
+        .build()
+    )
+    state_out = ctx.run(ctx.on.config_changed(), state_in)
+    assert state_out.unit_status.name == "blocked"
+    assert "mutually exclusive" in state_out.unit_status.message
 
 
 def test_opencti_connector(patch_opencti_client):
