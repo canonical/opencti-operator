@@ -3,7 +3,6 @@
 
 """Test fixtures for integration tests."""
 
-import asyncio
 import json
 import logging
 import pathlib
@@ -87,7 +86,7 @@ async def get_unit_ips_fixture(ops_test: OpsTest, model: Model):
 
 
 @pytest_asyncio.fixture(name="machine_charm_dependencies", scope="module")
-async def machine_charm_dependencies_fixture(machine_model: Model, machine_controller_name: str):
+async def machine_charm_dependencies_fixture(machine_model: Model):
     """Deploy opencti charm's machine dependency charms."""
     self_signed_certificates = await machine_model.deploy("self-signed-certificates")
     opensearch = await machine_model.deploy(
@@ -97,23 +96,7 @@ async def machine_charm_dependencies_fixture(machine_model: Model, machine_contr
     await machine_model.create_offer(f"{opensearch.name}:opensearch-client", "opensearch-client")
     rabbitmq_server = await machine_model.deploy("rabbitmq-server", channel="3.9/stable")
     await machine_model.create_offer(f"{rabbitmq_server.name}:amqp", "amqp")
-    try:
-        await machine_model.wait_for_idle(timeout=1200)
-    except asyncio.TimeoutError:
-        model = f"{machine_controller_name}:admin/{machine_model.name}"
-        commands = [["status", "--relations"]]
-        for unit in range(3):
-            commands.append(
-                ["debug-log", "--replay", "--no-tail", "--include", f"unit-opensearch-{unit}"]
-            )
-            commands.append(["exec", "--unit", f"opensearch/{unit}", "--", "snap", "changes"])
-        for command in commands:
-            result = await asyncio.create_subprocess_exec(
-                "juju", command[0], "-m", model, *command[1:], stdout=asyncio.subprocess.PIPE
-            )
-            stdout, _ = await result.communicate()
-            logger.error("juju %s:\n%s", " ".join(command), stdout.decode()[-3000:])
-        raise
+    await machine_model.wait_for_idle(timeout=1200)
 
 
 @pytest.fixture(name="opencti_charm", scope="module")
