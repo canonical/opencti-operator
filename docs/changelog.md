@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Each revision is versioned by the date of the revision.
 
+## 2026-11-14
+
+### Fixed
+
+- Fixed `terraform validate` and terraform tests failing with `Unsupported argument` for the OpenSearch
+  Dashboards module. Upgraded the TF OpenSearch product from rev315 to rev337. rev315 pulled
+  `opensearch-dashboards-operator//terraform?ref=2/edge`, which was restructured on 2026-10-20. rev337 pins
+  the Dashboards module to rev60.
+
 ## 2026-11-12
 
 ### Changed
