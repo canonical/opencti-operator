@@ -119,9 +119,7 @@ async def test_deploy_charm(
         num_units=2,
     )
     # python-libjuju doesn't know the ubuntu@26.04 base used by Valkey, deploy with the CLI
-    await ops_test.juju(
-        "deploy", "valkey", "--channel", "9/edge", "--revision", "156", "--trust", check=True
-    )
+    await ops_test.juju("deploy", "valkey", "--channel", "9/edge", "--trust", check=True)
     nginx_ingress_integrator = await model.deploy(
         "nginx-ingress-integrator",
         channel="edge",
