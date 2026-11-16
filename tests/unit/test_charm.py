@@ -432,6 +432,26 @@ def test_redis_and_valkey_blocked():
     assert "mutually exclusive" in state_out.unit_status.message
 
 
+@pytest.mark.usefixtures("patch_is_platform_healthy")
+def test_valkey_tls_not_supported():
+    """
+    arrange: provide the charm with a valkey integration that has TLS enabled.
+    act: simulate a config-changed event.
+    assert: charm is blocked and no platform service is planned.
+    """
+    ctx = ops.testing.Context(OpenCTICharm)
+    state_in = (
+        StateBuilder()
+        .add_required_integrations(excludes=["valkey"])
+        .add_valkey_integration(tls=True)
+        .add_required_configs()
+        .build()
+    )
+    state_out = ctx.run(ctx.on.config_changed(), state_in)
+    assert state_out.unit_status == ops.BlockedStatus("valkey tls is not supported")
+    assert "platform" not in state_out.get_container("opencti").plan.services
+
+
 def test_opencti_connector(patch_opencti_client):
     """
     arrange: provide the charm with the required integrations and configurations.

@@ -120,8 +120,11 @@ class StateBuilder:
         )
         return self
 
-    def add_valkey_integration(self) -> "StateBuilder":
+    def add_valkey_integration(self, tls: bool = False) -> "StateBuilder":
         """Add valkey integration.
+
+        Args:
+            tls: whether the Valkey provider reports TLS enabled.
 
         Returns: self
         """
@@ -130,7 +133,7 @@ class StateBuilder:
             tracked_content={"username": "relation-5-opencti", "password": "valkey-password"},
         )
         tls_secret = ops.testing.Secret(
-            id=f"secret:{token_hex(10)}", tracked_content={"tls": "false"}
+            id=f"secret:{token_hex(10)}", tracked_content={"tls": str(tls).lower()}
         )
         self._secrets.extend([user_secret, tls_secret])
         response = {
