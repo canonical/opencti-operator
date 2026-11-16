@@ -1,2 +1,3 @@
 ops==3.9.0
 gql[requests]==4.4.0
+dpcharmlibs-interfaces==1.2.2
