@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Each revision is versioned by the date of the revision.
 
+## 2026-11-16
+
+### Fixed
+
+- Upgrade TF OpenSearch product to rev349, which pins OpenSearch Dashboards to a tag instead of the floating `2/edge` branch (fixes `terraform init/validate` failures)
+
 ## 2026-11-12
 
 ### Changed
