@@ -61,6 +61,7 @@ def _ingress_service_hostname() -> str:
 @pytest.mark.abort_on_fail
 @pytest.mark.usefixtures("machine_charm_dependencies")
 async def test_deploy_charm(
+    ops_test,
     model: Model,
     machine_model: Model,
     machine_controller_name: str,
@@ -117,7 +118,8 @@ async def test_deploy_charm(
         resources={"opencti-image": opencti_image},
         num_units=2,
     )
-    redis_k8s = await model.deploy("redis-k8s", channel="latest/edge")
+    # python-libjuju doesn't know the ubuntu@26.04 base used by Valkey, deploy with the CLI
+    await ops_test.juju("deploy", "valkey", "--channel", "9/edge", "--trust", check=True)
     nginx_ingress_integrator = await model.deploy(
         "nginx-ingress-integrator",
         channel="edge",
@@ -136,7 +138,7 @@ async def test_deploy_charm(
         f"{machine_controller_name}:admin/{machine_model.name}.amqp",
         opencti.name,
     )
-    await model.integrate(redis_k8s.name, opencti.name)
+    await model.integrate("valkey:valkey-client", f"{opencti.name}:valkey")
     await model.integrate(nginx_ingress_integrator.name, opencti.name)
     await model.integrate(s3_integrator.name, opencti.name)
     secret_id = await model.add_secret(
@@ -251,3 +253,20 @@ async def test_opencti_connectors(ops_test, model, charm_paths, charm_resource_i
     connectors = {c["name"]: c for c in resp.json()["data"]["connectors"]}
     assert connector in connectors
     assert connectors[connector]["active"]
+
+
+async def test_redis_backwards_compatibility(ops_test, model):
+    """
+    arrange: deploy the OpenCTI charm integrated with Valkey.
+    act: replace the Valkey integration with redis-k8s, then add Valkey back as well.
+    assert: charm is active with redis only, and blocked with both.
+    """
+    await ops_test.juju("remove-relation", "valkey:valkey-client", "opencti:valkey", check=True)
+    await model.wait_for_idle(apps=["opencti"], status="blocked", timeout=300)
+    redis_k8s = await model.deploy("redis-k8s", channel="latest/edge")
+    await model.integrate(redis_k8s.name, "opencti")
+    await model.wait_for_idle(apps=["opencti"], status="active", timeout=900)
+    await ops_test.juju("integrate", "valkey:valkey-client", "opencti:valkey", check=True)
+    await model.wait_for_idle(apps=["opencti"], status="blocked", timeout=600)
+    for unit in model.applications["opencti"].units:
+        assert "mutually exclusive" in unit.workload_status_message
