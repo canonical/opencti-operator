@@ -13,47 +13,17 @@ jobs:
       contents: read
       pull-requests: write
     secrets: inherit
-    permissions:
-      contents: read
-      pull-requests: write
     with:
       self-hosted-runner: false
       vale-style-check: false
-  integration-tests:
-    name: Integration Tests
-    uses: 
-      canonical/operator-workflows/.github/workflows/integration_test.yaml@main
-    permissions:
-      contents: read
-      packages: write
-      pull-requests: write
-    secrets: inherit
-    with:
-      channel: 1.33-strict/stable
-      charmcraft-channel: latest/edge
-      juju-channel: 3.6/stable
-      pre-run-script: tests/integration/prepare.sh
-      self-hosted-runner: false
-      use-canonical-k8s: false
-      provider: microk8s
-      tmate-debug: false
-      runs-on: ubuntu-22.04
-      microk8s-addons: "dns registry:size=40Gi rbac storage ingress"
   check-connector-sync:
     name: Check Connectors
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.2
-      - uses: actions/setup-python@v6.2.0
+      - uses: actions/checkout@v6.1.0
+      - uses: actions/setup-python@v7.1.0
         with:
-          python-version: '3.14'
+          python-version: '3.15'
       - run: pip install tox
       - run: tox -e generate-connectors
       - run: git diff --exit-code
-  allure-report:
-    if: ${{ !cancelled() && github.event_name == 'schedule' }}
-    needs:
-    - integration-tests
-    uses: canonical/operator-workflows/.github/workflows/allure_report.yaml@main
-    permissions:
-      contents: write

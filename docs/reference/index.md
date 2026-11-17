@@ -22,3 +22,13 @@ the charms connect to the broader Juju ecosystem.
 
 * [Charm architecture](charm-architecture.md)
 * [Integrations](integrations.md)
+
+```{toctree}
+:hidden:
+:maxdepth: 1
+actions.md
+configurations.md
+observability.md
+charm-architecture.md
+integrations.md
+```

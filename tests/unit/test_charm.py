@@ -84,9 +84,11 @@ def test_pebble_plan():
                     "RABBITMQ__PORT_MANAGEMENT": "15672",
                     "RABBITMQ__USERNAME": "opencti",
                     "REDIS__HOSTNAME": (
-                        "redis-k8s-0.redis-k8s-endpoints.test-opencti.svc.cluster.local"
+                        "valkey-0.valkey-endpoints.test-opencti.svc.cluster.local"
                     ),
+                    "REDIS__PASSWORD": "valkey-password",
                     "REDIS__PORT": "6379",
+                    "REDIS__USERNAME": "relation-5-opencti",
                 },
                 "override": "replace",
                 "working-dir": "/opt/opencti",
@@ -132,8 +134,30 @@ def test_pebble_plan():
     assert (container.get_filesystem(ctx) / "opt/opencti/config/opensearch.pem").exists()
 
 
+@pytest.mark.usefixtures("patch_is_platform_healthy")
+def test_pebble_plan_root_ingress_path():
+    """
+    arrange: provide the charm with an ingress URL that has no path (root "/").
+    act: simulate a config-changed event.
+    assert: the worker OPENCTI_URL has no trailing slash, avoiding a "//graphql"
+        request that OpenCTI's Express 5 router would reject with a 404.
+    """
+    ctx = ops.testing.Context(OpenCTICharm)
+    state_in = (
+        StateBuilder()
+        .add_required_integrations(excludes=["ingress"])
+        .add_ingress_integration(url="https://opencti-endpoints.test-opencti.svc/")
+        .add_required_configs()
+        .build()
+    )
+    state_out = ctx.run(ctx.on.config_changed(), state_in)
+    container = state_out.get_container("opencti")
+    worker_url = container.plan.to_dict()["services"]["worker-0"]["environment"]["OPENCTI_URL"]
+    assert worker_url == "http://localhost:8080"
+
+
 @pytest.mark.parametrize(
-    "missing_integration", ["opensearch-client", "amqp", "redis", "s3", "ingress", "opencti-peer"]
+    "missing_integration", ["opensearch-client", "amqp", "valkey", "s3", "ingress", "opencti-peer"]
 )
 @pytest.mark.usefixtures("patch_is_platform_healthy")
 def test_missing_integration(missing_integration):
@@ -315,7 +339,7 @@ def test_insecure_opensearch_integration():
 
 
 @pytest.mark.parametrize(
-    "incomplete_integration", ["opensearch-client", "amqp", "redis", "s3", "ingress"]
+    "incomplete_integration", ["opensearch-client", "amqp", "valkey", "s3", "ingress"]
 )
 @pytest.mark.usefixtures("patch_is_platform_healthy")
 def test_incomplete_integration(incomplete_integration):
@@ -347,7 +371,7 @@ def test_redis_library_workaround():
     ctx = ops.testing.Context(OpenCTICharm)
     state_in = (
         StateBuilder()
-        .add_required_integrations(excludes=["redis"])
+        .add_required_integrations(excludes=["valkey"])
         .add_integration(
             ops.testing.Relation(
                 endpoint="redis",
@@ -362,6 +386,70 @@ def test_redis_library_workaround():
     state_out = ctx.run(ctx.on.config_changed(), state_in)
     assert state_out.unit_status.name == "blocked"
     assert state_out.unit_status.message == "invalid redis integration"
+
+
+@pytest.mark.usefixtures("patch_is_platform_healthy")
+def test_redis_backwards_compatibility():
+    """
+    arrange: provide the charm with a redis integration instead of valkey.
+    act: simulate a config-changed event.
+    assert: charm is active and uses the redis host.
+    """
+    ctx = ops.testing.Context(OpenCTICharm)
+    state_in = (
+        StateBuilder()
+        .add_required_integrations(excludes=["valkey"])
+        .add_redis_integration()
+        .add_required_configs()
+        .build()
+    )
+    state_out = ctx.run(ctx.on.config_changed(), state_in)
+    environment = state_out.get_container("opencti").plan.to_dict()["services"]["platform"][
+        "environment"
+    ]
+    assert state_out.unit_status.name == "active"
+    assert environment["REDIS__HOSTNAME"].startswith("redis-k8s-0")
+    assert "REDIS__PASSWORD" not in environment
+
+
+@pytest.mark.usefixtures("patch_is_platform_healthy")
+def test_redis_and_valkey_blocked():
+    """
+    arrange: provide the charm with both redis and valkey integrations.
+    act: simulate a config-changed event.
+    assert: charm is blocked.
+    """
+    ctx = ops.testing.Context(OpenCTICharm)
+    state_in = (
+        StateBuilder()
+        .add_required_integrations()
+        .add_redis_integration()
+        .add_required_configs()
+        .build()
+    )
+    state_out = ctx.run(ctx.on.config_changed(), state_in)
+    assert state_out.unit_status.name == "blocked"
+    assert "mutually exclusive" in state_out.unit_status.message
+
+
+@pytest.mark.usefixtures("patch_is_platform_healthy")
+def test_valkey_tls_not_supported():
+    """
+    arrange: provide the charm with a valkey integration that has TLS enabled.
+    act: simulate a config-changed event.
+    assert: charm is blocked and no platform service is planned.
+    """
+    ctx = ops.testing.Context(OpenCTICharm)
+    state_in = (
+        StateBuilder()
+        .add_required_integrations(excludes=["valkey"])
+        .add_valkey_integration(tls=True)
+        .add_required_configs()
+        .build()
+    )
+    state_out = ctx.run(ctx.on.config_changed(), state_in)
+    assert state_out.unit_status == ops.BlockedStatus("valkey tls is not supported")
+    assert "platform" not in state_out.get_container("opencti").plan.services
 
 
 def test_opencti_connector(patch_opencti_client):
@@ -396,6 +484,37 @@ def test_opencti_connector(patch_opencti_client):
     secret_id = integration_out.local_app_data["opencti_token"]  # type: ignore
     secret = state_out.get_secret(id=secret_id)
     assert secret.tracked_content == {"token": "00000000-0000-0000-0000-000000000000"}
+
+
+@pytest.mark.usefixtures("patch_opencti_client")
+def test_opencti_connector_url_has_no_trailing_slash():
+    """
+    arrange: provide the charm with an ingress URL ending with a slash and a connector.
+    act: simulate a config-changed event.
+    assert: the opencti_url shared with the connector has no trailing slash.
+    """
+    ctx = ops.testing.Context(OpenCTICharm)
+    opencti_connector_integration = ops.testing.Relation(
+        endpoint="opencti-connector",
+        remote_app_data={
+            "connector_type": "INTERNAL_EXPORT_FILE",
+            "connector_charm_name": "test",
+        },
+    )
+    state_in = (
+        StateBuilder()
+        .add_required_integrations(excludes=["ingress"])
+        .add_ingress_integration(url="http://opencti.example.com/")
+        .add_required_configs()
+        .add_integration(opencti_connector_integration)
+        .build()
+    )
+    state_out = ctx.run(ctx.on.config_changed(), state_in)
+    integration_out = state_out.get_relation(opencti_connector_integration.id)
+    assert (
+        integration_out.local_app_data["opencti_url"]  # type: ignore
+        == "http://opencti.example.com"
+    )
 
 
 def test_client_params(patch_opencti_client):

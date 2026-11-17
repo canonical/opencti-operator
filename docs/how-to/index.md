@@ -23,3 +23,14 @@ Learn the guidelines and best practices before contributing to the
 OpenCTI charms project.
 
 * [Contribute](./contribute.md)
+
+```{toctree}
+:hidden:
+:maxdepth: 1
+account.md
+backup.md
+observability.md
+redeploy.md
+upgrade.md
+contribute.md
+```

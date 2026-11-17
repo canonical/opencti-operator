@@ -15,6 +15,7 @@ import urllib.parse
 import uuid
 
 import ops
+import pydantic
 import requests
 from charms.data_platform_libs.v0.data_interfaces import OpenSearchRequires
 from charms.data_platform_libs.v0.s3 import S3Requirer
@@ -24,6 +25,11 @@ from charms.prometheus_k8s.v0.prometheus_scrape import MetricsEndpointProvider
 from charms.rabbitmq_k8s.v0.rabbitmq import RabbitMQRequires
 from charms.redis_k8s.v0.redis import RedisRelationCharmEvents, RedisRequires
 from charms.traefik_k8s.v2.ingress import IngressPerAppRequirer
+from dpcharmlibs.interfaces import (
+    RequirerCommonModel,
+    ResourceRequirerEventHandler,
+    ValkeyResponseModel,
+)
 
 import opencti
 
@@ -92,6 +98,7 @@ class OpenCTICharm(ops.CharmBase):
         self._container.pebble.timeout = 60
         self._opensearch = self._register_opensearch()
         self._redis = self._register_redis()
+        self._valkey = self._register_valkey()
         self._rabbitmq = self._register_rabbitmq()
         self._s3 = self._register_s3()
         self._ingress = self._register_ingress()
@@ -162,6 +169,28 @@ class OpenCTICharm(ops.CharmBase):
         self.framework.observe(redis.charm.on.redis_relation_updated, self._reconcile)
         self.framework.observe(self.on.redis_relation_broken, self._reconcile)
         return redis
+
+    def _register_valkey(self) -> ResourceRequirerEventHandler:
+        """Create the Valkey requirer and register related event handlers.
+
+        Returns:
+            The Valkey requirer event handler.
+        """
+        valkey = ResourceRequirerEventHandler(
+            self,
+            relation_name="valkey",
+            requests=[RequirerCommonModel(resource="*")],
+            response_model=ValkeyResponseModel,
+        )
+        for event in (
+            valkey.on.resource_created,
+            valkey.on.endpoints_changed,
+            valkey.on.authentication_updated,
+            self.on.valkey_relation_changed,
+            self.on.valkey_relation_broken,
+        ):
+            self.framework.observe(event, self._reconcile)
+        return valkey
 
     def _register_rabbitmq(self) -> RabbitMQRequires:
         """Create RabbitMQRequires instance and register related event handlers.
@@ -251,12 +280,11 @@ class OpenCTICharm(ops.CharmBase):
     def _reconcile(self, _: ops.EventBase) -> None:
         """Run charm reconcile function and catch all exceptions."""
         if isinstance(self._ingress.url, str) and len(self._ingress.url) > 0:
-            app_path = urllib.parse.urlparse(self._ingress.url).path
-            if len(app_path) > 0 and app_path[0] == "/":
-                app_path = app_path[1:]
-            if len(app_path) > 0 and app_path[-1] == "/":
-                app_path = app_path[:-1]  # trailing '/' should not be included
-            self._base_url = _OPENCTI_BASE_URL + app_path
+            app_path = urllib.parse.urlparse(self._ingress.url).path.strip("/")
+            # pycti appends "/graphql" without normalizing slashes, and OpenCTI's
+            # Express 5 router doesn't collapse "//graphql" onto "/graphql", so
+            # _base_url must never end with a trailing slash.
+            self._base_url = f"{_OPENCTI_BASE_URL.rstrip('/')}/{app_path}".rstrip("/")
 
         try:
             self._reconcile_platform()
@@ -345,7 +373,7 @@ class OpenCTICharm(ops.CharmBase):
                         **self._gen_secret_env(),
                         **self._gen_opensearch_env(),
                         **self._gen_rabbitmq_env(),
-                        **self._gen_redis_env(),
+                        **self._gen_cache_env(),
                         **self._gen_s3_env(),
                         **self._gen_ingress_env(),
                     },
@@ -423,12 +451,17 @@ class OpenCTICharm(ops.CharmBase):
             raise ContainerNotReady("waiting for opencti container")
         integrations = [
             "opensearch-client",
-            "redis",
             "amqp",
             "s3",
             "ingress",
         ]
         missing_integrations = []
+        has_redis = self.model.get_relation("redis") is not None
+        has_valkey = self.model.get_relation("valkey") is not None
+        if has_redis and has_valkey:
+            raise InvalidIntegration("redis and valkey integrations are mutually exclusive")
+        if not has_redis and not has_valkey:
+            missing_integrations.append("valkey")
         for integration_name in integrations:
             integration = self.model.get_relation(integration_name)
             if integration is None or integration.app is None or not integration.units:
@@ -590,6 +623,51 @@ class OpenCTICharm(ops.CharmBase):
                 encoding="ascii",
             )
 
+    def _gen_cache_env(self) -> dict[str, str]:
+        """Generate the Redis-compatible environment variables from Valkey or Redis.
+
+        Returns:
+            A dictionary containing the Redis-related environment variables.
+
+        Raises:
+            IntegrationNotReady: neither valkey nor redis integration is present.
+        """
+        if self.model.get_relation("valkey") is not None:
+            return self._gen_valkey_env()
+        if self.model.get_relation("redis") is not None:
+            return self._gen_redis_env()
+        raise IntegrationNotReady("waiting for valkey integration")
+
+    def _gen_valkey_env(self) -> dict[str, str]:
+        """Generate the Valkey-related environment variables for the OpenCTI platform.
+
+        Returns:
+            A dictionary containing the Redis-related environment variables.
+
+        Raises:
+            IntegrationNotReady: valkey integration not ready.
+            InvalidIntegration: valkey integration uses unsupported settings.
+        """
+        relation = self.model.get_relation("valkey")
+        response = None
+        if relation and relation.app:
+            try:
+                model = self._valkey.interface.build_model(relation.id, component=relation.app)
+                response = model.requests[0] if model.requests else None
+            except pydantic.ValidationError:
+                response = None
+        if not response or not response.endpoints or not response.username:
+            raise IntegrationNotReady("waiting for valkey integration")
+        if response.tls:
+            raise InvalidIntegration("valkey tls is not supported")
+        host, _, port = response.endpoints.split(",")[0].strip().rpartition(":")
+        return {
+            "REDIS__HOSTNAME": host,
+            "REDIS__PORT": port or "6379",
+            "REDIS__USERNAME": response.username,
+            "REDIS__PASSWORD": response.password or "",
+        }
+
     def _gen_redis_env(self) -> dict[str, str]:
         """Generate the Redis-related environment variables for the OpenCTI platform.
 
@@ -746,7 +824,8 @@ class OpenCTICharm(ops.CharmBase):
         connector_type = integration_data.get("connector_type")
         if not connector_charm_name or not connector_type:
             return None
-        opencti_url = self._ingress.url
+        # pycti appends "/graphql", so a trailing slash would produce "//graphql".
+        opencti_url = self._ingress.url.rstrip("/") if self._ingress.url else self._ingress.url
         integration.data[self.app]["opencti_url"] = opencti_url
         connector_user_name = f"charm-connector-{connector_charm_name.replace('_', '-').lower()}"
         connector_user = self._get_opencti_user(client, connector_user_name)
