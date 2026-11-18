@@ -4,6 +4,13 @@ Use the [`juju refresh`](https://canonical.com/juju/docs/juju-cli/3.6/reference/
 command to upgrade the OpenCTI charm. No additional operations are required for
 the upgrade process.
 
+```{important}
+Revisions 129 and later continue to support the `redis` integration, so migrating is not
+required for a charm refresh. To switch to the recommended Valkey backend, or when upgrading
+the Terraform product module that replaces Redis, follow
+[How to migrate from Redis to Valkey](./migrate-to-valkey.md).
+```
+
 ## Upgrade the Terraform product module
 
 The product module deploys OpenSearch with the OpenSearch machine module, which requires
