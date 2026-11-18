@@ -6,14 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Each revision is versioned by the date of the revision.
 
-## 2026-10-13
+## 2026-11-18
 
 ### Changed
 
 - Migrated all Terraform modules (`terraform/charm`, `terraform/product` and
   its `rabbitmq-server`, `redis-k8s`, `s3-integrator` submodules) to the CC008
   Charm Terraform Standard: renamed `versions.tf` to `terraform.tf`, added
-  `MAJOR_VERSION` files, normalized variable/output contracts, and added
+  a single shared `terraform/MAJOR_VERSION` file, normalized variable/output contracts, and added
   missing module tests.
 - The `terraform/product` module's `requires`/`provides` outputs were replaced
   by new optional `ingress` and `logging` input variables, plus new mandatory
@@ -22,6 +22,18 @@ Each revision is versioned by the date of the revision.
   instead of a concrete value; this only changes behavior for consumers
   invoking the charm modules standalone without an explicit value, since the
   product module always passes an explicit value.
+
+## 2026-11-16
+
+### Fixed
+
+- Upgrade TF OpenSearch product to rev349, which pins OpenSearch Dashboards to a tag instead of the floating `2/edge` branch (fixes `terraform init/validate` failures)
+
+## 2026-11-12
+
+### Changed
+
+- Migrated the build, integration test and publish workflows to canonical/charm-ci
 
 ## 2026-06-25
 
