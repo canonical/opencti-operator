@@ -15,7 +15,3 @@ the Juju Terraform provider `~> 2.0`. Before applying the new module version:
 - The optional OpenSearch Dashboards, Grafana agent and data integrator applications that
   the previous module deployed are no longer deployed, so Terraform destroys them.
 - Set `s3_secret_uri` instead of `credentials` in `s3_integrator_opensearch.config`.
-
-```{important}
-Review the plan before applying it. Only the applications listed above should be destroyed.
-```
