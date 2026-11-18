@@ -24,9 +24,9 @@ Each revision is versioned by the date of the revision.
   product module always passes an explicit value.
 - The `terraform/product` module's `risk` input (default `edge`) now sets the
   default channel (`latest/<risk>`) of the `opencti`, `s3_integrator` and
-  `s3_integrator_opensearch` charms when no explicit channel is given, and is
-  reported in the `metadata` output. `metadata.deployed_at` is now persisted in
-  state instead of changing on every apply.
+  `s3_integrator_opensearch` charms when no explicit channel is given.
+  `metadata.deployed_at` is now persisted in state instead of changing on every
+  apply.
 
 ## 2026-11-16
 

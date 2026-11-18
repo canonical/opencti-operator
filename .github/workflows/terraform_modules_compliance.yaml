@@ -9,8 +9,10 @@ on:
       - 'terraform/**'
       - '.github/workflows/terraform_modules_compliance.yaml'
 
+# Pinned to the checker before operator-workflows#1058 (543b9f1): newer versions classify
+# modules by path, so nested modules under terraform/product/modules count as product modules.
 jobs:
   terraform-modules-compliance:
-    uses: canonical/operator-workflows/.github/workflows/terraform_modules_compliance.yaml@0ad5fa95ddbd34f7fa6a70f552269a4090f35fa3 # main
+    uses: canonical/operator-workflows/.github/workflows/terraform_modules_compliance.yaml@030c5b20a0bb880dcf1ed326bff0fc16b6eb6ac1 # main
     with:
       terraform-directories: '["terraform/charm", "terraform/product", "terraform/product/modules/rabbitmq-server", "terraform/product/modules/redis-k8s", "terraform/product/modules/s3-integrator"]'
