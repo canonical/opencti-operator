@@ -1,6 +1,12 @@
 # Copyright 2025 Canonical Ltd.
 # See LICENSE file for licensing details.
 
+variable "azure_storage_secret_uri" {
+  description = "URI of an existing Juju secret that holds the Azure Storage account key of the OpenSearch backup integrator."
+  type        = string
+  default     = null
+}
+
 variable "db_model_user" {
   description = "Juju user used for deploying database charms."
   type        = string
@@ -9,6 +15,12 @@ variable "db_model_user" {
 variable "db_model_uuid" {
   description = "Reference to the VM Juju model to deploy database charms to."
   type        = string
+}
+
+variable "gcs_secret_uri" {
+  description = "URI of an existing Juju secret that holds the GCS credentials of the OpenSearch backup integrator."
+  type        = string
+  default     = null
 }
 
 variable "ingress" {

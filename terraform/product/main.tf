@@ -38,6 +38,8 @@ module "opensearch" {
   }
   self_signed_certificates = var.self_signed_certificates
   backups                  = merge(var.s3_integrator_opensearch, { channel = local.s3_integrator_opensearch_channel })
+  azure_storage_secret_uri = var.azure_storage_secret_uri
+  gcs_secret_uri           = var.gcs_secret_uri
   s3_secret_uri            = var.s3_secret_uri
 
   providers = {
