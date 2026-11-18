@@ -78,9 +78,10 @@ variable "model_uuid" {
 }
 
 variable "opencti" {
+  description = "OpenCTI charm settings. When channel is unset it defaults to latest/<risk>."
   type = object({
     app_name    = optional(string, "opencti")
-    channel     = optional(string, "latest/edge")
+    channel     = optional(string)
     config      = optional(map(string), {})
     constraints = optional(string, "arch=amd64")
     revision    = optional(number)
@@ -136,14 +137,10 @@ variable "redis_k8s" {
   }
 }
 
-# Risk currently only reflects the overall solution's intended release train in the
-# metadata output; each bundled charm continues to pin its channel independently
-# via its own variable.
-# tflint-ignore: terraform_unused_declarations
 variable "risk" {
-  description = "Risk level controlling the channel risk of the bundled components."
+  description = "Risk level of the bundled components. It sets the default channel (latest/<risk>) of the opencti, s3_integrator and s3_integrator_opensearch charms; an explicit channel on those variables takes precedence. Other charms track a fixed channel."
   type        = string
-  default     = "stable"
+  default     = "edge"
   nullable    = false
 
   validation {
@@ -153,9 +150,10 @@ variable "risk" {
 }
 
 variable "s3_integrator" {
+  description = "S3 integrator charm settings. When channel is unset it defaults to latest/<risk>."
   type = object({
     app_name    = optional(string, "s3-integrator")
-    channel     = optional(string, "latest/edge")
+    channel     = optional(string)
     config      = optional(map(string), {})
     constraints = optional(string, "arch=amd64")
     revision    = optional(number)
@@ -165,9 +163,10 @@ variable "s3_integrator" {
 }
 
 variable "s3_integrator_opensearch" {
+  description = "S3 integrator charm settings for OpenSearch backups. When channel is unset it defaults to latest/<risk>."
   type = object({
     storage_type = optional(string, "s3")
-    channel      = optional(string, "latest/edge")
+    channel      = optional(string)
     config       = optional(map(string), {})
     constraints  = optional(string, "arch=amd64")
     revision     = optional(number)

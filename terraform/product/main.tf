@@ -14,7 +14,7 @@ data "juju_model" "opencti_db" {
 module "opencti" {
   source      = "../charm"
   app_name    = var.opencti.app_name
-  channel     = var.opencti.channel
+  channel     = local.opencti_channel
   config      = var.opencti.config
   constraints = var.opencti.constraints
   model_uuid  = data.juju_model.opencti.uuid
@@ -37,7 +37,7 @@ module "opensearch" {
     expose      = true
   }
   self-signed-certificates = var.self_signed_certificates
-  backups-integrator       = var.s3_integrator_opensearch
+  backups-integrator       = merge(var.s3_integrator_opensearch, { channel = local.s3_integrator_opensearch_channel })
 
   grafana-agent = {
     base = var.opensearch.base
@@ -85,7 +85,7 @@ module "redis_k8s" {
 module "s3_integrator" {
   source      = "./modules/s3-integrator"
   app_name    = var.s3_integrator.app_name
-  channel     = var.s3_integrator.channel
+  channel     = local.s3_integrator_channel
   config      = var.s3_integrator.config
   constraints = var.s3_integrator.constraints
   model_uuid  = data.juju_model.opencti.uuid
@@ -94,6 +94,14 @@ module "s3_integrator" {
   units       = var.s3_integrator.units
 }
 
+
+resource "terraform_data" "deployed_at" {
+  input = timestamp()
+
+  lifecycle {
+    ignore_changes = [input]
+  }
+}
 
 resource "juju_access_offer" "opensearch" {
   offer_url = juju_offer.opensearch.url
