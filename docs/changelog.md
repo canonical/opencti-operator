@@ -28,6 +28,7 @@ Each revision is versioned by the date of the revision.
   `metadata.deployed_at` is now persisted in state instead of changing on every
   apply.
 - Terraform: the product module uses the OpenSearch machine module. All modules require the Juju provider `~> 2.0`, and `moved` blocks keep the existing certificates provider and backup integrator. The optional OpenSearch Dashboards, Grafana agent and data integrator applications are no longer deployed
+- Terraform: bumped the major version of the Terraform modules to 2 because of the breaking changes above
 - Terraform: added the `s3_secret_uri` variable for the OpenSearch backup integrator credentials
 
 ## 2026-11-16
