@@ -63,17 +63,16 @@ module "rabbitmq_server" {
   }
 }
 
-module "redis_k8s" {
-  source      = "./modules/redis-k8s"
-  app_name    = var.redis_k8s.app_name
-  channel     = var.redis_k8s.channel
-  config      = var.redis_k8s.config
-  constraints = var.redis_k8s.constraints
-  model_uuid  = data.juju_model.opencti.uuid
-  revision    = var.redis_k8s.revision
-  base        = var.redis_k8s.base
-  units       = var.redis_k8s.units
-  storage     = var.redis_k8s.storage
+module "valkey" {
+  source     = "git::https://github.com/canonical/valkey-operator.git//terraform/charm?ref=9/edge"
+  app_name   = var.valkey.app_name
+  channel    = var.valkey.channel
+  config     = var.valkey.config
+  model_uuid = data.juju_model.opencti.uuid
+  revision   = var.valkey.revision
+  base       = var.valkey.base
+  units      = var.valkey.units
+  trust      = true
 }
 
 module "s3_integrator" {
@@ -171,17 +170,17 @@ resource "juju_integration" "opensearch_client" {
   }
 }
 
-resource "juju_integration" "redis" {
+resource "juju_integration" "valkey" {
   model_uuid = data.juju_model.opencti.uuid
 
   application {
     name     = module.opencti.app_name
-    endpoint = module.opencti.requires.redis.endpoint
+    endpoint = module.opencti.requires.valkey.endpoint
   }
 
   application {
-    name     = module.redis_k8s.app_name
-    endpoint = module.redis_k8s.provides.redis.endpoint
+    name     = module.valkey.app_name
+    endpoint = module.valkey.provides.valkey_client.endpoint
   }
 }
 

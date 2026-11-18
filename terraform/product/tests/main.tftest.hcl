@@ -22,7 +22,7 @@ run "basic_deploy" {
     opencti = {
       channel = "latest/edge"
       # renovate: depName="opencti"
-      revision = 123
+      revision = 131
     }
     opensearch = {
       channel = "2/edge"
@@ -39,11 +39,7 @@ run "basic_deploy" {
       # renovate: depName="rabbitmq-server"
       revision = 291
     }
-    redis_k8s = {
-      channel = "latest/edge"
-      # renovate: depName="redis-k8s"
-      revision = 42
-    }
+    valkey = {}
     s3_integrator = {
       channel = "latest/edge"
       # renovate: depName="s3-integrator"
@@ -64,5 +60,10 @@ run "basic_deploy" {
   assert {
     condition     = output.app_name == "opencti"
     error_message = "opencti app_name did not match expected"
+  }
+
+  assert {
+    condition     = module.valkey.app_name == "valkey"
+    error_message = "valkey app_name did not match expected"
   }
 }
