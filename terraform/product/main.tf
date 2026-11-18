@@ -24,7 +24,7 @@ module "opencti" {
 }
 
 module "opensearch" {
-  source = "git::https://github.com/canonical/opensearch-operator//terraform/product/simple_deployment?ref=rev349&depth=1"
+  source = "git::https://github.com/canonical/opensearch-operator//terraform/machine/product/simple_deployment?ref=opensearch/rev405&depth=1"
   opensearch = {
     app_name    = var.opensearch.app_name
     channel     = var.opensearch.channel
@@ -34,19 +34,11 @@ module "opensearch" {
     revision    = var.opensearch.revision
     base        = var.opensearch.base
     units       = var.opensearch.units
-    expose      = true
+    expose      = [{}]
   }
-  self-signed-certificates = var.self_signed_certificates
-  backups-integrator       = merge(var.s3_integrator_opensearch, { channel = local.s3_integrator_opensearch_channel })
-
-  grafana-agent = {
-    base = var.opensearch.base
-  }
-
-  opensearch-dashboards = {
-    base  = var.opensearch.base
-    units = 0
-  }
+  self_signed_certificates = var.self_signed_certificates
+  backups                  = merge(var.s3_integrator_opensearch, { channel = local.s3_integrator_opensearch_channel })
+  s3_secret_uri            = var.s3_secret_uri
 
   providers = {
     juju = juju.opencti_db
@@ -208,7 +200,7 @@ resource "juju_integration" "s3" {
 resource "juju_offer" "opensearch" {
   model_uuid       = data.juju_model.opencti_db.uuid
   application_name = module.opensearch.app_names.opensearch
-  endpoints        = [module.opensearch.provides.opensearch_client]
+  endpoints        = [module.opensearch.provides.opensearch_client.endpoint]
 
   provider = juju.opencti_db
 }

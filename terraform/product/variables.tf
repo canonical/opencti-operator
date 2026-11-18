@@ -175,6 +175,12 @@ variable "s3_integrator_opensearch" {
   })
 }
 
+variable "s3_secret_uri" {
+  description = "URI of an existing Juju secret that holds the S3 credentials of the OpenSearch backup integrator."
+  type        = string
+  default     = null
+}
+
 variable "self_signed_certificates" {
   type = object({
     app_name    = optional(string, "self-signed-certificates")
