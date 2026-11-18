@@ -7,9 +7,9 @@ the upgrade process.
 ## Upgrade the Terraform product module
 
 The product module deploys OpenSearch with the OpenSearch machine module, which requires
-the Juju Terraform provider `>= 2.2.1`. Before applying the new module version:
+the Juju Terraform provider `~> 2.0`. Before applying the new module version:
 
-- Update the Juju provider to `>= 2.2.1`.
+- Update the Juju provider to `~> 2.0`.
 - The existing certificates provider and backup integrator are kept: Terraform moves their
   state to the new module instead of recreating them.
 - The optional OpenSearch Dashboards, Grafana agent and data integrator applications that
