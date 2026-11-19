@@ -22,8 +22,8 @@ output "models" {
       model_uuid = data.juju_model.opencti.uuid
       components = {
         opencti       = module.opencti.application
-        redis_k8s     = module.redis_k8s.application
         s3_integrator = module.s3_integrator.application
+        valkey        = module.valkey.application
       }
     }
     opencti_db = {

@@ -12,7 +12,7 @@ run "basic_deploy" {
     model_uuid = run.setup_tests.model_uuid
     channel    = "latest/edge"
     # renovate: depName="opencti"
-    revision = 123
+    revision = 131
   }
 
   assert {
@@ -23,5 +23,15 @@ run "basic_deploy" {
   assert {
     condition     = output.application.name == "opencti"
     error_message = "opencti application output did not match expected"
+  }
+
+  assert {
+    condition     = output.requires.valkey.endpoint == "valkey"
+    error_message = "valkey endpoint did not match expected"
+  }
+
+  assert {
+    condition     = output.requires.redis.endpoint == "redis"
+    error_message = "redis endpoint did not match expected"
   }
 }

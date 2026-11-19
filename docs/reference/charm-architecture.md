@@ -2,7 +2,8 @@
 
 [OpenCTI](https://filigran.io/solutions/open-cti/) is a 
 [NodeJS](https://nodejs.org/en) application that integrates with 
-[OpenSearch](https://opensearch.org/), [Redis](https://redis.io/), and 
+[OpenSearch](https://opensearch.org/), [Valkey](https://valkey.io/) (or
+[Redis](https://redis.io/)), and 
 [RabbitMQ](https://www.rabbitmq.com/).
 
 The charm design leverages the [sidecar](https://kubernetes.io/blog/2015/06/the-distributed-system-toolkit-patterns/#example-1-sidecar-containers)
@@ -49,10 +50,10 @@ C4Container
     Container_Boundary(k8s_model, "K8s Model") {
         Container(ingress, "Nginx Ingress Integrator")
         Container(s3-integrator, "S3 Integrator")
-        Container(redis, "Redis")
+        Container(valkey, "Valkey")
         Container(opencti, "OpenCTI")
         Container(opencti-connector, "OpenCTI Connector(s)")
-        Rel(redis, opencti, "redis")
+        Rel(valkey, opencti, "valkey")
         Rel(ingress, opencti, "ingress")
         Rel(s3-integrator, opencti , "s3")
         BiRel(opencti, opencti-connector, "opencti-connector")
@@ -84,7 +85,7 @@ C4Component
             Component(loki-lib, "loki_k8s.v1.loki_push_api")
             Component(prometheus-lib, "prometheus_k8s.v0.prometheus_scrape")
             Component(rabbitmq-lib, "rabbitmq_k8s.v0.rabbitmq")
-            Component(redis-lib, "redis_k8s.v0.redis")
+            Component(valkey-lib, "dpcharmlibs.interfaces")
             Component(ingress-lib, "traefik_l8s.v2.ingress")
         }
         Container_Boundary(charm-container, "Charm Container") {
@@ -102,7 +103,7 @@ C4Component
         Rel(loki-lib, opencti, "Loki connection info")
         Rel(opencti, prometheus-lib, "Prometheus scrape endpoints")
         Rel(rabbitmq-lib, opencti, "RabbitMQ connection info")
-        Rel(redis-lib, opencti, "Redis connection info")
+        Rel(valkey-lib, opencti, "Valkey connection info")
         Rel(opencti, ingress-lib, "OpenCTI ingress request")
         Rel(opencti, opencti-platform, "Config")
         Rel(opencti, opencti-worker, "Config")

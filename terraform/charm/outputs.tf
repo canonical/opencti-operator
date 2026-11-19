@@ -66,5 +66,10 @@ output "requires" {
       name     = juju_application.opencti.name
       endpoint = "s3"
     }
+    valkey = {
+      kind     = "endpoint"
+      name     = juju_application.opencti.name
+      endpoint = "valkey"
+    }
   }
 }

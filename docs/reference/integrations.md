@@ -16,16 +16,37 @@ juju integrate opencti:opensearch-client opensearch
 ```
 
 
+### `valkey`
+
+_Interface_: valkey_client
+
+_Supported charms_: valkey
+
+OpenCTI charm uses the `valkey` integration to obtain Valkey connection
+information. OpenCTI uses it for event streams, locks, work tracking and
+caching. Valkey is the recommended charm for this integration.
+
+Exactly one of the `valkey` and `redis` integrations is required. The charm is
+`blocked` if neither or both are integrated.
+
+Example `valkey` integrate command:
+
+```
+juju integrate opencti:valkey valkey:valkey-client
+```
+
+
 ### `redis`
 
 _Interface_: redis
 
 _Supported charms_: redis-k8s
 
-OpenCTI charm uses the `redis` integration to obtain redis connection 
-information.
+OpenCTI charm uses the `redis` integration to obtain redis connection
+information. It remains supported for backward compatibility, but `valkey` is
+recommended. See [How to migrate from Redis to Valkey](../how-to/migrate-to-valkey.md).
 
-Example `redis` integrate command: 
+Example `redis` integrate command:
 
 ```
 juju integrate opencti:redis redis-k8s
