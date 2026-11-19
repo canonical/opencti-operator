@@ -16,6 +16,7 @@ and redeployment.
 * [Observability integration](./observability.md)
 * [Redeployment](./redeploy.md)
 * [Charm upgrade](./upgrade.md)
+* [Migrate from Redis to Valkey](./migrate-to-valkey.md)
 
 ## Guide for developers
 
@@ -32,5 +33,6 @@ backup.md
 observability.md
 redeploy.md
 upgrade.md
+migrate-to-valkey.md
 contribute.md
 ```

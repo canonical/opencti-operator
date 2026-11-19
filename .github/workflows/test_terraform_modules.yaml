@@ -16,4 +16,4 @@ jobs:
     secrets: inherit
     with:
       k8s-controller: true
-      terraform-directories: '["terraform/charm", "terraform/product", "terraform/product/modules/rabbitmq-server", "terraform/product/modules/redis-k8s", "terraform/product/modules/s3-integrator"]'
+      terraform-directories: '["terraform/charm", "terraform/product", "terraform/product/modules/rabbitmq-server", "terraform/product/modules/s3-integrator"]'

@@ -24,7 +24,7 @@ module "opencti" {
 }
 
 module "opensearch" {
-  source = "git::https://github.com/canonical/opensearch-operator//terraform/product/simple_deployment?ref=rev349&depth=1"
+  source = "git::https://github.com/canonical/opensearch-operator//terraform/machine/product/simple_deployment?ref=opensearch/rev405&depth=1"
   opensearch = {
     app_name    = var.opensearch.app_name
     channel     = var.opensearch.channel
@@ -34,19 +34,13 @@ module "opensearch" {
     revision    = var.opensearch.revision
     base        = var.opensearch.base
     units       = var.opensearch.units
-    expose      = true
+    expose      = [{}]
   }
-  self-signed-certificates = var.self_signed_certificates
-  backups-integrator       = merge(var.s3_integrator_opensearch, { channel = local.s3_integrator_opensearch_channel })
-
-  grafana-agent = {
-    base = var.opensearch.base
-  }
-
-  opensearch-dashboards = {
-    base  = var.opensearch.base
-    units = 0
-  }
+  self_signed_certificates = var.self_signed_certificates
+  backups                  = merge(var.s3_integrator_opensearch, { channel = local.s3_integrator_opensearch_channel })
+  azure_storage_secret_uri = var.azure_storage_secret_uri
+  gcs_secret_uri           = var.gcs_secret_uri
+  s3_secret_uri            = var.s3_secret_uri
 
   providers = {
     juju = juju.opencti_db
@@ -69,17 +63,16 @@ module "rabbitmq_server" {
   }
 }
 
-module "redis_k8s" {
-  source      = "./modules/redis-k8s"
-  app_name    = var.redis_k8s.app_name
-  channel     = var.redis_k8s.channel
-  config      = var.redis_k8s.config
-  constraints = var.redis_k8s.constraints
-  model_uuid  = data.juju_model.opencti.uuid
-  revision    = var.redis_k8s.revision
-  base        = var.redis_k8s.base
-  units       = var.redis_k8s.units
-  storage     = var.redis_k8s.storage
+module "valkey" {
+  source     = "git::https://github.com/canonical/valkey-operator.git//terraform/charm?ref=9/edge"
+  app_name   = var.valkey.app_name
+  channel    = var.valkey.channel
+  config     = var.valkey.config
+  model_uuid = data.juju_model.opencti.uuid
+  revision   = var.valkey.revision
+  base       = var.valkey.base
+  units      = var.valkey.units
+  trust      = true
 }
 
 module "s3_integrator" {
@@ -177,17 +170,17 @@ resource "juju_integration" "opensearch_client" {
   }
 }
 
-resource "juju_integration" "redis" {
+resource "juju_integration" "valkey" {
   model_uuid = data.juju_model.opencti.uuid
 
   application {
     name     = module.opencti.app_name
-    endpoint = module.opencti.requires.redis.endpoint
+    endpoint = module.opencti.requires.valkey.endpoint
   }
 
   application {
-    name     = module.redis_k8s.app_name
-    endpoint = module.redis_k8s.provides.redis.endpoint
+    name     = module.valkey.app_name
+    endpoint = module.valkey.provides.valkey_client.endpoint
   }
 }
 
@@ -208,7 +201,7 @@ resource "juju_integration" "s3" {
 resource "juju_offer" "opensearch" {
   model_uuid       = data.juju_model.opencti_db.uuid
   application_name = module.opensearch.app_names.opensearch
-  endpoints        = [module.opensearch.provides.opensearch_client]
+  endpoints        = [module.opensearch.provides.opensearch_client.endpoint]
 
   provider = juju.opencti_db
 }

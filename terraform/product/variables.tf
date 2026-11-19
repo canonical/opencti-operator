@@ -1,6 +1,12 @@
 # Copyright 2025 Canonical Ltd.
 # See LICENSE file for licensing details.
 
+variable "azure_storage_secret_uri" {
+  description = "URI of an existing Juju secret that holds the Azure Storage account key of the OpenSearch backup integrator."
+  type        = string
+  default     = null
+}
+
 variable "db_model_user" {
   description = "Juju user used for deploying database charms."
   type        = string
@@ -9,6 +15,12 @@ variable "db_model_user" {
 variable "db_model_uuid" {
   description = "Reference to the VM Juju model to deploy database charms to."
   type        = string
+}
+
+variable "gcs_secret_uri" {
+  description = "URI of an existing Juju secret that holds the GCS credentials of the OpenSearch backup integrator."
+  type        = string
+  default     = null
 }
 
 variable "ingress" {
@@ -119,21 +131,16 @@ variable "rabbitmq_server" {
   }
 }
 
+# The variable only exists to fail validation with a helpful message when it is still set.
+# tflint-ignore: terraform_unused_declarations
 variable "redis_k8s" {
-  type = object({
-    app_name    = optional(string, "redis-k8s")
-    channel     = optional(string, "latest/stable")
-    config      = optional(map(string), {})
-    constraints = optional(string, "arch=amd64")
-    revision    = optional(number)
-    base        = optional(string, "ubuntu@22.04")
-    units       = optional(number, 1)
-    storage     = optional(map(string), {})
-  })
+  description = "Removed. OpenCTI now uses Valkey, set the valkey variable instead."
+  type        = any
+  default     = null
 
   validation {
-    condition     = var.redis_k8s.units == 1
-    error_message = "OpenCTI Charm doesn't support multi-unit Redis deployment"
+    condition     = var.redis_k8s == null
+    error_message = "The redis_k8s variable was removed because the product module deploys Valkey instead of Redis. Remove it and use the valkey variable instead. See docs/how-to/migrate-to-valkey.md."
   }
 }
 
@@ -175,6 +182,12 @@ variable "s3_integrator_opensearch" {
   })
 }
 
+variable "s3_secret_uri" {
+  description = "URI of an existing Juju secret that holds the S3 credentials of the OpenSearch backup integrator."
+  type        = string
+  default     = null
+}
+
 variable "self_signed_certificates" {
   type = object({
     app_name    = optional(string, "self-signed-certificates")
@@ -193,4 +206,21 @@ variable "sysconfig" {
     channel  = optional(string, "latest/stable")
     revision = optional(number)
   })
+}
+
+variable "valkey" {
+  type = object({
+    app_name = optional(string, "valkey")
+    channel  = optional(string, "9/edge")
+    config   = optional(map(string), {})
+    revision = optional(number)
+    base     = optional(string, "ubuntu@26.04")
+    units    = optional(number, 1)
+  })
+  default = {}
+
+  validation {
+    condition     = var.valkey.units == 1
+    error_message = "OpenCTI Charm doesn't support multi-unit Valkey deployment"
+  }
 }

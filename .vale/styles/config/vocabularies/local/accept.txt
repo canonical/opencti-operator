@@ -4,3 +4,4 @@ databag
 monorepo
 [Ss]ysconfig
 subprojects
+[Vv]alkey
