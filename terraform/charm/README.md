@@ -62,14 +62,14 @@ The complete list of available integrations can be found [in the Integrations ta
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.6.6 |
-| <a name="requirement_juju"></a> [juju](#requirement\_juju) | >= 1.1.1 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.12 |
+| <a name="requirement_juju"></a> [juju](#requirement\_juju) | ~> 2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_juju"></a> [juju](#provider\_juju) | >= 1.1.1 |
+| <a name="provider_juju"></a> [juju](#provider\_juju) | ~> 2.0 |
 
 ## Modules
 
@@ -86,11 +86,11 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_app_name"></a> [app\_name](#input\_app\_name) | Name of the application in the Juju model. | `string` | `"opencti"` | no |
-| <a name="input_base"></a> [base](#input\_base) | The operating system on which to deploy | `string` | `"ubuntu@24.04"` | no |
+| <a name="input_base"></a> [base](#input\_base) | The operating system on which to deploy | `string` | `null` | no |
 | <a name="input_channel"></a> [channel](#input\_channel) | The channel to use when deploying a charm. | `string` | `"latest/stable"` | no |
 | <a name="input_config"></a> [config](#input\_config) | Application config. Details about available options can be found at https://charmhub.io/opencti/configurations. | `map(string)` | `{}` | no |
-| <a name="input_constraints"></a> [constraints](#input\_constraints) | Juju constraints to apply for this application. | `string` | `""` | no |
-| <a name="input_model_uuid"></a> [model\_uuid](#input\_model\_uuid) | Reference to a `juju_model`. | `string` | `""` | no |
+| <a name="input_constraints"></a> [constraints](#input\_constraints) | Juju constraints to apply for this application. | `string` | `null` | no |
+| <a name="input_model_uuid"></a> [model\_uuid](#input\_model\_uuid) | Reference to a `juju_model`. | `string` | n/a | yes |
 | <a name="input_revision"></a> [revision](#input\_revision) | Revision number of the charm | `number` | `null` | no |
 | <a name="input_units"></a> [units](#input\_units) | Number of units to deploy | `number` | `1` | no |
 
@@ -99,6 +99,7 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_app_name"></a> [app\_name](#output\_app\_name) | Name of the deployed application. |
-| <a name="output_provides"></a> [provides](#output\_provides) | n/a |
-| <a name="output_requires"></a> [requires](#output\_requires) | n/a |
+| <a name="output_application"></a> [application](#output\_application) | The deployed opencti Juju application resource. |
+| <a name="output_provides"></a> [provides](#output\_provides) | Provides endpoints of the opencti charm. |
+| <a name="output_requires"></a> [requires](#output\_requires) | Requires endpoints of the opencti charm. |
 <!-- END_TF_DOCS -->
