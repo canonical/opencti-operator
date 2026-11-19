@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Each revision is versioned by the date of the revision.
 
+## 2026-11-18
+
+### Changed
+
+- Migrated all Terraform modules (`terraform/charm`, `terraform/product` and
+  its `rabbitmq-server`, `redis-k8s`, `s3-integrator` submodules) to the CC008
+  Charm Terraform Standard: renamed `versions.tf` to `terraform.tf`, added
+  a single shared `terraform/MAJOR_VERSION` file, normalized variable/output contracts, and added
+  missing module tests.
+- The `terraform/product` module's `requires`/`provides` outputs were replaced
+  by new optional `ingress` and `logging` input variables, plus new mandatory
+  `metadata` and `models` outputs.
+- Charm module `base` and `constraints` variables now default to `null`
+  instead of a concrete value; this only changes behavior for consumers
+  invoking the charm modules standalone without an explicit value, since the
+  product module always passes an explicit value.
+- The `terraform/product` module's `risk` input (default `edge`) now sets the
+  default channel (`latest/<risk>`) of the `opencti`, `s3_integrator` and
+  `s3_integrator_opensearch` charms when no explicit channel is given.
+  `metadata.deployed_at` is now persisted in state instead of changing on every
+  apply.
+
 ## 2026-11-16
 
 ### Fixed

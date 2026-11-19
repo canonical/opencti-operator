@@ -14,7 +14,7 @@ data "juju_model" "opencti_db" {
 module "opencti" {
   source      = "../charm"
   app_name    = var.opencti.app_name
-  channel     = var.opencti.channel
+  channel     = local.opencti_channel
   config      = var.opencti.config
   constraints = var.opencti.constraints
   model_uuid  = data.juju_model.opencti.uuid
@@ -37,7 +37,7 @@ module "opensearch" {
     expose      = true
   }
   self-signed-certificates = var.self_signed_certificates
-  backups-integrator       = var.s3_integrator_opensearch
+  backups-integrator       = merge(var.s3_integrator_opensearch, { channel = local.s3_integrator_opensearch_channel })
 
   grafana-agent = {
     base = var.opensearch.base
@@ -85,7 +85,7 @@ module "redis_k8s" {
 module "s3_integrator" {
   source      = "./modules/s3-integrator"
   app_name    = var.s3_integrator.app_name
-  channel     = var.s3_integrator.channel
+  channel     = local.s3_integrator_channel
   config      = var.s3_integrator.config
   constraints = var.s3_integrator.constraints
   model_uuid  = data.juju_model.opencti.uuid
@@ -94,6 +94,14 @@ module "s3_integrator" {
   units       = var.s3_integrator.units
 }
 
+
+resource "terraform_data" "deployed_at" {
+  input = timestamp()
+
+  lifecycle {
+    ignore_changes = [input]
+  }
+}
 
 resource "juju_access_offer" "opensearch" {
   offer_url = juju_offer.opensearch.url
@@ -116,11 +124,43 @@ resource "juju_integration" "amqp" {
 
   application {
     name     = module.opencti.app_name
-    endpoint = module.opencti.requires.amqp
+    endpoint = module.opencti.requires.amqp.endpoint
   }
 
   application {
     offer_url = juju_offer.rabbitmq_server.url
+  }
+}
+
+resource "juju_integration" "ingress" {
+  count      = var.ingress != null ? 1 : 0
+  model_uuid = data.juju_model.opencti.uuid
+
+  application {
+    name     = module.opencti.app_name
+    endpoint = module.opencti.requires.ingress.endpoint
+  }
+
+  application {
+    name      = var.ingress.kind == "endpoint" ? var.ingress.name : null
+    endpoint  = var.ingress.kind == "endpoint" ? var.ingress.endpoint : null
+    offer_url = var.ingress.kind == "offer" ? var.ingress.url : null
+  }
+}
+
+resource "juju_integration" "logging" {
+  count      = var.logging != null ? 1 : 0
+  model_uuid = data.juju_model.opencti.uuid
+
+  application {
+    name     = module.opencti.app_name
+    endpoint = module.opencti.requires.logging.endpoint
+  }
+
+  application {
+    name      = var.logging.kind == "endpoint" ? var.logging.name : null
+    endpoint  = var.logging.kind == "endpoint" ? var.logging.endpoint : null
+    offer_url = var.logging.kind == "offer" ? var.logging.url : null
   }
 }
 
@@ -129,7 +169,7 @@ resource "juju_integration" "opensearch_client" {
 
   application {
     name     = module.opencti.app_name
-    endpoint = module.opencti.requires.opensearch_client
+    endpoint = module.opencti.requires.opensearch_client.endpoint
   }
 
   application {
@@ -142,12 +182,12 @@ resource "juju_integration" "redis" {
 
   application {
     name     = module.opencti.app_name
-    endpoint = module.opencti.requires.redis
+    endpoint = module.opencti.requires.redis.endpoint
   }
 
   application {
     name     = module.redis_k8s.app_name
-    endpoint = module.redis_k8s.provides.redis
+    endpoint = module.redis_k8s.provides.redis.endpoint
   }
 }
 
@@ -156,12 +196,12 @@ resource "juju_integration" "s3" {
 
   application {
     name     = module.opencti.app_name
-    endpoint = module.opencti.requires.s3
+    endpoint = module.opencti.requires.s3.endpoint
   }
 
   application {
     name     = module.s3_integrator.app_name
-    endpoint = module.s3_integrator.provides.s3_credentials
+    endpoint = module.s3_integrator.provides.s3_credentials.endpoint
   }
 }
 
@@ -176,7 +216,7 @@ resource "juju_offer" "opensearch" {
 resource "juju_offer" "rabbitmq_server" {
   model_uuid       = data.juju_model.opencti_db.uuid
   application_name = module.rabbitmq_server.app_name
-  endpoints        = [module.rabbitmq_server.provides.amqp]
+  endpoints        = [module.rabbitmq_server.provides.amqp.endpoint]
 
   provider = juju.opencti_db
 }
