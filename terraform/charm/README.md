@@ -15,7 +15,7 @@ deployment onto any Kubernetes environment managed by [Juju][Juju].
 - **output.tf** - Integrates the module with other Terraform modules, primarily
   by defining potential integration endpoints (charm integrations), but also by exposing
   the Juju application name.
-- **versions.tf** - Defines the Terraform provider version.
+- **terraform.tf** - Defines the Terraform provider version.
 ## Using opencti base module in higher level modules
 
 If you want to use `opencti` base module as part of your Terraform module, import it
@@ -27,7 +27,7 @@ data "juju_model" "my_model" {
 }
 
 module "amf" {
-  source = "git::https://github.com/canonical/opencti-operator//terraform"
+  source = "git::https://github.com/canonical/opencti-operator//terraform/charm?ref=tf-charm-1.0.0"
   
   model_uuid = juju_model.my_model.uuid
   # (Customize configuration variables here if needed)
@@ -40,8 +40,8 @@ Create integrations, for instance:
 resource "juju_integration" "amf-nrf" {
   model_uuid = juju_model.my_model.uuid
   application {
-    name     = module.opencti.app_name
-    endpoint = module.opencti.requires.logging
+    name     = module.opencti.application.name
+    endpoint = module.opencti.requires.logging.endpoint
   }
   application {
     name     = "loki-k8s"

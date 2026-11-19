@@ -1,0 +1,18 @@
+# Copyright 2026 Canonical Ltd.
+# See LICENSE file for licensing details.
+
+name: Terraform modules compliance
+
+on:
+  pull_request:
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/terraform_modules_compliance.yaml'
+
+# Pinned to the checker before operator-workflows#1058 (543b9f1): newer versions classify
+# modules by path, so nested modules under terraform/product/modules count as product modules.
+jobs:
+  terraform-modules-compliance:
+    uses: canonical/operator-workflows/.github/workflows/terraform_modules_compliance.yaml@030c5b20a0bb880dcf1ed326bff0fc16b6eb6ac1 # main
+    with:
+      terraform-directories: '["terraform/charm", "terraform/product", "terraform/product/modules/rabbitmq-server", "terraform/product/modules/s3-integrator"]'

@@ -24,6 +24,7 @@ header:
     - '.jujuignore'
     - '.gitignore'
     - '.licenserc.yaml'
+    - '**/MAJOR_VERSION'
     - '.trivyignore'
     - '.woke.yaml'
     - '.woke.yml'

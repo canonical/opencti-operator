@@ -8,11 +8,12 @@ on:
   pull_request:
     paths:
       - 'terraform/**'
+      - '.github/workflows/test_terraform_modules.yaml'
 
 jobs:
   terraform-tests:
-    uses: canonical/operator-workflows/.github/workflows/terraform_modules_test.yaml@main
+    uses: canonical/operator-workflows/.github/workflows/terraform_modules_test.yaml@0ad5fa95ddbd34f7fa6a70f552269a4090f35fa3 # main
     secrets: inherit
     with:
       k8s-controller: true
-      terraform-directories: '["terraform/charm", "terraform/product"]'
+      terraform-directories: '["terraform/charm", "terraform/product", "terraform/product/modules/rabbitmq-server", "terraform/product/modules/s3-integrator"]'
