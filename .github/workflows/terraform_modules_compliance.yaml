@@ -13,6 +13,6 @@ on:
 # modules by path, so nested modules under terraform/product/modules count as product modules.
 jobs:
   terraform-modules-compliance:
-    uses: canonical/operator-workflows/.github/workflows/terraform_modules_compliance.yaml@030c5b20a0bb880dcf1ed326bff0fc16b6eb6ac1 # main
+    uses: canonical/operator-workflows/.github/workflows/terraform_modules_compliance.yaml@9e3c2efabb72686c605bf5713bdc42b738153091 # main
     with:
       terraform-directories: '["terraform/charm", "terraform/product", "terraform/product/modules/rabbitmq-server", "terraform/product/modules/s3-integrator"]'
