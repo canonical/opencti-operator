@@ -18,7 +18,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    uses: canonical/operator-workflows/.github/workflows/generate_terraform_docs.yaml@0ad5fa95ddbd34f7fa6a70f552269a4090f35fa3 # main
+    uses: canonical/operator-workflows/.github/workflows/generate_terraform_docs.yaml@4cd64727ffba2e8698659deec6d8b3c8453b79be # main
     secrets: inherit
     with:
       terraform-directory: terraform/charm,terraform/product,terraform/product/modules/rabbitmq-server,terraform/product/modules/s3-integrator
