@@ -6,7 +6,7 @@ on:
 jobs:
   bot_pr_approval:
     if: github.event.pull_request.user.login != 'github-actions[bot]'
-    uses: canonical/operator-workflows/.github/workflows/bot_pr_approval.yaml@9e3c2efabb72686c605bf5713bdc42b738153091  # main
+    uses: canonical/operator-workflows/.github/workflows/bot_pr_approval.yaml@1be2f1c4d3f3852a02b9e31582960ee4323f93e5  # main
     permissions:
       pull-requests: write
     secrets: inherit
