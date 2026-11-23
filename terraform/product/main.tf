@@ -98,7 +98,7 @@ resource "terraform_data" "deployed_at" {
 
 resource "juju_access_offer" "opensearch" {
   offer_url = juju_offer.opensearch.url
-  admin     = [var.db_model_user]
+  admin     = length(var.offer_admin_users) > 0 ? var.offer_admin_users : null
   consume   = [var.model_user]
 
   provider = juju.opencti_db
@@ -106,7 +106,7 @@ resource "juju_access_offer" "opensearch" {
 
 resource "juju_access_offer" "rabbitmq_server" {
   offer_url = juju_offer.rabbitmq_server.url
-  admin     = [var.db_model_user]
+  admin     = length(var.offer_admin_users) > 0 ? var.offer_admin_users : null
   consume   = [var.model_user]
 
   provider = juju.opencti_db

@@ -7,9 +7,17 @@ variable "azure_storage_secret_uri" {
   default     = null
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "db_model_user" {
-  description = "Juju user used for deploying database charms."
+  description = "Deprecated and unused, kept for compatibility. Juju user used for deploying database charms; it is no longer granted access to the offers."
   type        = string
+  default     = null
+}
+
+variable "offer_admin_users" {
+  description = "Juju users to grant admin access to the OpenSearch and RabbitMQ offers. The user that creates the offers already has admin access, so leave empty unless a different user needs it."
+  type        = list(string)
+  default     = []
 }
 
 variable "db_model_uuid" {

@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Each revision is versioned by the date of the revision.
 
+## 2026-11-23
+
+### Changed
+
+- Terraform: the `terraform/product` module no longer grants `admin` access on the OpenSearch and RabbitMQ offers to `db_model_user`. With Juju provider 2.x this failed with `user already has "admin" access or greater` when the applying user created the offers. Use the new optional `offer_admin_users` variable (default `[]`) to grant admin access to other users. `db_model_user` is now optional and unused, and is kept only for compatibility.
+
 ## 2026-11-18
 
 ### Changed
