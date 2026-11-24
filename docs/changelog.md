@@ -10,7 +10,7 @@ Each revision is versioned by the date of the revision.
 
 ### Changed
 
-- Terraform: the `terraform/product` module no longer grants `admin` access on the OpenSearch and RabbitMQ offers to `db_model_user`. With Juju provider 2.x this failed with `user already has "admin" access or greater` when the applying user created the offers. Use the new optional `offer_admin_users` variable (default `[]`) to grant admin access to other users. `db_model_user` is now optional and unused, and is kept only for compatibility.
+- Terraform: `db_model_user` in the `terraform/product` module is now optional and `admin` access on the OpenSearch and RabbitMQ offers is granted to it only when it is set. With Juju provider 2.x, granting it to the user that created the offers failed with `user already has "admin" access or greater`, so stop setting it in that case.
 
 ## 2026-11-18
 
