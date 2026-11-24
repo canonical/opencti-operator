@@ -8,8 +8,9 @@ variable "azure_storage_secret_uri" {
 }
 
 variable "db_model_user" {
-  description = "Juju user used for deploying database charms."
+  description = "Juju user to grant admin access to the OpenSearch and RabbitMQ offers. Leave unset when the user that applies the module created the offers, as it already has admin access."
   type        = string
+  default     = null
 }
 
 variable "db_model_uuid" {

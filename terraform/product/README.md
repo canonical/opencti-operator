@@ -71,7 +71,7 @@ the bundle deployment onto any Kubernetes environment managed by [Juju][Juju].
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_azure_storage_secret_uri"></a> [azure\_storage\_secret\_uri](#input\_azure\_storage\_secret\_uri) | URI of an existing Juju secret that holds the Azure Storage account key of the OpenSearch backup integrator. | `string` | `null` | no |
-| <a name="input_db_model_user"></a> [db\_model\_user](#input\_db\_model\_user) | Juju user used for deploying database charms. | `string` | n/a | yes |
+| <a name="input_db_model_user"></a> [db\_model\_user](#input\_db\_model\_user) | Juju user to grant admin access to the OpenSearch and RabbitMQ offers. Leave unset when the user that applies the module created the offers, as it already has admin access. | `string` | `null` | no |
 | <a name="input_db_model_uuid"></a> [db\_model\_uuid](#input\_db\_model\_uuid) | Reference to the VM Juju model to deploy database charms to. | `string` | n/a | yes |
 | <a name="input_gcs_secret_uri"></a> [gcs\_secret\_uri](#input\_gcs\_secret\_uri) | URI of an existing Juju secret that holds the GCS credentials of the OpenSearch backup integrator. | `string` | `null` | no |
 | <a name="input_ingress"></a> [ingress](#input\_ingress) | Optional ingress endpoint or cross-model offer to integrate opencti with. When unset, opencti's ingress relation is left unwired. | <pre>object({<br/>    endpoint = optional(string)<br/>    kind     = string<br/>    name     = optional(string)<br/>    url      = optional(string)<br/>  })</pre> | `null` | no |

@@ -21,4 +21,7 @@ the Juju Terraform provider `~> 2.0`. Before applying the new module version:
   state to the new module instead of recreating them.
 - The optional OpenSearch Dashboards, Grafana agent and data integrator applications that
   the previous module deployed are no longer deployed, so Terraform destroys them.
+- `db_model_user` is now optional and only used to grant `admin` access on the OpenSearch and
+  RabbitMQ offers. Stop setting it if the user that applies the module created the offers,
+  because Juju provider 2.x fails to grant admin to a user that already has it.
 - Set `s3_secret_uri` instead of `credentials` in `s3_integrator_opensearch.config`.
