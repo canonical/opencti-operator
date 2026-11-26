@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 Each revision is versioned by the date of the revision.
 
+## 2026-11-26
+
+### Changed
+
+- Terraform: the `valkey` variable of the `terraform/product` module accepts an optional `storage_directives` map (for example `{ data = "20G" }`) to set the Valkey storage sizes. The default is unchanged.
+
 ## 2026-11-23
 
 ### Changed

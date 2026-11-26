@@ -211,12 +211,13 @@ variable "sysconfig" {
 
 variable "valkey" {
   type = object({
-    app_name = optional(string, "valkey")
-    channel  = optional(string, "9/edge")
-    config   = optional(map(string), {})
-    revision = optional(number)
-    base     = optional(string, "ubuntu@26.04")
-    units    = optional(number, 1)
+    app_name           = optional(string, "valkey")
+    channel            = optional(string, "9/edge")
+    config             = optional(map(string), {})
+    revision           = optional(number)
+    base               = optional(string, "ubuntu@26.04")
+    units              = optional(number, 1)
+    storage_directives = optional(map(string), {})
   })
   default = {}
 
