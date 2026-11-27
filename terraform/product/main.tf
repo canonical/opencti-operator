@@ -73,6 +73,8 @@ module "valkey" {
   base       = var.valkey.base
   units      = var.valkey.units
   trust      = true
+
+  storage_directives = var.valkey.storage_directives
 }
 
 module "s3_integrator" {
