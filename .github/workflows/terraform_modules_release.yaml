@@ -20,13 +20,13 @@ permissions:
 
 jobs:
   terraform-charm-release:
-    uses: canonical/operator-workflows/.github/workflows/terraform_modules_release.yaml@1be2f1c4d3f3852a02b9e31582960ee4323f93e5 # main
+    uses: canonical/operator-workflows/.github/workflows/terraform_modules_release.yaml@3046da45237aa86dcdcd83c299e1380842b473cc # main
     with:
       tag-prefix: tf-charm-
       major-version-file: terraform/charm/MAJOR_VERSION
 
   terraform-product-release:
-    uses: canonical/operator-workflows/.github/workflows/terraform_modules_release.yaml@1be2f1c4d3f3852a02b9e31582960ee4323f93e5 # main
+    uses: canonical/operator-workflows/.github/workflows/terraform_modules_release.yaml@3046da45237aa86dcdcd83c299e1380842b473cc # main
     with:
       tag-prefix: tf-product-
       major-version-file: terraform/product/MAJOR_VERSION
